@@ -12,7 +12,7 @@ const app = express();
 const userRoutes = require('./routes/r-user');
 const storeRoutes = require('./routes/r-store');
 const productsRoutes = require('./routes/r-products');
-
+const port = process.env.port || 3000;
 app.use(express.json());
 
 //Routes middleware
@@ -25,7 +25,7 @@ app.use('/api',productsRoutes);
 mongoose
     .connect(process.env.DB_CONNECT, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(result => {
-        app.listen(3000);
+        app.listen(port);
     })
     .catch(err => {
         console.log(err);
