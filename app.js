@@ -12,7 +12,7 @@ const app = express();
 const userRoutes = require('./routes/r-user');
 const storeRoutes = require('./routes/r-store');
 const productsRoutes = require('./routes/r-products');
-const port = process.env.port || 3000;
+const port = process.env.PORT || 3000;
 app.use(express.json());
 
 //Routes middleware
