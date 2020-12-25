@@ -25,7 +25,7 @@ app.use('/api',productsRoutes);
 mongoose
     .connect(process.env.DB_CONNECT, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(result => {
-        app.listen(port);
+        app.listen(process.env.PORT || 5000)
     })
     .catch(err => {
         console.log(err);
