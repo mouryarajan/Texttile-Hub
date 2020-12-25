@@ -11,12 +11,14 @@ const app = express();
 //importing routes
 const userRoutes = require('./routes/r-user');
 const storeRoutes = require('./routes/r-store');
+const productsRoutes = require('./routes/r-products');
 
 app.use(express.json());
 
 //Routes middleware
 app.use('/api',userRoutes);
 app.use('/api',storeRoutes);
+app.use('/api',productsRoutes);
 
 
 //Connection 

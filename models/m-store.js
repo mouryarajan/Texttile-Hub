@@ -95,7 +95,8 @@ const storeSchema = new Schema({
     },
     isApproved: {
         type: Boolean,
-        default: false
+        default: false,
+        required: true
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId, 

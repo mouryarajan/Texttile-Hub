@@ -8,5 +8,4 @@ const storeController = require('../controller/c-store');
 router.post('/add-store', storeController.postStore);
 router.get('/store-list', storeController.getStore);
 
-
 module.exports = router;
