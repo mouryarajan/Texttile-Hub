@@ -1,8 +1,11 @@
 const store = require('../models/m-store');
+const user = require('../models/m-user');
 
 exports.postStore = async (req, res, next) => {
     try {
         const d = req.body;
+        if(!d) return res.status(201).json({ status: false, message: "Provide Proper Data" });
+
         const Store = new store({
             companyName: d.inputCompanyName,
             companyEmail: d.inputCompanyEmail,
@@ -64,12 +67,17 @@ exports.approveStore = async (req, res, next) => {
     const storeId = req.body.inputStoreId;
     const status = req.body.inputStatus;
     if (!storeId) return res.json({ status: false, message: "Enter Store Id" });
-    if (!status) return res.json({ status: false, message: "Status is null" });
 
     try {
         const data = await store.findOne({ _id: storeId });
         if (!data) return res.status(201).json({ status: false, message: "Something Went Wrong" });
         data.isApproved = status;
+
+        if(status){
+            user.findOne({_id:data.userId}).then(response=>{response.role="Merchant"; response.save();}).catch(err=>{console.log(err)});
+        }else{
+            user.findOne({_id:data.userId}).then(response=>{response.role="Customer"; response.save();}).catch(err=>{console.log(err)});
+        }
 
         const result = await data.save();
         if (!result) return res.status(201).json({ status: false, message: "Something Went Wrong" });

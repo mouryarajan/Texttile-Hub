@@ -87,7 +87,8 @@ exports.postPassword = async (req, res, next) => {
                         .then(data => {
                             if (data) {
                                 res.json({
-                                    status: true
+                                    status: true,
+                                    userId: data._id
                                 })
                             } else {
                                 res.json({
@@ -104,6 +105,42 @@ exports.postPassword = async (req, res, next) => {
     } catch (err) {
         res.status(201).json({ err });
     }
+}
+
+//Edit User
+exports.postEditUser = (req, res, next) => {
+    const d = req.body;
+    const phno = Number(d.inputPhoneNumber);
+    const gender = d.inputGender;
+    const id = d.inputUserId;
+    user.findById(id)
+        .then(result => {
+            if (result) {
+                result.name.firstName = d.inputFirstName;
+                result.name.lastName = d.inputLastName;
+                result.phoneNumber = phno;
+                result.gender = d.inputGender;
+                result.email = d.inputEmail;
+                result.save()
+                    .then(data => {
+                        if (data) {
+                            res.status(200).json({
+                                status: true
+                            })
+                        } else {
+                            res.status(201).json({
+                                status: false,
+                                message: "Something went wrong"
+                            })
+                        }
+                    }).catch(err => { console.log(err) });
+            } else {
+                res.status(201).json({
+                    status: false,
+                    message: "User not found"
+                })
+            }
+        }).catch(err => { console.log(err) });
 }
 
 //Add Product to cart
@@ -131,11 +168,41 @@ exports.postCart = (req, res, next) => {
                             res.status(201).json({ status: false, message: "Add to cart failed" });
                         }
                     }).catch(err => { console.log(err) });
-            }else{
+            } else {
                 res.status(201).json({ status: false, message: "User not found" });
             }
         }).catch(err => { console.log(err) });
 };
+
+//Add Address
+exports.postAddress = async (req, res, next) => {
+    const userId = req.body.inputUserId;
+    const d = req.body;
+    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+    let address = {
+        type: d.inputType,
+        street: d.inputStreet,
+        landmark: d.inputLandmark,
+        city: d.inputCity,
+        state: d.inputState,
+        pincode: d.inputPincode
+    };
+    await user.findOne({ _id: userId })
+        .then(users => {
+            if (users) {
+                return user.addAddress(address);
+            } else {
+                res.status(201).json({ status: false, message: "Add to address failed" });
+            }
+        })
+        .then(result => {
+            if (result) {
+                res.status(200).json({ status: true })
+            } else {
+                res.status(201).json({ status: false, message: "Add to cart failed" });
+            }
+        }).catch(err => { console.log(err) });;
+}
 
 //Remove from cart
 exports.postRemoveProductFromCart = (req, res, next) => {
@@ -158,7 +225,7 @@ exports.postRemoveProductFromCart = (req, res, next) => {
             } else {
                 res.status(201).json({ status: false, message: "Remove from cart failed" });
             }
-        }).catch(err=>{console.log(err)});
+        }).catch(err => { console.log(err) });
 };
 
 //Clear Cart

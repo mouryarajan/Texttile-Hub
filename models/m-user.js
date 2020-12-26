@@ -25,9 +25,21 @@ const userSchema = new Schema({
         type: Number,
         required: true,
     },
+    gender: {
+        type: String,
+        required: false
+    },
+    email :{
+        type: String,
+        required: false
+    },
     address: {
         items: [
             {
+                type:{
+                    type: String,
+                    required: false
+                },
                 street: {
                     type: String,
                     required: false,
@@ -85,20 +97,6 @@ const userSchema = new Schema({
             }
         ]
     },
-    order: {
-        items: [
-            {
-                product: {
-                    type: String,
-                    required: false,
-                },
-                quantity: {
-                    type: Number,
-                    required: false
-                }
-            }
-        ]
-    },
     role: {
         type: String,
         default: "Customer",
@@ -127,6 +125,23 @@ userSchema.methods.addToCart = function (product) {
     };
     this.cart = updatedCart;
     return this.save();
+};
+
+userSchema.statics.addAddress = async function (address) {
+    const updatedAddressItems = [...this.address.items];
+    updatedAddressItems.push({
+        type: address.type,
+        street: address.street,
+        landmark: address.landmark,
+        city: address.city,
+        state: address.state,
+        pincode: address.pincode
+    });
+    const updatedAddress = {
+        items: updatedAddressItems
+    };
+    this.address = updatedAddress;
+    return await this.save();
 };
 
 userSchema.methods.removeFromCart = function (productId) {

@@ -5,7 +5,8 @@ exports.postProducts = (req, res, next) => {
     if(!d) return res.status(201).json({ status: false, message: "Enter Proper Details" });
 
     try {
-        Products = new product({
+        const Products = new products({
+            images:d.inputImages,
             name: d.inputName,
             brandName: d.inputBrandName,
             category: d.inputCategory,
@@ -35,7 +36,7 @@ exports.getProducts = (req, res, next) => {
     const storeId = req.body.inputStoreId;
     if(!storeId) return res.status(201).json({ status: false, message: "Enter store id" });
 
-    products.find({storeId: storeId})
+    products.findOne({storeId: storeId})
     .then(data=>{
         if(data){
             res.status(200).json({ status: true, data: data });

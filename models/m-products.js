@@ -3,15 +3,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const productSchema = new Schema({
-    images:{
-        items: [
-            {
-                image:{
-                    type: String,
-                    required: false
-                }
-            }
-        ]
+    images: {
+        type: String,
+        required: false
     },
     name: {
         type: String,
@@ -19,10 +13,10 @@ const productSchema = new Schema({
     },
     brandName: {
         type: String,
-        required:true
+        required: true
     },
     category: {
-        type: mongoose.Schema.Types.ObjectId, 
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'tblcategory'
     },
     price: {
@@ -54,8 +48,30 @@ const productSchema = new Schema({
         required: false
     },
     storeId: {
-        type: mongoose.Schema.Types.ObjectId, 
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'tblstore'
+    },
+    review: {
+        items: [
+            {
+                userId: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'tbluser'
+                },
+                name: {
+                    type: String,
+                    required: false
+                },
+                description: {
+                    type: String,
+                    required: false
+                },
+                rating: {
+                    type: Number,
+                    required: false
+                }
+            }
+        ]
     }
 });
 
