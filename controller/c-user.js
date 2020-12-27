@@ -45,23 +45,14 @@ exports.postRegister = async (req, res, next) => {
         if (data) return res.status(201).json({ status: false, message: "User Already Exist With This Phone Number!" });
 
         const otp = Number(Math.floor(100000 + Math.random() * 900000));
-        const User = new user({
-            phoneNumber: phno,
-            otp: otp
-        });
-        User.save()
-            .then(result => {
-                if (result) {
-                    res.status(200).json({
-                        status: true,
-                        otp: otp
-                    })
-                } else {
-                    res.status(201).json({
-                        status: false
-                    })
-                }
-            }).catch(err => { console.log(err) });
+        arr = {
+            otp: otp,
+            phoneNumber: phno
+        }
+        res.status(200).json({
+            status: true,
+            data: arr
+        })
     } catch (err) {
         res.status(201).json({ err });
     }
@@ -79,29 +70,28 @@ exports.postPassword = async (req, res, next) => {
         const salt = await bcrypt.genSalt(10);
         const hashPassword = await bcrypt.hash(password, salt);
 
-        user.findOne({ phoneNumber: phno }).select('phoneNumber').select('password')
-            .then(result => {
-                if (result) {
-                    result.password = hashPassword;
-                    result.save()
-                        .then(data => {
-                            if (data) {
-                                const token = jwt.sign({
-                                    userId: data._id
-                                }, process.env.TOKEN_SECRET);
-                                res.status(200).json({
-                                    status: true,
-                                    userId: data._id,
-                                    authToken: token
-                                })
-                            } else {
-                                res.status(201).json({
-                                    status: false
-                                })
-                            }
-                        }).catch(err => {
-                            console.log(err);
-                        })
+        const User = new user({
+            phoneNumber: phno,
+            password: hashPassword
+        });
+        User.save()
+            .then(data => {
+                if (data) {
+                    const token = jwt.sign({
+                        userId: data._id
+                    }, process.env.TOKEN_SECRET);
+                    arr = {
+                        phoneNumber: phno,
+                        authToken: token
+                    }
+                    res.status(200).json({
+                        status: true,
+                        data: arr
+                    })
+                } else {
+                    res.status(201).json({
+                        status: false
+                    })
                 }
             }).catch(err => {
                 console.log(err);
