@@ -38,12 +38,14 @@ exports.postLoginCheck = async (req, res, next) => {
 //Registration
 exports.postRegister = async (req, res, next) => {
     const phno = Number(req.body.inputPhoneNumber);
+    const forResetPasswordFlag = req.body.forResetPasswordFlag || false;
     if (!phno) return res.status(201).json({ status: false, message: "Enter Phone Number" });
 
     try {
-        const data = await user.findOne({ phoneNumber: phno });
-        if (data) return res.status(201).json({ status: false, message: "User Already Exist With This Phone Number!" });
-
+        if (!forResetPasswordFlag) {
+            const data = await user.findOne({ phoneNumber: phno });
+            if (data) return res.status(201).json({ status: false, message: "User Already Exist With This Phone Number!" });
+        }
         const otp = Number(Math.floor(100000 + Math.random() * 900000));
         arr = {
             otp: otp
