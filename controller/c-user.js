@@ -8,27 +8,27 @@ const products = require('../models/m-products');
 exports.postLoginCheck = async (req, res, next) => {
     const phno = req.body.inputPhoneNumber;
     const password = req.body.inputPassword;
-    if (!phno) return res.json({ status: false, message: "Enter Phone Number" });
-    if (!password) return res.json({ status: false, message: "Enter Password" });
+    if (!phno) return res.status(201).json({ status: false, message: "Enter Phone Number" });
+    if (!password) return res.status(201).json({ status: false, message: "Enter Password" });
     try {
         const data = await user.findOne({ phoneNumber: phno }).select('name').select('phoneNumber').select('password');
-        if (!data) return res.json({ status: false, message: "Phone Number or Password is Invalid!" });
+        if (!data) return res.status(201).json({ status: false, message: "Phone Number or Password is Invalid!" });
 
         const validPassword = await bcrypt.compare(password, data.password);
-        if (!validPassword) return res.json({ status: false, message: "invalid password!" });
-
+        if (!validPassword) return res.status(201).json({ status: false, message: "invalid password!" });
+        const token = jwt.sign({
+            userId: data._id
+        }, process.env.TOKEN_SECRET);
         arr = {
             firstName: data.name.firstName,
             lastName: data.name.lastName,
             phoneNumber: data.phoneNumber,
-            image: data.image
+            image: data.image,
+            authToken: token
         }
-        const token = jwt.sign({
-            userId: data._id
-        }, process.env.TOKEN_SECRET);
-        res.status(200).header('auth-token', token).json({
+        res.status(200).json({
             status: true,
-            data: arr
+            data: arr,
         })
     } catch (err) {
         res.status(201).json({ err });
@@ -42,7 +42,7 @@ exports.postRegister = async (req, res, next) => {
 
     try {
         const data = await user.findOne({ phoneNumber: phno });
-        if (data) return res.json({ status: false, message: "User Already Exist With This Phone Number!" });
+        if (data) return res.status(201).json({ status: false, message: "User Already Exist With This Phone Number!" });
 
         const otp = Number(Math.floor(100000 + Math.random() * 900000));
         const User = new user({
@@ -86,12 +86,16 @@ exports.postPassword = async (req, res, next) => {
                     result.save()
                         .then(data => {
                             if (data) {
-                                res.json({
-                                    status: true,
+                                const token = jwt.sign({
                                     userId: data._id
+                                }, process.env.TOKEN_SECRET);
+                                res.status(200).json({
+                                    status: true,
+                                    userId: data._id,
+                                    authToken: token
                                 })
                             } else {
-                                res.json({
+                                res.status(201).json({
                                     status: false
                                 })
                             }

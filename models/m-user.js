@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const {isDefined} = require('../handler/common');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -128,7 +128,8 @@ userSchema.methods.addToCart = function (product) {
 };
 
 userSchema.statics.addAddress = async function (address) {
-    const updatedAddressItems = [...this.address.items];
+    let updatedAddressItems = [];
+    isDefined(address.items)?updatedAddressItems=[...this.address.items]:[]
     updatedAddressItems.push({
         type: address.type,
         street: address.street,
@@ -141,7 +142,7 @@ userSchema.statics.addAddress = async function (address) {
         items: updatedAddressItems
     };
     this.address = updatedAddress;
-    return await this.save();
+    return this.save();
 };
 
 userSchema.methods.removeFromCart = function (productId) {
