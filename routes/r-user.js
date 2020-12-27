@@ -10,6 +10,7 @@ router.post('/register', userController.postRegister);
 router.post('/password', userController.postPassword);
 router.post('/edit-user', userController.postEditUser);
 router.post('/add-address', userController.postAddress);
+router.post('/remove-address', userController.postRemoveAddress);
 
 router.post('add-cart', userController.postCart);
 router.post('remove-cart', userController.postRemoveProductFromCart);

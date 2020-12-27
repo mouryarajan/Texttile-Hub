@@ -23,7 +23,7 @@ const userSchema = new Schema({
     },
     otp: {
         type: Number,
-        required: true,
+        required: false,
     },
     gender: {
         type: String,
@@ -124,24 +124,6 @@ userSchema.methods.addToCart = function (product) {
         items: updatedCartItems
     };
     this.cart = updatedCart;
-    return this.save();
-};
-
-userSchema.statics.addAddress = async function (address) {
-    let updatedAddressItems = [];
-    isDefined(address.items)?updatedAddressItems=[...this.address.items]:[]
-    updatedAddressItems.push({
-        type: address.type,
-        street: address.street,
-        landmark: address.landmark,
-        city: address.city,
-        state: address.state,
-        pincode: address.pincode
-    });
-    const updatedAddress = {
-        items: updatedAddressItems
-    };
-    this.address = updatedAddress;
     return this.save();
 };
 

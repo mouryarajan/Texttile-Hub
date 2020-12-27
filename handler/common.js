@@ -4,5 +4,8 @@ const isDefined = (value) => {
     }
     return false;
   };
+  function isEmptyObject(obj) {
+    return !Object.keys(obj).length;
+}
 
-  module.exports={isDefined};
+  module.exports={isDefined,isEmptyObject};
