@@ -23,17 +23,59 @@ const productSchema = new Schema({
         type: Number,
         required: true
     },
+    colorFlag: {
+        type: Boolean,
+        required: false
+    },
     color: {
         type: String,
         required: false
+    },
+    colors: {
+        items: [
+            {
+                color: {
+                    type: String,
+                    required: false
+                },
+                image: {
+                    type: String,
+                    required: false
+                }
+            }
+        ]
     },
     type: {
         type: String,
         required: false
     },
-    quantity: {
+    s: {
         type: Number,
         required: false
+    },
+    m: {
+        type: Number,
+        required: false
+    },
+    l: {
+        type: Number,
+        required: false
+    },
+    xl: {
+        type: Number,
+        required: false
+    },
+    xxl: {
+        type: Number,
+        required: false
+    },
+    xxxl: {
+        type: Number,
+        required: false
+    },
+    quantity: {
+        type: Number,
+        required: true
     },
     fabric: {
         type: String,

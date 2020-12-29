@@ -70,7 +70,27 @@ const userSchema = new Schema({
                     type: Schema.Types.ObjectId,
                     ref: 'tblproducts'
                 },
+                name:{
+                    type: String,
+                    required: false
+                },
+                image: {
+                    type: String,
+                    required: false
+                },
                 quantity: {
+                    type: Number,
+                    required: false
+                },
+                size: {
+                    type: String,
+                    required: false
+                },
+                color: {
+                    type: String,
+                    required: false
+                },
+                price: {
                     type: Number,
                     required: false
                 }
@@ -83,6 +103,18 @@ const userSchema = new Schema({
                 product: {
                     type: String,
                     required: false,
+                },
+                name:{
+                    type: String,
+                    required: false
+                },
+                image: {
+                    type: String,
+                    required: false
+                },
+                price: {
+                    type: Number,
+                    required: false
                 }
             }
         ]
@@ -93,6 +125,18 @@ const userSchema = new Schema({
                 product: {
                     type: String,
                     required: false,
+                },
+                name:{
+                    type: String,
+                    required: false
+                },
+                image: {
+                    type: String,
+                    required: false
+                },
+                price: {
+                    type: Number,
+                    required: false
                 }
             }
         ]
@@ -104,29 +148,6 @@ const userSchema = new Schema({
     }
 });
 
-userSchema.methods.addToCart = function (product) {
-    const cartProductIndex = this.cart.items.findIndex(cp => {
-        return cp.product.toString() === product._id.toString();
-    });
-    let newQuantity = 1;
-    const updatedCartItems = [...this.cart.items];
-
-    if (cartProductIndex >= 0) {
-        newQuantity = this.cart.items[cartProductIndex].quantity + 1;
-        updatedCartItems[cartProductIndex].quantity = newQuantity;
-    } else {
-        updatedCartItems.push({
-            product: product._id,
-            quantity: newQuantity
-        });
-    }
-    const updatedCart = {
-        items: updatedCartItems
-    };
-    this.cart = updatedCart;
-    return this.save();
-};
-
 userSchema.methods.removeFromCart = function (productId) {
     const updatedCartItems = this.cart.items.filter(item => {
         return item.product.toString() !== productId.toString();
@@ -135,8 +156,21 @@ userSchema.methods.removeFromCart = function (productId) {
     return this.save();
 };
 
+userSchema.methods.removeFromWishList = function (productId) {
+    const updatedCartItems = this.wishList.items.filter(item => {
+        return item.product.toString() !== productId.toString();
+    });
+    this.wishList.items = updatedCartItems;
+    return this.save();
+};
+
 userSchema.methods.clearCart = function () {
     this.cart = { items: [] };
+    return this.save();
+};
+
+userSchema.methods.clearWishList = function () {
+    this.wishList = { items: [] };
     return this.save();
 };
 

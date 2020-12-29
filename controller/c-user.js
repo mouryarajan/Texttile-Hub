@@ -70,33 +70,51 @@ exports.postPassword = async (req, res, next) => {
     try {
         const salt = await bcrypt.genSalt(10);
         const hashPassword = await bcrypt.hash(password, salt);
-
-        const User = new user({
-            phoneNumber: phno,
-            password: hashPassword
-        });
-        User.save()
-            .then(data => {
-                if (data) {
-                    const token = jwt.sign({
-                        userId: data._id
-                    }, process.env.TOKEN_SECRET);
-                    arr = {
-                        phoneNumber: phno,
-                        authToken: token
+        const data = await user.findOne({ phoneNumber: phno });
+        if (data) {
+            data.password = hashPassword
+            data.save()
+                .then(result => {
+                    if (result) {
+                        res.status(200).json({
+                            status: true
+                        })
+                    } else {
+                        res.status(201).json({
+                            status: false
+                        })
                     }
-                    res.status(200).json({
-                        status: true,
-                        data: arr
-                    })
-                } else {
-                    res.status(201).json({
-                        status: false
-                    })
-                }
-            }).catch(err => {
-                console.log(err);
-            })
+                }).catch(err => {
+                    console.log(err);
+                })
+        } else {
+            const User = new user({
+                phoneNumber: phno,
+                password: hashPassword
+            });
+            User.save()
+                .then(data => {
+                    if (data) {
+                        const token = jwt.sign({
+                            userId: data._id
+                        }, process.env.TOKEN_SECRET);
+                        arr = {
+                            phoneNumber: phno,
+                            authToken: token
+                        }
+                        res.status(200).json({
+                            status: true,
+                            data: arr
+                        })
+                    } else {
+                        res.status(201).json({
+                            status: false
+                        })
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
+        }
     } catch (err) {
         res.status(201).json({ err });
     }
@@ -106,7 +124,6 @@ exports.postPassword = async (req, res, next) => {
 exports.postEditUser = (req, res, next) => {
     const d = req.body;
     const phno = Number(d.inputPhoneNumber);
-    const gender = d.inputGender;
     const id = d.inputUserId;
     user.findById(id)
         .then(result => {
@@ -142,6 +159,8 @@ exports.postEditUser = (req, res, next) => {
 exports.postCart = (req, res, next) => {
     const userId = req.body.inputUserId;
     const productId = req.body.inputProductId;
+    const productSize = req.body.inputProductsize;
+    const productColor = req.body.inputProductColor;
     if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
     if (!productId) return res.status(201).json({ status: false, message: "Enter Product Id" });
 
@@ -151,19 +170,130 @@ exports.postCart = (req, res, next) => {
                 products.findById(productId)
                     .then(prod => {
                         if (prod) {
-                            let arr = result.cart.items;
-                            arr.push({
-
-                            });
+                            if (prod.quantity >= 1) {
+                                if (prod.type == "Saree") {
+                                    if (prod.colorFlag) {
+                                        let arr = users.cart.items;
+                                        arr.push({
+                                            product: prod._id,
+                                            quantity: 1,
+                                            color: productColor,
+                                            name: prod.name,
+                                            image: prod.images,
+                                            price: prod.price
+                                        });
+                                        users.cart.items = arr;
+                                        users.save()
+                                            .then(data => {
+                                                if (data) {
+                                                    res.status(200).json({
+                                                        status: true
+                                                    });
+                                                } else {
+                                                    res.status(201).json({
+                                                        status: false,
+                                                        message: "Something went wrong"
+                                                    });
+                                                }
+                                            }).catch(err => { console.log(err) });
+                                    } else {
+                                        let arr = users.cart.items;
+                                        arr.push({
+                                            product: prod._id,
+                                            quantity: 1,
+                                            name: prod.name,
+                                            image: prod.images,
+                                            price: prod.price
+                                        });
+                                        users.cart.items = arr;
+                                        users.save()
+                                            .then(data => {
+                                                if (data) {
+                                                    res.status(200).json({
+                                                        status: true
+                                                    });
+                                                } else {
+                                                    res.status(201).json({
+                                                        status: false,
+                                                        message: "Something went wrong"
+                                                    });
+                                                }
+                                            }).catch(err => { console.log(err) });
+                                    }
+                                } else {
+                                    let s;
+                                    if (productSize == "s") { s = prod.s }
+                                    if (productSize == "m") { s = prod.m }
+                                    if (productSize == "l") { s = prod.l }
+                                    if (productSize == "xl") { s = prod.xl }
+                                    if (productSize == "xxl") { s = prod.xxl }
+                                    if (productSize == "xxxl") { s = prod.xxxl }
+                                    if (s >= 1) {
+                                        if (prod.colorFlag) {
+                                            let arr = users.cart.items;
+                                            arr.push({
+                                                product: prod._id,
+                                                quantity: 1,
+                                                color: productColor,
+                                                size: productSize,
+                                                name: prod.name,
+                                                image: prod.images,
+                                                price: prod.price
+                                            });
+                                            users.cart.items = arr;
+                                            users.save()
+                                                .then(data => {
+                                                    if (data) {
+                                                        res.status(200).json({
+                                                            status: true
+                                                        });
+                                                    } else {
+                                                        res.status(201).json({
+                                                            status: false,
+                                                            message: "Something went wrong"
+                                                        });
+                                                    }
+                                                }).catch(err => { console.log(err) });
+                                        } else {
+                                            let arr = users.cart.items;
+                                            arr.push({
+                                                product: prod._id,
+                                                quantity: 1,
+                                                size: productSize,
+                                                name: prod.name,
+                                                image: prod.images,
+                                                price: prod.price
+                                            });
+                                            users.cart.items = arr;
+                                            users.save()
+                                                .then(data => {
+                                                    if (data) {
+                                                        res.status(200).json({
+                                                            status: true
+                                                        });
+                                                    } else {
+                                                        res.status(201).json({
+                                                            status: false,
+                                                            message: "Something went wrong"
+                                                        });
+                                                    }
+                                                }).catch(err => { console.log(err) });
+                                        }
+                                    } else {
+                                        res.status(201).json({
+                                            status: false,
+                                            message: "Size is not in stock"
+                                        });
+                                    }
+                                }
+                            } else {
+                                res.status(201).json({
+                                    status: false,
+                                    message: "Out of stock"
+                                });
+                            }
                         } else {
                             res.status(201).json({ status: false, message: "Product not found" });
-                        }
-                    })
-                    .then(result => {
-                        if (result) {
-                            res.status(200).json({ status: true })
-                        } else {
-                            res.status(201).json({ status: false, message: "Add to cart failed" });
                         }
                     }).catch(err => { console.log(err) });
             } else {
@@ -171,6 +301,70 @@ exports.postCart = (req, res, next) => {
             }
         }).catch(err => { console.log(err) });
 };
+
+//Get Cart
+exports.postGetCart = (req, res, next) => {
+    const userId = req.body.inputUserId;
+    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+
+    user.findOne({ _id: userId })
+        .then(users => {
+            if (users) {
+                res.status(200).json({
+                    status: true,
+                    data: users.cart.items
+                })
+            } else {
+                res.status(201).json({ status: false, message: "User not found" });
+            }
+        }).catch(err => { console.log(err) });
+}
+
+//Remove from cart
+exports.postRemoveProductFromCart = (req, res, next) => {
+    const userId = req.body.inputUserId;
+    const productId = req.body.inputProductId;
+    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+    if (!productId) return res.status(201).json({ status: false, message: "Enter Product Id" });
+
+    user.findOne({ _id: userId })
+        .then(users => {
+            if (users) {
+                return users.removeFromCart(productId);
+            } else {
+                res.status(201).json({ status: false, message: "User not found" });
+            }
+        })
+        .then(result => {
+            if (result) {
+                res.status(200).json({ status: true })
+            } else {
+                res.status(201).json({ status: false, message: "Remove from cart failed" });
+            }
+        }).catch(err => { console.log(err) });
+};
+
+//Clear Cart
+exports.postClearCart = (req, res, next) => {
+    const userId = req.body.inputUserId;
+    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+
+    user.findOne({ _id: userId })
+        .then(users => {
+            if (users) {
+                return users.clearCart();
+            } else {
+                res.status(201).json({ status: false, message: "User not found" });
+            }
+        })
+        .then(result => {
+            if (result) {
+                res.status(200).json({ status: true })
+            } else {
+                res.status(201).json({ status: false, message: "Clear cart failed" });
+            }
+        }).catch(err => { console.log(err) });
+}
 
 //Add Address
 exports.postAddress = async (req, res, next) => {
@@ -254,9 +448,65 @@ exports.postRemoveAddress = (req, res, next) => {
             }
         }).catch(err => { console.log(err); });
 }
+//Get Addrewss
+exports.postGetAddress = (req, res, next) => {
+    const userId = req.body.inputUserId;
+    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
 
-//Remove from cart
-exports.postRemoveProductFromCart = (req, res, next) => {
+    user.findOne({ _id: userId })
+        .then(users => {
+            if (users) {
+                res.status(200).json({
+                    status: true,
+                    data: users.address.items
+                })
+            } else {
+                res.status(201).json({ status: false, message: "User not found" });
+            }
+        }).catch(err => { console.log(err) });
+}
+
+//Wish List
+exports.postAddWishlist = (req, res, next) => {
+    const userId = req.body.inputUserId;
+    const productId = req.body.inputProductId;
+    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+    if (!productId) return res.status(201).json({ status: false, message: "Enter Product Id" });
+
+    user.findOne({ _id: userId })
+        .then(result => {
+            if (result) {
+                products.findById(productId)
+                    .then(prod => {
+                        if (prod) {
+                            let arr = result.wishList.items;
+                            arr.push({
+                                product: productId,
+                                name: prod.name,
+                                image: prod.images,
+                                price: prod.price
+                            })
+                            result.wishList.items = arr;
+                            result.save()
+                                .then(data => {
+                                    if (data) {
+                                        res.status(200).json({ status: true, message: "Product added to wish list" });
+                                    } else {
+                                        res.status(201).json({ status: false, message: "Something went wrong" });
+                                    }
+                                }).catch(err => { console.log(err) });
+                        } else {
+                            res.status(201).json({ status: false, message: "Product not found" });
+                        }
+                    }).catch(err => { console.log(err) });
+            } else {
+                res.status(201).json({ status: false, message: "User not found" });
+            }
+        }).catch(err => { console.log(err) });
+}
+
+//Remove from wish list
+exports.postRemoveProductWishList = (req, res, next) => {
     const userId = req.body.inputUserId;
     const productId = req.body.inputProductId;
     if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
@@ -265,7 +515,7 @@ exports.postRemoveProductFromCart = (req, res, next) => {
     user.findOne({ _id: userId })
         .then(users => {
             if (users) {
-                return users.removeFromCart(productId);
+                return users.removeFromWishList(productId);
             } else {
                 res.status(201).json({ status: false, message: "User not found" });
             }
@@ -274,9 +524,106 @@ exports.postRemoveProductFromCart = (req, res, next) => {
             if (result) {
                 res.status(200).json({ status: true })
             } else {
-                res.status(201).json({ status: false, message: "Remove from cart failed" });
+                res.status(201).json({ status: false, message: "Remove from wish list failed" });
             }
         }).catch(err => { console.log(err) });
 };
 
-//Clear Cart
+//Clear Wishlist
+exports.postClearWishList = (req, res, next) => {
+    const userId = req.body.inputUserId;
+    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+
+    user.findOne({ _id: userId })
+        .then(users => {
+            if (users) {
+                return users.clearWishList();
+            } else {
+                res.status(201).json({ status: false, message: "User not found" });
+            }
+        })
+        .then(result => {
+            if (result) {
+                res.status(200).json({ status: true })
+            } else {
+                res.status(201).json({ status: false, message: "Clear WishList failed" });
+            }
+        }).catch(err => { console.log(err) });
+}
+
+//Recent List
+exports.postGetWishList = (req, res, next) => {
+    const userId = req.body.inputUserId;
+    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+
+    user.findOne({ _id: userId })
+        .then(users => {
+            if (users) {
+                res.status(200).json({
+                    status: true,
+                    data: users.wishList.items
+                })
+            } else {
+                res.status(201).json({ status: false, message: "User not found" });
+            }
+        }).catch(err => { console.log(err) });
+}
+
+//Add Recent Product
+exports.postRecentItems = (req, res, next) => {
+    const userId = req.body.inputUserId;
+    const productId = req.body.inputProductId;
+    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+    if (!productId) return res.status(201).json({ status: false, message: "Enter Product Id" });
+
+    user.findOne({ _id: userId })
+        .then(result => {
+            if (result) {
+                products.findById(productId)
+                    .then(prod => {
+                        if (prod) {
+                            let arr = result.recentItems.items;
+                            arr.push({
+                                product: productId,
+                                name: prod.name,
+                                image: prod.images,
+                                price: prod.price
+                            })
+                            result.recentItems.items = arr;
+                            result.save()
+                                .then(data => {
+                                    if (data) {
+                                        res.status(200).json({ status: true, message: "Product added to recent list" });
+                                    } else {
+                                        res.status(201).json({ status: false, message: "Something went wrong" });
+                                    }
+                                }).catch(err => { console.log(err) });
+                        } else {
+                            res.status(201).json({ status: false, message: "Product not found" });
+                        }
+                    }).catch(err => { console.log(err) });
+            } else {
+                res.status(201).json({ status: false, message: "User not found" });
+            }
+        }).catch(err => { console.log(err) });
+}
+
+//Recent List
+exports.postGetRecentList = (req, res, next) => {
+    const userId = req.body.inputUserId;
+    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+
+    user.findOne({ _id: userId })
+        .then(users => {
+            if (users) {
+                res.status(200).json({
+                    status: true,
+                    data: users.recentItems.items
+                })
+            } else {
+                res.status(201).json({ status: false, message: "User not found" });
+            }
+        }).catch(err => { console.log(err) });
+}
+
+//Add Order

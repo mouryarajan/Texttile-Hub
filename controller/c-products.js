@@ -2,31 +2,128 @@ const products = require('../models/m-products');
 
 exports.postProducts = (req, res, next) => {
     d = req.body;
-    if(!d) return res.status(201).json({ status: false, message: "Enter Proper Details" });
+    if (!d) return res.status(201).json({ status: false, message: "Enter Proper Details" });
 
     try {
-        const Products = new products({
-            images:d.inputImages,
-            name: d.inputName,
-            brandName: d.inputBrandName,
-            category: d.inputCategory,
-            price: d.inputPrice,
-            color: d.inputColor,
-            type: d.inputType,
-            quantity: d.inputQuantity,
-            fabric: d.inputFabric,
-            description: d.inputDescription,
-            catologue: d.inputCatologue,
-            storeId: d.inputStoreId
-        });
-        Products.save()
-            .then(data => {
-                if (data) {
-                    res.status(200).json({ status: true, message: "Product added." });
-                } else {
-                    res.status(201).json({ status: false, message: "Something went wrong." });
+        if (d.inputType == "Saree") {
+            if (d.inputColorFlag) {
+                const c = {
+                    items: d.inputColor
                 }
-            }).catch(err=>{console.log(err)});
+                let Products = new products({
+                    images: d.inputImages,
+                    name: d.inputName,
+                    brandName: d.inputBrandName,
+                    category: d.inputCategory,
+                    price: d.inputPrice,
+                    colors: c,
+                    type: d.inputType,
+                    quantity: d.inputQuantity,
+                    fabric: d.inputFabric,
+                    description: d.inputDescription,
+                    catologue: d.inputCatologue,
+                    storeId: d.inputStoreId,
+                    colorFlag: true
+                });
+                Products.save()
+                    .then(data => {
+                        if (data) {
+                            res.status(200).json({ status: true, message: "Product added." });
+                        } else {
+                            res.status(201).json({ status: false, message: "Something went wrong." });
+                        }
+                    }).catch(err => { console.log(err) });
+            } else {
+                let Products = new products({
+                    images: d.inputImages,
+                    name: d.inputName,
+                    brandName: d.inputBrandName,
+                    category: d.inputCategory,
+                    price: d.inputPrice,
+                    color: d.inputColor,
+                    type: d.inputType,
+                    quantity: d.inputQuantity,
+                    fabric: d.inputFabric,
+                    description: d.inputDescription,
+                    catologue: d.inputCatologue,
+                    storeId: d.inputStoreId,
+                    colorFlag: false
+                });
+                Products.save()
+                    .then(data => {
+                        if (data) {
+                            res.status(200).json({ status: true, message: "Product added." });
+                        } else {
+                            res.status(201).json({ status: false, message: "Something went wrong." });
+                        }
+                    }).catch(err => { console.log(err) });
+            }
+        } else {
+            if (d.inputColorFlag) {
+                const c = {
+                    items: d.inputColor
+                }
+                let Products = new products({
+                    images: d.inputImages,
+                    name: d.inputName,
+                    brandName: d.inputBrandName,
+                    category: d.inputCategory,
+                    price: d.inputPrice,
+                    colors: c,
+                    type: d.inputType,
+                    quantity: d.inputQuantity,
+                    fabric: d.inputFabric,
+                    description: d.inputDescription,
+                    catologue: d.inputCatologue,
+                    storeId: d.inputStoreId,
+                    s: d.inputSquantity,
+                    m: d.inputMquantity,
+                    l: d.inputLquantity,
+                    xl: d.inputXLquantity,
+                    xxl: d.inputXXLquantity,
+                    xxl: d.inputXXXLquantity,
+                    colorFlag: true
+                });
+                Products.save()
+                    .then(data => {
+                        if (data) {
+                            res.status(200).json({ status: true, message: "Product added." });
+                        } else {
+                            res.status(201).json({ status: false, message: "Something went wrong." });
+                        }
+                    }).catch(err => { console.log(err) });
+            } else {
+                let Products = new products({
+                    images: d.inputImages,
+                    name: d.inputName,
+                    brandName: d.inputBrandName,
+                    category: d.inputCategory,
+                    price: d.inputPrice,
+                    color: d.inputColor,
+                    type: d.inputType,
+                    quantity: d.inputQuantity,
+                    fabric: d.inputFabric,
+                    description: d.inputDescription,
+                    catologue: d.inputCatologue,
+                    storeId: d.inputStoreId,
+                    s: d.inputSquantity,
+                    m: d.inputMquantity,
+                    l: d.inputLquantity,
+                    xl: d.inputXLquantity,
+                    xxl: d.inputXXLquantity,
+                    xxxl: d.inputXXXLquantity,
+                    colorFlag: false
+                });
+                Products.save()
+                    .then(data => {
+                        if (data) {
+                            res.status(200).json({ status: true, message: "Product added." });
+                        } else {
+                            res.status(201).json({ status: false, message: "Something went wrong." });
+                        }
+                    }).catch(err => { console.log(err) });
+            }
+        }
     } catch (err) {
         res.status(201).json({ err });
     }
@@ -34,16 +131,16 @@ exports.postProducts = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => {
     const storeId = req.body.inputStoreId;
-    if(!storeId) return res.status(201).json({ status: false, message: "Enter store id" });
+    if (!storeId) return res.status(201).json({ status: false, message: "Enter store id" });
 
-    products.findOne({storeId: storeId})
-    .then(data=>{
-        if(data){
-            res.status(200).json({ status: true, data: data });
-        }else{
-            res.status(201).json({ status: false, message: "Something went wrong." });
-        }
-    }).catch(err=>{console.log(err)});
+    products.findOne({ storeId: storeId })
+        .then(data => {
+            if (data) {
+                res.status(200).json({ status: true, data: data });
+            } else {
+                res.status(201).json({ status: false, message: "Something went wrong." });
+            }
+        }).catch(err => { console.log(err) });
 }
 
 exports.getSize = (req, res, next) => {
