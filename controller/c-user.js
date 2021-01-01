@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const products = require('../models/m-products');
 const { isDefined, isEmptyObject } = require('../handler/common');
+//const fast2sms = require('fast-two-sms');
 
 //Login 
 exports.postLoginCheck = async (req, res, next) => {
@@ -50,6 +51,9 @@ exports.postRegister = async (req, res, next) => {
         arr = {
             otp: otp
         }
+        // let sms = "Your Ecommerce Otp is" + otp.toString() + "please don't share it with others" 
+        // let resp = await fast2sms.sendMessage({authorization: uL52IUqO6JQ1cjToHykehX3ENSdlpsZn7WYitD8xr40gFmAfKRK0tXQMjrvAbeCpWnhV9EyclPZ4zxR7, message:sms, numbers: [phno]});
+        // console.log(resp);
         res.status(200).json({
             status: true,
             data: arr
@@ -310,9 +314,15 @@ exports.postGetCart = (req, res, next) => {
     user.findOne({ _id: userId })
         .then(users => {
             if (users) {
+                let doo = users.cart.items;
+                let total = 0;
+                for(let n of doo){
+                    total = total + n.price
+                }
                 res.status(200).json({
                     status: true,
-                    data: users.cart.items
+                    data: users.cart.items,
+                    total
                 })
             } else {
                 res.status(201).json({ status: false, message: "User not found" });
@@ -613,7 +623,8 @@ exports.postGetRecentList = (req, res, next) => {
     const userId = req.body.inputUserId;
     if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
 
-    user.findOne({ _id: userId })
+    user.findOne({ _id: userId})
+        .limit(5)
         .then(users => {
             if (users) {
                 res.status(200).json({
@@ -627,3 +638,4 @@ exports.postGetRecentList = (req, res, next) => {
 }
 
 //Add Order
+

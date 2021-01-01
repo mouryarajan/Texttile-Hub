@@ -1,4 +1,5 @@
 const products = require('../models/m-products');
+const user = require('../models/m-user');
 
 exports.postProducts = (req, res, next) => {
     d = req.body;
@@ -150,4 +151,39 @@ exports.getSize = (req, res, next) => {
     res.status(200).json({
         data: arr
     })
+}
+
+exports.postReview=(req, res, next) => {
+    const d = req.body;
+    if(!d) return res.status(201).json({ status: false, message: "Enter Proper Details" });
+    products.findOne({_id:d.productid})
+    .then(data=>{
+        var arr = data.review.items;
+        arr.push({
+            userId: d.userid,
+            name: d.username,
+            description: d.description,
+            rating: d.rating
+        });
+        data.review.items = arr;
+        data.save()
+        .then(result=>{
+            res.status(200).json({
+                status: true
+            })
+        }).catch(err=>{console.log(err)});
+    }).catch(err=>{console.log(err)});
+}
+
+exports.postGetReview = (req, res, next) => {
+    const pid = req.body.productid;
+    if(!pid) return res.status(201).json({ status: false, message: "Enter Proper Details" });
+
+    products.findOne({_id: pid})
+    .then(data=>{
+        var arr = data.review.items;
+        res.status(200).json({
+            data: arr
+        });
+    }).catch(err=>{console.log(err)});
 }

@@ -13,6 +13,8 @@ const userRoutes = require('./routes/r-user');
 const storeRoutes = require('./routes/r-store');
 const productsRoutes = require('./routes/r-products');
 const categoryRoutes = require('./routes/r-category');
+const homeRoutes = require('./routes/r-home');
+const orderRoutes = require('./routes/r-order');
 app.use(express.json());
 
 //Routes middleware
@@ -20,7 +22,8 @@ app.use('/api',userRoutes);
 app.use('/api',storeRoutes);
 app.use('/api',productsRoutes);
 app.use('/api',categoryRoutes);
-
+app.use('/api',homeRoutes);
+app.use('/api',orderRoutes);
 
 //Connection 
 mongoose
