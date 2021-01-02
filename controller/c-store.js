@@ -50,18 +50,7 @@ exports.postStore = async (req, res, next) => {
 
 exports.getStore = async (req, res, next) => {
     try {
-        const type = req.body.inputStatus;
-        if (!type) return res.status(201).json({ status: false, message: "Something Went Wrong" });
-        let data;
-        if(type==1){
-            data = await store.find();
-        }
-        if(type == 2){
-            data = await store.find({isApproved:true});
-        }
-        if(type == 3){
-            data = await store.find({isApproved:false});
-        }
+        const data = await store.find();
         res.status(200).json({
             status: true,
             data: data
