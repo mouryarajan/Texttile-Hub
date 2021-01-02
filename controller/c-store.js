@@ -12,6 +12,7 @@ exports.postStore = async (req, res, next) => {
             brandName: d.inputBrandName,
             gstNumber: d.inputGstNumber,
             panNumber: d.inputPanNumber,
+            panName: d.inputPanName,
             contactName: d.inputContactName,
             contactNumber: d.inputContactNumber,
             bankDetail: {

@@ -23,6 +23,10 @@ const storeSchema = new Schema({
         type: String,
         required: true
     },
+    panName: {
+        type: String,
+        required: false
+    },
     contactName: {
         type: String,
         required: true
