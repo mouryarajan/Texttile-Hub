@@ -39,7 +39,7 @@ exports.postStore = async (req, res, next) => {
         const data = await Store.save();
         if (!data) return res.status(201).json({ status: false, message: "Something Went Wrong" });
 
-        res.status(401).json({
+        res.status(200).json({
             status: true,
             message: "Wait for Approval!"
         });
