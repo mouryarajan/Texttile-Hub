@@ -2,7 +2,8 @@ const category = require('../models/m-category');
 
 exports.postCategory = (req, res, next) => {
     const Category = new category({
-        name: req.body.inputCategoryName
+        name: req.body.inputCategoryName,
+        image: req.body.inputImage
     });
     Category.save()
         .then(result => {
