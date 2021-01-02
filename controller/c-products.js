@@ -159,9 +159,25 @@ exports.getProductDetails = (req, res, next) => {
     products.findOne({_id: productId})
     .then(data=>{
         let im = data.images.split(',');
+        let arr = {
+            colors: data.colors,
+            images: im,
+            review: data.review,
+            _id: data._id,
+            name: data.name,
+            brandName: data.brandName,
+            category: data.category,
+            price: data.price,
+            type: data.type,
+            quantity: data.quantity,
+            fabric: data.fabric,
+            description: data.description,
+            catologue: data.catologue,
+            storeId: data.storeId,
+            colorFlag: data.colorFlag
+        }
         res.status(200).json({
-            data: data,
-            images: im
+            data: arr
         })
     })
 }
