@@ -34,7 +34,8 @@ exports.postStore = async (req, res, next) => {
                 gstCard: d.inputGstCard,
                 cancelCheck: d.inputCancelCheck,
             },
-            userId: d.inputUserId
+            userId: d.inputUserId,
+            storeImage: d.inputStoreImage
         });
         const data = await Store.save();
         if (!data) return res.status(201).json({ status: false, message: "Something Went Wrong" });

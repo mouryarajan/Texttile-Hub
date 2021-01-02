@@ -101,6 +101,10 @@ const storeSchema = new Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'tbluser'
+    },
+    storeImage: {
+        type: String,
+        required: false
     }
 });
 
