@@ -50,9 +50,18 @@ exports.postStore = async (req, res, next) => {
 
 exports.getStore = async (req, res, next) => {
     try {
-        const data = await store.find();
-        if (!data) return res.status(201).json({ status: false, message: "Something Went Wrong" });
-
+        const type = req.body.inputStatus;
+        if (!type) return res.status(201).json({ status: false, message: "Something Went Wrong" });
+        let data;
+        if(type==1){
+            data = await store.find();
+        }
+        if(type == 2){
+            data = await store.find({isApproved:true});
+        }
+        if(type == 3){
+            data = await store.find({isApproved:false});
+        }
         res.status(200).json({
             status: true,
             data: data
@@ -60,7 +69,6 @@ exports.getStore = async (req, res, next) => {
     } catch (err) {
         res.status(201).json({ err });
     }
-
 }
 
 exports.approveStore = async (req, res, next) => {
