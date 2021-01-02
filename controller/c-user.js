@@ -593,10 +593,12 @@ exports.postRecentItems = (req, res, next) => {
                     .then(prod => {
                         if (prod) {
                             let arr = result.recentItems.items;
+                            var im = prod.images.split(',');
+                            var fim = im[0];
                             arr.push({
                                 product: productId,
                                 name: prod.name,
-                                image: prod.images,
+                                image: fim,
                                 price: prod.price
                             })
                             result.recentItems.items = arr;

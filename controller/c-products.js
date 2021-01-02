@@ -158,8 +158,10 @@ exports.getProductDetails = (req, res, next) => {
     if (!productId) return res.status(201).json({ status: false, message: "Enter product id" });
     products.findOne({_id: productId})
     .then(data=>{
+        let im = data.images.split(',');
         res.status(200).json({
-            data: data
+            data: data,
+            images: im
         })
     })
 }
