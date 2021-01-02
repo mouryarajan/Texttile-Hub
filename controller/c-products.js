@@ -153,6 +153,17 @@ exports.getSize = (req, res, next) => {
     })
 }
 
+exports.getProductDetails = (req, res, next) => {
+    const productId = req.body.inputProductId;
+    if (!productId) return res.status(201).json({ status: false, message: "Enter product id" });
+    products.findOne({_id: productId})
+    .then(data=>{
+        res.status(200).json({
+            data: data
+        })
+    })
+}
+
 exports.postReview=(req, res, next) => {
     const d = req.body;
     if(!d) return res.status(201).json({ status: false, message: "Enter Proper Details" });

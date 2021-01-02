@@ -12,4 +12,6 @@ router.get('/size', productseController.getSize);
 router.post('/post-review', productseController.postReview);
 router.post('/get-review', productseController.postGetReview);
 
+router.post('/get-product-detail', productseController.getProductDetails);
+
 module.exports = router;
