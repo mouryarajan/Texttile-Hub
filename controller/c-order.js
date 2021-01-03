@@ -38,6 +38,7 @@ exports.postOrder = async (req, res, next) => {
                 if (n.size) {
                     s = n.size;
                 }
+                let x = n.image.split(',');
                 const pro = await products.findOne({_id:n.product});
 
                 let Order = new order({
@@ -45,7 +46,7 @@ exports.postOrder = async (req, res, next) => {
                     product: n._id,
                     productName: n.name,
                     store: n.storeId,
-                    image: n.image,
+                    image: x[0],
                     payment: d.paymentMode,
                     quantity: n.quantity,
                     size: s,
