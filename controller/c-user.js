@@ -2,7 +2,7 @@ const user = require('../models/m-user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const products = require('../models/m-products');
-const { isDefined, isEmptyObject } = require('../handler/common');
+const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../handler/common');
 //const fast2sms = require('fast-two-sms');
 
 //Login 
@@ -166,8 +166,10 @@ exports.postCart = (req, res, next) => {
     const productId = req.body.inputProductId;
     const productSize = req.body.inputProductsize;
     const productColor = req.body.inputProductColor;
+    const productQuantity = req.body.inputProductQuantity;
     if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
     if (!productId) return res.status(201).json({ status: false, message: "Enter Product Id" });
+    if (!productQuantity) return res.status(201).json({ status: false, message: "Enter Product Quantity" });
 
     user.findOne({ _id: userId })
         .then(users => {
@@ -181,7 +183,7 @@ exports.postCart = (req, res, next) => {
                                         let arr = users.cart.items;
                                         arr.push({
                                             product: prod._id,
-                                            quantity: 1,
+                                            quantity: productQuantity,
                                             color: productColor,
                                             name: prod.name,
                                             image: prod.images,
@@ -307,6 +309,15 @@ exports.postCart = (req, res, next) => {
         }).catch(err => { console.log(err) });
 };
 
+//increase product quantity
+exports.postIncreaseQuantity = (req, res, next) => {
+    const pid = req.body.inputProductId;
+    const status = req.body.inputStatus;
+    if (!pid) return res.status(201).json({ status: false, message: "Enter Product Id" });
+
+
+}
+
 //Get Cart
 exports.postGetCart = (req, res, next) => {
     const userId = req.body.inputUserId;
@@ -317,7 +328,7 @@ exports.postGetCart = (req, res, next) => {
             if (users) {
                 let doo = users.cart.items;
                 let total = 0;
-                for(let n of doo){
+                for (let n of doo) {
                     total = total + n.price
                 }
                 res.status(200).json({
@@ -625,8 +636,11 @@ exports.postRecentItems = (req, res, next) => {
 exports.postGetRecentList = (req, res, next) => {
     const userId = req.body.inputUserId;
     if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
-
-    user.findOne({ _id: userId})
+    console.log(req.headers.token);
+    decodeDataFromAccessToken(req.headers.token).then((data)=>{
+        console.log(data);
+    })
+    user.findOne({ _id: userId })
         .limit(5)
         .then(users => {
             if (users) {
