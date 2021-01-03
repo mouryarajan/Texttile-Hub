@@ -1,12 +1,17 @@
 const user = require('../models/m-user');
 const products = require('../models/m-products');
 const order = require('../models/m-order');
+const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../handler/common');
 
 exports.postOrder = async (req, res, next) => {
     const d = req.body;
     if (!d) return res.status(201).json({ status: false, message: "Missing data" });
-
-    user.findOne({ _id: d.userid })
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
+    if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
+    user.findOne({ _id: id })
         .then(async data => {
             let arr = data.cart.items;
             let add = data.address.items;

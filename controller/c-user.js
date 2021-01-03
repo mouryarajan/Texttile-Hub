@@ -346,7 +346,10 @@ exports.postIncreaseQuantity = (req, res, next) => {
                     if(status){
                         n.quantity = n.quantity + 1;
                     }else{
-
+                        n.quantity = n.quantity - 1;
+                    }
+                    if(n.quantity=0){
+                        
                     }
                 }
             }
