@@ -39,10 +39,13 @@ exports.postOrder = async (req, res, next) => {
                     s = n.size;
                 }
                 const pro = await products.findOne({_id:n.product});
+
                 let Order = new order({
                     userId: id,
                     product: n._id,
+                    productName: n.name,
                     store: n.storeId,
+                    image: n.image,
                     payment: d.paymentMode,
                     quantity: n.quantity,
                     size: s,
@@ -127,7 +130,7 @@ exports.postUpdateOrderStatus = (req, res, next) => {
     const status = req.body.inputStatus;
     if (!oid) return res.status(201).json({ message: "Provide proper details" });
     if (!status) return res.status(201).json({ message: "Provide proper details" });
-    order.findOne({ _id: oid })
+    order.findOne({ _id: oid }).sort({deliverDate: 'desc'})
         .then(data => {
             data.status = status;
             data.save()

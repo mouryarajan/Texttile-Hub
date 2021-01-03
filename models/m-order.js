@@ -11,6 +11,14 @@ const orderSchema = new Schema({
         type: String,
         required: true
     },
+    productName: {
+        type: String,
+        required: false
+    },
+    image:{
+        type: String,
+        required: false
+    },
     store: {
         type: String,
         required: true
