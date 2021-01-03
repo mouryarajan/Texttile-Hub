@@ -462,10 +462,14 @@ exports.postClearCart = async (req, res, next) => {
 
 //Add Address
 exports.postAddress = async (req, res, next) => {
-    const userId = req.body.inputUserId;
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
+    if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
     const d = req.body;
-    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
-    user.findOne({ _id: userId })
+
+    user.findOne({ _id: id })
         .then(result => {
             if (result) {
                 let arr = result.address.items;
@@ -498,13 +502,16 @@ exports.postAddress = async (req, res, next) => {
 }
 
 //Remove Address
-exports.postRemoveAddress = (req, res, next) => {
-    const userId = req.body.inputUserId;
+exports.postRemoveAddress = async (req, res, next) => {
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
     const addressId = req.body.inputAddressId;
-    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+    if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
     if (!addressId) return res.status(201).json({ status: false, message: "Enter Address Id" });
 
-    user.findOne({ _id: userId })
+    user.findOne({ _id: id })
         .then(result => {
             if (result) {
                 let data = result.address.items;
