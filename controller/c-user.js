@@ -181,13 +181,17 @@ exports.postCart = (req, res, next) => {
                                 if (prod.type == "Saree") {
                                     if (prod.colorFlag) {
                                         let arr = users.cart.items;
+                                        let fprice = prod.price;
+                                        if (productQuantity > 1) {
+                                            fprice = productQuantity * prod.price;
+                                        }
                                         arr.push({
                                             product: prod._id,
                                             quantity: productQuantity,
                                             color: productColor,
                                             name: prod.name,
                                             image: prod.images,
-                                            price: prod.price
+                                            price: fprice
                                         });
                                         users.cart.items = arr;
                                         users.save()
@@ -205,12 +209,16 @@ exports.postCart = (req, res, next) => {
                                             }).catch(err => { console.log(err) });
                                     } else {
                                         let arr = users.cart.items;
+                                        let fprice = prod.price;
+                                        if (productQuantity > 1) {
+                                            fprice = productQuantity * prod.price;
+                                        }
                                         arr.push({
                                             product: prod._id,
-                                            quantity: 1,
+                                            quantity: productQuantity,
                                             name: prod.name,
                                             image: prod.images,
-                                            price: prod.price
+                                            price: fprice
                                         });
                                         users.cart.items = arr;
                                         users.save()
@@ -238,14 +246,18 @@ exports.postCart = (req, res, next) => {
                                     if (s >= 1) {
                                         if (prod.colorFlag) {
                                             let arr = users.cart.items;
+                                            let fprice = prod.price;
+                                            if (productQuantity > 1) {
+                                                fprice = productQuantity * prod.price;
+                                            }
                                             arr.push({
                                                 product: prod._id,
-                                                quantity: 1,
+                                                quantity: productQuantity,
                                                 color: productColor,
                                                 size: productSize,
                                                 name: prod.name,
                                                 image: prod.images,
-                                                price: prod.price
+                                                price: fprice
                                             });
                                             users.cart.items = arr;
                                             users.save()
@@ -263,13 +275,17 @@ exports.postCart = (req, res, next) => {
                                                 }).catch(err => { console.log(err) });
                                         } else {
                                             let arr = users.cart.items;
+                                            let fprice = prod.price;
+                                            if (productQuantity > 1) {
+                                                fprice = productQuantity * prod.price;
+                                            }
                                             arr.push({
                                                 product: prod._id,
-                                                quantity: 1,
+                                                quantity: productQuantity,
                                                 size: productSize,
                                                 name: prod.name,
                                                 image: prod.images,
-                                                price: prod.price
+                                                price: fprice
                                             });
                                             users.cart.items = arr;
                                             users.save()
@@ -314,27 +330,52 @@ exports.postIncreaseQuantity = (req, res, next) => {
     const pid = req.body.inputProductId;
     const status = req.body.inputStatus;
     if (!pid) return res.status(201).json({ status: false, message: "Enter Product Id" });
-
-
+    let id;
+    decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
+    user.findOne({ _id: id })
+        .then(result => {
+            let cart = users.cart.items;
+            for (let n of cart) {
+                
+            }
+        })
 }
 
 //Get Cart
 exports.postGetCart = (req, res, next) => {
-    const userId = req.body.inputUserId;
-    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+    let id;
+    decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
+    if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
 
-    user.findOne({ _id: userId })
+    user.findOne({ _id: id })
         .then(users => {
             if (users) {
                 let doo = users.cart.items;
                 let total = 0;
+                let count = 0;
+                arr = [];
                 for (let n of doo) {
-                    total = total + n.price
+                    total = total + n.price;
+                    count = count + 1;
+                    arr.push({
+                        product: n.product,
+                        name: n.name,
+                        image: n.image,
+                        quantity: n.quantity,
+                        size: n.size,
+                        color: n.color,
+                        price: n.price,
+                        total: total,
+                        count: count
+                    })
                 }
                 res.status(200).json({
                     status: true,
-                    data: users.cart.items,
-                    total
+                    data: arr
                 })
             } else {
                 res.status(201).json({ status: false, message: "User not found" });
@@ -637,7 +678,7 @@ exports.postGetRecentList = (req, res, next) => {
     const userId = req.body.inputUserId;
     if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
     console.log(req.headers.token);
-    decodeDataFromAccessToken(req.headers.token).then((data)=>{
+    decodeDataFromAccessToken(req.headers.token).then((data) => {
         console.log(data);
     })
     user.findOne({ _id: userId })

@@ -17,7 +17,7 @@ router.post('/get-address', userController.postGetAddress);
 router.post('/add-cart', userController.postCart);
 router.post('/remove-cart', userController.postRemoveProductFromCart);
 router.post('/clear-cart', userController.postClearCart);
-router.post('/get-cart', userController.postGetCart);
+router.get('/get-cart', userController.postGetCart);
 
 router.post('/add-wishlist', userController.postAddWishlist);
 router.post('/remove-wishlist', userController.postRemoveProductWishList);
