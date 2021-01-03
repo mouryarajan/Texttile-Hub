@@ -161,17 +161,20 @@ exports.postEditUser = (req, res, next) => {
 }
 
 //Add Product to cart
-exports.postCart = (req, res, next) => {
-    const userId = req.body.inputUserId;
+exports.postCart = async (req, res, next) => {
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
     const productId = req.body.inputProductId;
     const productSize = req.body.inputProductsize;
     const productColor = req.body.inputProductColor;
     const productQuantity = req.body.inputProductQuantity;
-    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+    if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
     if (!productId) return res.status(201).json({ status: false, message: "Enter Product Id" });
     if (!productQuantity) return res.status(201).json({ status: false, message: "Enter Product Quantity" });
 
-    user.findOne({ _id: userId })
+    user.findOne({ _id: id })
         .then(users => {
             if (users) {
                 products.findById(productId)
@@ -337,20 +340,26 @@ exports.postIncreaseQuantity = (req, res, next) => {
     user.findOne({ _id: id })
         .then(result => {
             let cart = users.cart.items;
+            let arr=[];
             for (let n of cart) {
-                
+                if(n._id == pid){
+                    if(status){
+                        n.quantity = n.quantity + 1;
+                    }else{
+
+                    }
+                }
             }
         })
 }
 
 //Get Cart
-exports.postGetCart = (req, res, next) => {
+exports.postGetCart = async (req, res, next) => {
     let id;
-    decodeDataFromAccessToken(req.headers.token).then((data) => {
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
         id = data.userId;
     })
     if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
-
     user.findOne({ _id: id })
         .then(users => {
             if (users) {
