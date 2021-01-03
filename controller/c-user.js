@@ -25,7 +25,8 @@ exports.postLoginCheck = async (req, res, next) => {
             lastName: data.name.lastName,
             phoneNumber: data.phoneNumber,
             image: data.image,
-            authToken: token
+            authToken: token,
+            address: data.address
         }
         res.status(200).json({
             status: true,
