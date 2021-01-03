@@ -40,7 +40,7 @@ exports.postOrder = async (req, res, next) => {
                 }
                 const pro = await products.findOne({_id:n.product});
                 let Order = new order({
-                    userId: d.userid,
+                    userId: id,
                     product: n._id,
                     store: n.storeId,
                     payment: d.paymentMode,

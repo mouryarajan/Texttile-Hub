@@ -26,4 +26,6 @@ router.post('/get-wishlist', userController.postGetWishList);
 
 router.post('/add-recent-item', userController.postRecentItems);
 router.post('/get-recent-item', userController.postGetRecentList);
+
+router.post('/cart-quantity', userController.postIncreaseQuantity);
 module.exports = router;

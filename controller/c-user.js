@@ -339,21 +339,34 @@ exports.postIncreaseQuantity = async (req, res, next) => {
     })
     user.findOne({ _id: id })
         .then(result => {
-            let cart = users.cart.items;
+            let cart = result.cart.items;
             let arr=[];
             for (let n of cart) {
-                if(n._id == pid){
+                if(n.product == pid){
                     if(status){
+                        let aprice = n.price/n.quantity;
                         n.quantity = n.quantity + 1;
+                        n.price = n.quantity*aprice;
                     }else{
-                        n.quantity = n.quantity - 1;
+                        if(n.quantity>1){
+                            let aprice = n.price/n.quantity;
+                            n.quantity = n.quantity - 1;
+                            n.price = n.quantity*aprice;
+                        }else{
+                            break;
+                        }
                     }
-                    if(n.quantity=0){
-
-                    }
+                    arr.push(n);
                 }
             }
-        })
+            result.cart.items = arr;
+            result.save()
+            .then(d=>{
+                res.status(200).json({
+                    status: true
+                })
+            }).catch(err=>{console.log(err)});
+        }).catch(err=>{console.log(err)});
 }
 
 //Get Cart
