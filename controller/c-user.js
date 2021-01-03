@@ -349,7 +349,7 @@ exports.postIncreaseQuantity = (req, res, next) => {
                         n.quantity = n.quantity - 1;
                     }
                     if(n.quantity=0){
-                        
+
                     }
                 }
             }
@@ -396,13 +396,16 @@ exports.postGetCart = async (req, res, next) => {
 }
 
 //Remove from cart
-exports.postRemoveProductFromCart = (req, res, next) => {
-    const userId = req.body.inputUserId;
+exports.postRemoveProductFromCart = async (req, res, next) => {
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
     const productId = req.body.inputProductId;
-    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+    if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
     if (!productId) return res.status(201).json({ status: false, message: "Enter Product Id" });
 
-    user.findOne({ _id: userId })
+    user.findOne({ _id: id })
         .then(users => {
             if (users) {
                 return users.removeFromCart(productId);
@@ -421,10 +424,13 @@ exports.postRemoveProductFromCart = (req, res, next) => {
 
 //Clear Cart
 exports.postClearCart = (req, res, next) => {
-    const userId = req.body.inputUserId;
-    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
+    if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
 
-    user.findOne({ _id: userId })
+    user.findOne({ _id: id })
         .then(users => {
             if (users) {
                 return users.clearCart();
