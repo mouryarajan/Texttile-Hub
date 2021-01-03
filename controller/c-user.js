@@ -329,12 +329,12 @@ exports.postCart = async (req, res, next) => {
 };
 
 //increase product quantity
-exports.postIncreaseQuantity = (req, res, next) => {
+exports.postIncreaseQuantity = async (req, res, next) => {
     const pid = req.body.inputProductId;
     const status = req.body.inputStatus;
     if (!pid) return res.status(201).json({ status: false, message: "Enter Product Id" });
     let id;
-    decodeDataFromAccessToken(req.headers.token).then((data) => {
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
         id = data.userId;
     })
     user.findOne({ _id: id })
@@ -423,7 +423,7 @@ exports.postRemoveProductFromCart = async (req, res, next) => {
 };
 
 //Clear Cart
-exports.postClearCart = (req, res, next) => {
+exports.postClearCart = async (req, res, next) => {
     let id;
     await decodeDataFromAccessToken(req.headers.token).then((data) => {
         id = data.userId;
@@ -692,11 +692,11 @@ exports.postRecentItems = (req, res, next) => {
 }
 
 //Recent List
-exports.postGetRecentList = (req, res, next) => {
+exports.postGetRecentList = async (req, res, next) => {
     const userId = req.body.inputUserId;
     if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
     console.log(req.headers.token);
-    decodeDataFromAccessToken(req.headers.token).then((data) => {
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
         console.log(data);
     })
     user.findOne({ _id: userId })
