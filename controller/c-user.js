@@ -126,10 +126,13 @@ exports.postPassword = async (req, res, next) => {
 }
 
 //Edit User
-exports.postEditUser = (req, res, next) => {
+exports.postEditUser = async (req, res, next) => {
     const d = req.body;
     const phno = Number(d.inputPhoneNumber);
-    const id = d.inputUserId;
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
     user.findById(id)
         .then(result => {
             if (result) {
@@ -550,11 +553,14 @@ exports.postRemoveAddress = async (req, res, next) => {
         }).catch(err => { console.log(err); });
 }
 //Get Addrewss
-exports.postGetAddress = (req, res, next) => {
-    const userId = req.body.inputUserId;
-    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+exports.postGetAddress = async (req, res, next) => {
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
+    if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
 
-    user.findOne({ _id: userId })
+    user.findOne({ _id: id })
         .then(users => {
             if (users) {
                 res.status(200).json({
@@ -568,13 +574,16 @@ exports.postGetAddress = (req, res, next) => {
 }
 
 //Wish List
-exports.postAddWishlist = (req, res, next) => {
-    const userId = req.body.inputUserId;
+exports.postAddWishlist = async (req, res, next) => {
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
     const productId = req.body.inputProductId;
-    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+    if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
     if (!productId) return res.status(201).json({ status: false, message: "Enter Product Id" });
 
-    user.findOne({ _id: userId })
+    user.findOne({ _id: id })
         .then(result => {
             if (result) {
                 products.findById(productId)
@@ -607,13 +616,16 @@ exports.postAddWishlist = (req, res, next) => {
 }
 
 //Remove from wish list
-exports.postRemoveProductWishList = (req, res, next) => {
-    const userId = req.body.inputUserId;
+exports.postRemoveProductWishList = async (req, res, next) => {
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
     const productId = req.body.inputProductId;
-    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+    if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
     if (!productId) return res.status(201).json({ status: false, message: "Enter Product Id" });
 
-    user.findOne({ _id: userId })
+    user.findOne({ _id: id })
         .then(users => {
             if (users) {
                 return users.removeFromWishList(productId);
@@ -631,11 +643,14 @@ exports.postRemoveProductWishList = (req, res, next) => {
 };
 
 //Clear Wishlist
-exports.postClearWishList = (req, res, next) => {
-    const userId = req.body.inputUserId;
-    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+exports.postClearWishList = async (req, res, next) => {
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
+    if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
 
-    user.findOne({ _id: userId })
+    user.findOne({ _id: id })
         .then(users => {
             if (users) {
                 return users.clearWishList();
@@ -653,11 +668,14 @@ exports.postClearWishList = (req, res, next) => {
 }
 
 //Recent List
-exports.postGetWishList = (req, res, next) => {
-    const userId = req.body.inputUserId;
-    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+exports.postGetWishList = async (req, res, next) => {
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
+    if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
 
-    user.findOne({ _id: userId })
+    user.findOne({ _id: id })
         .then(users => {
             if (users) {
                 res.status(200).json({
@@ -671,13 +689,16 @@ exports.postGetWishList = (req, res, next) => {
 }
 
 //Add Recent Product
-exports.postRecentItems = (req, res, next) => {
-    const userId = req.body.inputUserId;
+exports.postRecentItems = async (req, res, next) => {
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
     const productId = req.body.inputProductId;
-    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+    if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
     if (!productId) return res.status(201).json({ status: false, message: "Enter Product Id" });
 
-    user.findOne({ _id: userId })
+    user.findOne({ _id: id })
         .then(result => {
             if (result) {
                 products.findById(productId)
@@ -713,13 +734,16 @@ exports.postRecentItems = (req, res, next) => {
 
 //Recent List
 exports.postGetRecentList = async (req, res, next) => {
-    const userId = req.body.inputUserId;
-    if (!userId) return res.status(201).json({ status: false, message: "Enter User Id" });
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
+    if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
     console.log(req.headers.token);
     await decodeDataFromAccessToken(req.headers.token).then((data) => {
         console.log(data);
     })
-    user.findOne({ _id: userId })
+    user.findOne({ _id: id })
         .limit(5)
         .then(users => {
             if (users) {
