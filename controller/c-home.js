@@ -3,6 +3,7 @@ const products = require('../models/m-products');
 const category = require('../models/m-category');
 const store = require('../models/m-store');
 const itemPerPage = 1;
+const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../handler/common');
 
 exports.getHomeProducts = (req, res, next)=>{
     const page = req.body.page;
@@ -11,7 +12,7 @@ exports.getHomeProducts = (req, res, next)=>{
     .skip((page-1)*itemPerPage)
     .limit(itemPerPage)
     .then(data=>{
-        if(data){
+        if(!isEmptyObject(data)){
             res.status(200).json({
                 status: true,
                 data: data

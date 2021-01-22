@@ -1,11 +1,16 @@
 const store = require('../models/m-store');
 const user = require('../models/m-user');
+const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../handler/common');
 
 exports.postStore = async (req, res, next) => {
     try {
         const d = req.body;
         if(!d) return res.status(201).json({ status: false, message: "Provide Proper Data" });
-
+        let id;
+        await decodeDataFromAccessToken(req.headers.token).then((data) => {
+            id = data.userId;
+        })
+        if(!id) return res.status(201).json({ status: false, message: "Auth token failed" });
         const Store = new store({
             companyName: d.inputCompanyName,
             companyEmail: d.inputCompanyEmail,
@@ -35,7 +40,7 @@ exports.postStore = async (req, res, next) => {
                 gstCard: d.inputGstCard,
                 cancelCheck: d.inputCancelCheck,
             },
-            userId: d.inputUserId,
+            userId: id,
             storeImage: d.inputStoreImage
         });
         const data = await Store.save();
