@@ -26,10 +26,18 @@ exports.postBrand = async (req, res, next) => {
             const Brand = new brand({
                 brandName: name
             });
-            Brand.save();
-            res.status(200).json({
-                status: true
-            })
+            Brand.save()
+            .then(result=>{
+                const BrandStore = new brandstore({
+                    brandid: result._id,
+                    userid: id
+                }); 
+                BrandStore.save();
+                res.status(200).json({
+                    status: true
+                })
+            });
+            
         }
     }).catch(err=>{console.log(err);});
 }

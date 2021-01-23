@@ -1,12 +1,21 @@
 const products = require('../models/m-products');
 const user = require('../models/m-user');
+const store = require('../models/m-store');
+const cat = require('../models/m-category');
+const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../handler/common');
 
-exports.postProducts = (req, res, next) => {
+exports.postProducts = async (req, res, next) => {
     d = req.body;
     if (!d) return res.status(201).json({ status: false, message: "Enter Proper Details" });
-
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    });
+    const st = await store.findOne({userId: id});
+    if (!st) return res.status(201).json({ status: false, message: "Store not found" });
     try {
-        if (d.inputType == "Saree") {
+        const catagoury = await cat.findOne({name: d.inputCategory});
+        if (catagoury.name == "Saree") {
             if (d.inputColorFlag) {
                 const c = {
                     items: d.inputColor
@@ -23,7 +32,7 @@ exports.postProducts = (req, res, next) => {
                     fabric: d.inputFabric,
                     description: d.inputDescription,
                     catologue: d.inputCatologue,
-                    storeId: d.inputStoreId,
+                    storeId: st._id,
                     colorFlag: true
                 });
                 Products.save()
@@ -47,7 +56,7 @@ exports.postProducts = (req, res, next) => {
                     fabric: d.inputFabric,
                     description: d.inputDescription,
                     catologue: d.inputCatologue,
-                    storeId: d.inputStoreId,
+                    storeId: st._id,
                     colorFlag: false
                 });
                 Products.save()
@@ -76,7 +85,7 @@ exports.postProducts = (req, res, next) => {
                     fabric: d.inputFabric,
                     description: d.inputDescription,
                     catologue: d.inputCatologue,
-                    storeId: d.inputStoreId,
+                    storeId: st._id,
                     s: d.inputSquantity,
                     m: d.inputMquantity,
                     l: d.inputLquantity,
@@ -106,7 +115,7 @@ exports.postProducts = (req, res, next) => {
                     fabric: d.inputFabric,
                     description: d.inputDescription,
                     catologue: d.inputCatologue,
-                    storeId: d.inputStoreId,
+                    storeId: st._id,
                     s: d.inputSquantity,
                     m: d.inputMquantity,
                     l: d.inputLquantity,
@@ -130,11 +139,14 @@ exports.postProducts = (req, res, next) => {
     }
 }
 
-exports.getProducts = (req, res, next) => {
-    const storeId = req.body.inputStoreId;
-    if (!storeId) return res.status(201).json({ status: false, message: "Enter store id" });
+exports.getProducts = async (req, res, next) => {
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    });
+    if (!id) return res.status(201).json({ status: false, message: "Enter store id" });
 
-    products.findOne({ storeId: storeId })
+    products.findOne({ userId: id })
         .then(data => {
             if (data) {
                 res.status(200).json({ status: true, data: data });
