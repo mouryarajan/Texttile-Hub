@@ -8,6 +8,7 @@ const productseController = require('../controller/c-products');
 router.post('/add-products', productseController.postProducts);
 router.get('/product-list', productseController.getProducts);
 router.get('/size', productseController.getSize);
+router.post('/remove-product', productseController.removeProduct);
 
 router.post('/post-review', productseController.postReview);
 router.post('/get-review', productseController.postGetReview);

@@ -156,6 +156,17 @@ exports.getProducts = async (req, res, next) => {
         }).catch(err => { console.log(err) });
 }
 
+exports.removeProduct = (req, res, next) => {
+    const pid = req.body.inputProductId;
+    products.findByIdAndDelete(pid)
+    .then(data=>{
+        res.status(200).json({
+            status:"true"
+        })
+    }).catch(err=>{conbsole.log(err)});
+    
+}
+
 exports.getSize = (req, res, next) => {
     arr = {
         S: "S", M: "M", L: "L", Xl: "XL", XXl: "XXL", XXXl: "XXXL"
