@@ -27,24 +27,36 @@ exports.getHomeProducts = (req, res, next)=>{
 }
 
 exports.postShopeByCategory = (req, res, next) => {
-    const by = req.body.inputShopBy;
-    const d = req.body;
-    if(by=="category"){
-        products.find({type: d.type})
-        .then(data=>{
-            res.status(200).json({
-                data
-            })
+    const cat = req.body.inputCategoury;
+    if (!cat) return res.status(201).json({ message: "Provide proper details" });
+    products.find({category:cat})
+    .then(data=>{
+        res.status(200).json({
+            data:data
         })
-    }
-    if(by=="shop"){
-        products.find({storeId: d.storeId})
-        .then(data=>{
-            res.status(200).json({
-                data
-            })
+    }).catch(err=>{console.log(err)});
+}
+
+exports.postShopeByBrand = (req, res, next) => {
+    const cat = req.body.inputBrand;
+    if (!cat) return res.status(201).json({ message: "Provide proper details" });
+    products.find({brandName:cat})
+    .then(data=>{
+        res.status(200).json({
+            data:data
         })
-    }
+    }).catch(err=>{console.log(err)});
+}
+
+exports.postShopeByFabric = (req, res, next) => {
+    const cat = req.body.inputFabric;
+    if (!cat) return res.status(201).json({ message: "Provide proper details" });
+    products.find({fabric:cat})
+    .then(data=>{
+        res.status(200).json({
+            data:data
+        })
+    }).catch(err=>{console.log(err)});
 }
 
 exports.postAdvertisement = (req, res, next) => {

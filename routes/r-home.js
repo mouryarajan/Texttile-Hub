@@ -7,5 +7,7 @@ const homeController = require('../controller/c-home');
 router.post('/add-advertisement', homeController.postAdvertisement);
 router.post('/get-home-products', homeController.getHomeProducts);
 router.post('/shop-by-category', homeController.postShopeByCategory);
+router.post('/shop-by-brand', homeController.postShopeByBrand);
+router.post('/shop-by-fabric', homeController.postShopeByFabric);
 
 module.exports = router;

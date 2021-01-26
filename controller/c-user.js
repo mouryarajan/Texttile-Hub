@@ -2,6 +2,7 @@ const user = require('../models/m-user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const products = require('../models/m-products');
+const tranding = require('../models/m-tranding');
 const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../handler/common');
 //const fast2sms = require('fast-two-sms');
 

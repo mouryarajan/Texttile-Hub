@@ -46,19 +46,14 @@ exports.postEditCategory = (req, res, next) => {
         }).catch(err => { console.log(err) });
 }
 
-exports.getCategory = (req, res, next) => {
-    category.find()
-        .then(data => {
-            if (data) {
-                res.status(200).json({
-                    status: true,
-                    data: data
-                })
-            } else {
-                res.status(201).json({
-                    status: false,
-                    message: "Something went Worng"
-                })
-            }
-        }).catch(err => { console.log(err) });
+exports.getCategory = async (req, res, next) => {
+    const data = await category.find();
+    let cat = [];
+    for(let x of data){
+        let y = x._id + "#" + x.name;
+        cat.push({
+            name: y
+        })
+    }
+    res.send(cat);
 }
