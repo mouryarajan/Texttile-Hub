@@ -79,27 +79,19 @@ exports.autoComplete = async (req, res, next) => {
     let fab = [];
     for(let x of cat){
         let y = x._id + "#" + x.name;
-        cata.push({
-            name: y
-        })
+        cata.push(y)
     }
     for(let x of brandList){
         let y = x._id + "#" + x.brandName;
-        bran.push({
-            name: y
-        })
+        bran.push( y)
     }
     for(let x of typeList){
         let y = x._id + "#" + x.typeName;
-        ty.push({
-            name: y
-        })
+        ty.push( y)
     }
     for(let x of fabricList){
         let y = x._id + "#" + x.fabricName;
-        fab.push({
-            name: y
-        })
+        fab.push( y)
     }
 
     res.send({

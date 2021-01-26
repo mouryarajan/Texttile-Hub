@@ -51,9 +51,9 @@ exports.getCategory = async (req, res, next) => {
     let cat = [];
     for(let x of data){
         let y = x._id + "#" + x.name;
-        cat.push({
-            name: y
-        })
+        cat.push(
+            y
+        )
     }
     res.send(cat);
 }
