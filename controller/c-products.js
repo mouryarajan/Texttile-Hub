@@ -145,8 +145,8 @@ exports.getProducts = async (req, res, next) => {
         id = data.userId;
     });
     if (!id) return res.status(201).json({ status: false, message: "Enter store id" });
-
-    products.findOne({ userId: id })
+    const use = await store.findOne({userId: id});
+    products.findOne({ storeId: use._id })
         .then(data => {
             if (data) {
                 res.status(200).json({ status: true, data: data });
@@ -194,15 +194,21 @@ exports.getProductDetails = (req, res, next) => {
     })
 }
 
-exports.postReview=(req, res, next) => {
+exports.postReview = async (req, res, next) => {
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    });
+    if(!id) return res.status(201).json({ status: false, message: "Enter Proper Details" });
     const d = req.body;
     if(!d) return res.status(201).json({ status: false, message: "Enter Proper Details" });
+    const use = await user.findOne({_id:id});
     products.findOne({_id:d.productid})
     .then(data=>{
         var arr = data.review.items;
         arr.push({
-            userId: d.userid,
-            name: d.username,
+            userId: d.id,
+            name: d.use.name.firstName,
             description: d.description,
             rating: d.rating
         });
