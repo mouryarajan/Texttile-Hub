@@ -106,7 +106,6 @@ exports.orderAddressUpdate = (req, res, next) => {
 
 exports.orderCancel = (req, res, next) => {
     const oid = req.body.inputOrderid;
-    const status = req.body.inputStatus;
     if (!oid) return res.status(201).json({ message: "Provide proper detailss" });
     order.findOne({ _id: oid })
         .then(data => {
@@ -118,7 +117,7 @@ exports.orderCancel = (req, res, next) => {
             if(tday == data.deliverDate){
                 return res.status(201).json({ message: "You can't cancel the order on the delivery date" });
             }
-            data.is_cancel = status;
+            data.is_cancel = false;
             data.save()
                 .then(result => {
                     res.status(200).json({ status: true });

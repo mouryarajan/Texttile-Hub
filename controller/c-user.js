@@ -740,10 +740,6 @@ exports.postGetRecentList = async (req, res, next) => {
         id = data.userId;
     })
     if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
-    console.log(req.headers.token);
-    await decodeDataFromAccessToken(req.headers.token).then((data) => {
-        console.log(data);
-    })
     user.findOne({ _id: id })
         .limit(5)
         .then(users => {

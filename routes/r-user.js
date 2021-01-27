@@ -12,20 +12,20 @@ router.post('/edit-user', userController.postEditUser);
 
 router.post('/add-address', userController.postAddress);
 router.post('/remove-address', userController.postRemoveAddress);
-router.post('/get-address', userController.postGetAddress);
+router.get('/get-address', userController.postGetAddress);
 
 router.post('/add-cart', userController.postCart);
 router.post('/remove-cart', userController.postRemoveProductFromCart);
-router.post('/clear-cart', userController.postClearCart);
+router.get('/clear-cart', userController.postClearCart);
 router.get('/get-cart', userController.postGetCart);
 
 router.post('/add-wishlist', userController.postAddWishlist);
 router.post('/remove-wishlist', userController.postRemoveProductWishList);
-router.post('/clear-wishlist', userController.postClearWishList);
-router.post('/get-wishlist', userController.postGetWishList);
+router.get('/clear-wishlist', userController.postClearWishList);
+router.get('/get-wishlist', userController.postGetWishList);
 
 router.post('/add-recent-item', userController.postRecentItems);
-router.post('/get-recent-item', userController.postGetRecentList);
+router.get('/get-recent-item', userController.postGetRecentList);
 
 router.post('/cart-quantity', userController.postIncreaseQuantity);
 module.exports = router;

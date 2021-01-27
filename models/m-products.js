@@ -12,8 +12,8 @@ const productSchema = new Schema({
         required: true
     },
     brandName: {
-        type: String,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'tblbrand'
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
@@ -46,8 +46,8 @@ const productSchema = new Schema({
         ]
     },
     type: {
-        type: String,
-        required: false
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'tbltype'
     },
     s: {
         type: Number,
@@ -78,8 +78,8 @@ const productSchema = new Schema({
         required: true
     },
     fabric: {
-        type: String,
-        required: false
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'tblfabric'
     },
     description: {
         type: String,

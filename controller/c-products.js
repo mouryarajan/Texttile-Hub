@@ -6,16 +6,20 @@ const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../hand
 
 exports.postProducts = async (req, res, next) => {
     d = req.body;
-    if (!d) return res.status(201).json({ status: false, message: "Enter Proper Details" });
     let id;
     await decodeDataFromAccessToken(req.headers.token).then((data) => {
         id = data.userId;
     });
     const st = await store.findOne({userId: id});
+    if (!id) return res.status(201).json({ status: false, message: "Store not found" });
+    if (!d) return res.status(201).json({ status: false, message: "Enter Proper Details" });
     if (!st) return res.status(201).json({ status: false, message: "Store not found" });
+    
     try {
-        const catagoury = await cat.findOne({name: d.inputCategory});
+        const catagoury = await cat.findOne({_id: d.inputCategory});
+       // console.log(catagoury);
         if (catagoury.name == "Saree") {
+            console.log("called");
             if (d.inputColorFlag) {
                 const c = {
                     items: d.inputColor
