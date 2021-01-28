@@ -27,7 +27,7 @@ const productSchema = new Schema({
         type: Boolean,
         required: false
     },
-    color: {
+    primarycolor: {
         type: String,
         required: false
     },
