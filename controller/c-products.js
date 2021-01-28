@@ -150,7 +150,7 @@ exports.getProducts = async (req, res, next) => {
     });
     if (!id) return res.status(201).json({ status: false, message: "Enter store id" });
     const use = await store.findOne({userId: id});
-    products.find({ storeId: use._id })
+    products.find({ storeId: use._id }).populate('brandName').populate('category').populate('type').populate('fabric')
         .then(data => {
             if (data) {
                 res.status(200).json({ status: true, data: data });
