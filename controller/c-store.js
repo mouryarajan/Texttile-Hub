@@ -67,6 +67,18 @@ exports.getStore = async (req, res, next) => {
     }
 }
 
+exports.getStoreHome = async (req, res, next) => {
+    try {
+        const data = await store.find().select('companyName').select('storeImage');
+        res.status(200).json({
+            status: true,
+            data: data
+        });
+    } catch (err) {
+        res.status(201).json({ err });
+    }
+}
+
 exports.approveStore = async (req, res, next) => {
     const storeId = req.body.inputStoreId;
     const status = req.body.inputStatus;
