@@ -181,11 +181,11 @@ exports.postCart = async (req, res, next) => {
     user.findOne({ _id: id })
         .then(users => {
             if (users) {
-                products.findById(productId)
+                products.findById(productId).populate('brandName').populate('category').populate('type').populate('fabric')
                     .then(prod => {
                         if (prod) {
                             if (prod.quantity >= 1) {
-                                if (prod.type == "Saree") {
+                                if (prod.category.name == "Saree") {
                                     if (prod.colorFlag) {
                                         let arr = users.cart.items;
                                         let fprice = prod.price;

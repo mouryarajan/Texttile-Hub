@@ -2,6 +2,9 @@ const user = require('../models/m-user');
 const products = require('../models/m-products');
 const category = require('../models/m-category');
 const store = require('../models/m-store');
+const brand = require('../models/m-brand');
+const fabric = require('../models/m-fabric');
+const type = require('../models/m-type');
 const itemPerPage = 1;
 const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../handler/common');
 
