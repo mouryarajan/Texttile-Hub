@@ -5,6 +5,7 @@ const store = require('../models/m-store');
 const brand = require('../models/m-brand');
 const fabric = require('../models/m-fabric');
 const type = require('../models/m-type');
+const trending = require('../models/m-tranding');
 const itemPerPage = 1;
 const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../handler/common');
 
@@ -136,6 +137,23 @@ exports.postSearchProduct = async (req, res, next) => {
     res.status(200).json({
         data:finalPro
     });
+}
+
+exports.getTrendingProduct = async (req, res, next) => {
+    products.find().limit(10)
+    .then(data=>{
+        res.status(200).json({
+            data:data
+        });
+    })
+    // let arr = [];
+    // trending.find().populate('productId').sort({cart:'desc'})
+    // .then(data=>{
+    //     for(let x of data){
+    //         arr.push(c.productId);
+    //     }
+    //     res.status(200).json({data:arr});
+    // });
 }
 
 exports.postAdvertisement = (req, res, next) => {

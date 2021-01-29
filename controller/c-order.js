@@ -30,6 +30,8 @@ exports.postOrder = async (req, res, next) => {
             for (let n of add) {
                 if (n._id == d.addressid) {
                     a = n;
+                } else {
+                    res.status(201).json({ status: false, message: "Address not found!" });
                 }
             }
             var someFormattedDate = dd + '/' + mm + '/' + y;
@@ -39,7 +41,7 @@ exports.postOrder = async (req, res, next) => {
                     s = n.size;
                 }
                 let x = n.image.split(',');
-                const pro = await products.findOne({_id:n.product});
+                const pro = await products.findOne({ _id: n.product });
 
                 let Order = new order({
                     userId: id,
@@ -70,6 +72,75 @@ exports.postOrder = async (req, res, next) => {
         .then(result => {
             res.status(200).json({ message: "order placed successfully" });
         }).catch(err => { console.log(err) });
+}
+
+exports.postBuyNow = async (req, res, next) => {
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
+    if (!id) return res.status(201).json({ status: false, message: "Unauthorised user" });
+    let pid = req.body.inputProductId;
+    if (!pid) return res.status(201).json({ status: false, message: "Provide product id!" });
+    user.findOne({ _id: id })
+        .then(async data => {
+            let add = data.address.items;
+            //console.log(add);
+            var today = new Date();
+            var ddd = today.getDate();
+            var mmm = today.getMonth() + 1;
+            var yy = today.getFullYear();
+            var tday = ddd + '/' + mmm + '/' + yy;
+            var someDate = new Date();
+            var numberOfDaysToAdd = 6;
+            someDate.setDate(someDate.getDate() + numberOfDaysToAdd);
+            var dd = someDate.getDate();
+            var mm = someDate.getMonth() + 1;
+            var y = someDate.getFullYear();
+            var a;
+            for (let n of add) {
+                if (n._id == req.body.inputAddressId) {
+                    a = n;
+                } else {
+                    res.status(201).json({ status: false, message: "Address not found!" });
+                }
+            }
+            var someFormattedDate = dd + '/' + mm + '/' + y;
+            const pro = await products.findOne({ _id: req.body.inputProductId});
+            let fprice = 0;
+            if(req.body.inputQuantity>1){
+                fprice = pro.price * req.body.inputQuantity
+            }
+            let x = pro.images.split(',');
+            let Order = new order({
+                userId: id,
+                product: pro._id,
+                productName: pro.name,
+                store: pro.storeId,
+                image: x[0],
+                payment: req.body.inputPaymentMode,
+                quantity: req.body.inputQuantity,
+                size: req.body.inputSize,
+                color: req.body.inputColor,
+                placeDate: tday,
+                deliverDate: someFormattedDate,
+                amount: fprice,
+                type: a.type,
+                street: a.street,
+                landmark: a.landmark,
+                city: a.city,
+                state: a.state,
+                pincode: a.pincode,
+                phoneNumber: data.phoneNumber,
+                store: pro.storeId
+            });
+            Order.save()
+            .then(result=>{
+                res.status(200).json({
+                    status: true
+                });
+            }).catch(err => console.log(err));
+        }).catch(err => console.log(err));
 }
 
 exports.orderAddressUpdate = (req, res, next) => {
@@ -114,7 +185,7 @@ exports.orderCancel = (req, res, next) => {
             var mmm = today.getMonth() + 1;
             var yy = today.getFullYear();
             var tday = ddd + '/' + mmm + '/' + yy;
-            if(tday == data.deliverDate){
+            if (tday == data.deliverDate) {
                 return res.status(201).json({ message: "You can't cancel the order on the delivery date" });
             }
             data.is_cancel = false;
@@ -130,7 +201,7 @@ exports.postUpdateOrderStatus = (req, res, next) => {
     const status = req.body.inputStatus;
     if (!oid) return res.status(201).json({ message: "Provide proper details" });
     if (!status) return res.status(201).json({ message: "Provide proper details" });
-    order.findOne({ _id: oid }).sort({deliverDate: 'desc'})
+    order.findOne({ _id: oid }).sort({ deliverDate: 'desc' })
         .then(data => {
             data.status = status;
             data.save()

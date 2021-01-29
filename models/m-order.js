@@ -40,11 +40,11 @@ const orderSchema = new Schema({
         required: false
     },
     placeDate: {
-        type: Date,
+        type: String,
         required: true
     },
     deliverDate: {
-        type: Date,
+        type: String,
         required: true
     },
     amount: {

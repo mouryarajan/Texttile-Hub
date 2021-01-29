@@ -182,9 +182,18 @@ exports.postCart = async (req, res, next) => {
         .then(users => {
             if (users) {
                 products.findById(productId).populate('brandName').populate('category').populate('type').populate('fabric')
-                    .then(prod => {
+                    .then( async prod => {
                         if (prod) {
                             if (prod.quantity >= 1) {
+                                let trand = await tranding.findOne({productId:products._id});
+                                if(trand){
+                                    trand.cart = trandPro.cart+1;
+                                }else{
+                                    trand = new tranding({
+                                        productId: products._id,
+                                        cart: 1
+                                    })
+                                }
                                 if (prod.category.name == "Saree") {
                                     if (prod.colorFlag) {
                                         let arr = users.cart.items;
@@ -204,6 +213,7 @@ exports.postCart = async (req, res, next) => {
                                         users.save()
                                             .then(data => {
                                                 if (data) {
+                                                    trand.save();
                                                     res.status(200).json({
                                                         status: true
                                                     });
@@ -230,6 +240,7 @@ exports.postCart = async (req, res, next) => {
                                         users.cart.items = arr;
                                         users.save()
                                             .then(data => {
+                                                trand.save();
                                                 if (data) {
                                                     res.status(200).json({
                                                         status: true
@@ -269,6 +280,7 @@ exports.postCart = async (req, res, next) => {
                                             users.cart.items = arr;
                                             users.save()
                                                 .then(data => {
+                                                    trand.save();
                                                     if (data) {
                                                         res.status(200).json({
                                                             status: true
@@ -297,6 +309,7 @@ exports.postCart = async (req, res, next) => {
                                             users.cart.items = arr;
                                             users.save()
                                                 .then(data => {
+                                                    trand.save();
                                                     if (data) {
                                                         res.status(200).json({
                                                             status: true
