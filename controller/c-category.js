@@ -48,12 +48,7 @@ exports.postEditCategory = (req, res, next) => {
 
 exports.getCategory = async (req, res, next) => {
     const data = await category.find();
-    let cat = [];
-    for(let x of data){
-        let y = x._id + "#" + x.name;
-        cat.push(
-            y
-        )
-    }
-    res.send(cat);
+    res.status(200).json({
+        data: data
+    });
 }
