@@ -7,6 +7,7 @@ const productseController = require('../controller/c-products');
 //Routes
 router.post('/add-products', productseController.postProducts);
 router.get('/product-list', productseController.getProducts);
+router.post('/product-list-user-by-shop', productseController.postProductList);
 router.get('/size', productseController.getSize);
 router.post('/remove-product', productseController.removeProduct);
 

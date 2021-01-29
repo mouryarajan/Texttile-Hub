@@ -162,6 +162,19 @@ exports.getProducts = async (req, res, next) => {
         }).catch(err => { console.log(err) });
 }
 
+exports.postProductList = async (req, res, next) => {
+    sid = req.body.inputStoreId;
+    if (!sid) return res.status(201).json({ status: false, message: "Enter store id" });
+    products.find({ storeId: sid }).populate('brandName').populate('category').populate('type').populate('fabric')
+        .then(data => {
+            if (data) {
+                res.status(200).json({ status: true, data: data });
+            } else {
+                res.status(201).json({ status: false, message: "Something went wrong." });
+            }
+        }).catch(err => { console.log(err) });
+}
+
 exports.removeProduct = (req, res, next) => {
     const pid = req.body.inputProductId;
     products.findByIdAndDelete(pid)
