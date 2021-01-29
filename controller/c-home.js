@@ -29,7 +29,7 @@ exports.getHomeProducts = (req, res, next)=>{
 exports.postShopeByCategory = (req, res, next) => {
     const cat = req.body.inputCategoury;
     if (!cat) return res.status(201).json({ message: "Provide proper details" });
-    products.find({category:cat})
+    products.find({category:cat}).populate('brandName').populate('category').populate('type').populate('fabric')
     .then(data=>{
         res.status(200).json({
             data:data
@@ -40,7 +40,7 @@ exports.postShopeByCategory = (req, res, next) => {
 exports.postShopeByBrand = (req, res, next) => {
     const cat = req.body.inputBrand;
     if (!cat) return res.status(201).json({ message: "Provide proper details" });
-    products.find({brandName:cat})
+    products.find({brandName:cat}).populate('brandName').populate('category').populate('type').populate('fabric')
     .then(data=>{
         res.status(200).json({
             data:data
@@ -51,7 +51,7 @@ exports.postShopeByBrand = (req, res, next) => {
 exports.postShopeByFabric = (req, res, next) => {
     const cat = req.body.inputFabric;
     if (!cat) return res.status(201).json({ message: "Provide proper details" });
-    products.find({fabric:cat})
+    products.find({fabric:cat}).populate('brandName').populate('category').populate('type').populate('fabric')
     .then(data=>{
         res.status(200).json({
             data:data
