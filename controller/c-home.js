@@ -62,6 +62,82 @@ exports.postShopeByFabric = (req, res, next) => {
     }).catch(err=>{console.log(err)});
 }
 
+exports.postSearchProduct = async (req, res, next) => {
+    const text = req.body.inputSearch;
+    if(!text){res.status(201).json({status:false,message:"Provide text!"})}
+    let pro = [];
+    let finalPro = [];
+    const prod = await products.find({ name: new RegExp(text, 'i')});
+    const cat = await category.findOne({ name: new RegExp(text, 'i')});
+    const fab = await fabric.findOne({fabricName: new RegExp(text, 'i')});
+    const typ = await type.findOne({typeName: new RegExp(text, 'i')});
+    if(prod){
+        for(let x of prod){
+            pro.push({
+                id: x._id,
+                name: x.name,
+                image: x.primarycolor,
+                description: x.description,
+                price: x.price 
+            })
+        }
+    }
+    if(cat){
+        const prod = await products.find({ category: cat._id});
+        if(prod){
+            for(let x of prod){
+                pro.push({
+                    id: x._id,
+                    name: x.name,
+                    image: x.primarycolor,
+                    description: x.description,
+                    price: x.price,
+                    demo: "demo"
+                })
+            }
+        }
+    }
+    if(fab){
+        const prod = await products.find({ fabric: fab._id});
+        if(prod){
+            for(let x of prod){
+                pro.push({
+                    id: x._id,
+                    name: x.name,
+                    image: x.primarycolor,
+                    description: x.description,
+                    price: x.price 
+                })
+            }
+        }
+    }
+    if(typ){
+        const prod = await products.find({ type: typ._id});
+        if(prod){
+            for(let x of prod){
+                pro.push({
+                    id: x._id,
+                    name: x.name,
+                    image: x.primarycolor,
+                    description: x.description,
+                    price: x.price 
+                })
+            }
+        }
+    }
+    let uniqueObject = {}; 
+    for (let i in pro) { 
+        objTitle = pro[i]['id']; 
+        uniqueObject[objTitle] = pro[i]; 
+    }
+    for (i in uniqueObject) { 
+        finalPro.push(uniqueObject[i]); 
+    } 
+    res.status(200).json({
+        data:finalPro
+    });
+}
+
 exports.postAdvertisement = (req, res, next) => {
     
 }

@@ -10,4 +10,6 @@ router.post('/shop-by-category', homeController.postShopeByCategory);
 router.post('/shop-by-brand', homeController.postShopeByBrand);
 router.post('/shop-by-fabric', homeController.postShopeByFabric);
 
+router.post('/search-product', homeController.postSearchProduct);
+
 module.exports = router;
