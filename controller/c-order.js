@@ -101,6 +101,7 @@ exports.postBuyNow = async (req, res, next) => {
             for (let n of add) {
                 if (n._id == req.body.inputAddressId) {
                     a = n;
+                    return
                 } else {
                     return res.status(201).json({ status: false, message: "Address not found!" });
                 }
