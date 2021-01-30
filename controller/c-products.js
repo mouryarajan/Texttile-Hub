@@ -198,7 +198,7 @@ exports.getSize = (req, res, next) => {
 exports.getProductDetails = (req, res, next) => {
     const productId = req.body.inputProductId;
     if (!productId) return res.status(201).json({ status: false, message: "Enter product id" });
-    products.findOne({_id: productId})
+    products.findOne({_id: productId}).populate('brandName').populate('category').populate('type').populate('fabric')
     .then(data=>{
         let im = data.images.split(',');
         let arr = {

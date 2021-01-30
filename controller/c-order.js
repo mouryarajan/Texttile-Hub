@@ -237,3 +237,15 @@ exports.getOrder = (req, res, next) => {
             }).catch(err => { console.log(err) });
     }
 }
+
+exports.getUserOrder = async (req, res, next) => {
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
+    if (!id) return res.status(201).json({ status: false, message: "Unauthorised user" });
+    const data = await order.find({userId:id});
+    res.status(200).json({
+        data:data
+    })
+}

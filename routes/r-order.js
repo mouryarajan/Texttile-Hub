@@ -11,4 +11,6 @@ router.post('/update-status-order', orderController.postUpdateOrderStatus);
 router.post('/cancel-order', orderController.orderCancel);
 router.post('/update-address', orderController.orderAddressUpdate);
 
+router.get('/get-user-order', orderController.getUserOrder);
+
 module.exports = router;
