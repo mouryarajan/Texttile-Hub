@@ -102,7 +102,7 @@ exports.postBuyNow = async (req, res, next) => {
                 if (n._id == req.body.inputAddressId) {
                     a = n;
                 } else {
-                    res.status(201).json({ status: false, message: "Address not found!" });
+                    return res.status(201).json({ status: false, message: "Address not found!" });
                 }
             }
             var someFormattedDate = dd + '/' + mm + '/' + y;
