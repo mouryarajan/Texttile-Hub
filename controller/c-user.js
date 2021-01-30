@@ -187,7 +187,7 @@ exports.postCart = async (req, res, next) => {
                             if (prod.quantity >= 1) {
                                 let trand = await tranding.findOne({productId:products._id});
                                 if(trand){
-                                    trand.cart = trandPro.cart+1;
+                                    trand.cart = trand.cart+1;
                                 }else{
                                     trand = new tranding({
                                         productId: products._id,
