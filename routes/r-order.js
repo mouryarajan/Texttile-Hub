@@ -6,7 +6,7 @@ const orderController = require('../controller/c-order');
 
 router.post('/order', orderController.postOrder);
 router.post('/buy-now', orderController.postBuyNow);
-router.post('/get-order', orderController.getOrder);
+router.get('/get-order', orderController.getOrder);
 router.post('/update-status-order', orderController.postUpdateOrderStatus);
 router.post('/cancel-order', orderController.orderCancel);
 router.post('/update-address', orderController.orderAddressUpdate);

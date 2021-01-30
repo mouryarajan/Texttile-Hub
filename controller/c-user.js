@@ -227,9 +227,9 @@ exports.postCart = async (req, res, next) => {
                                     } else {
                                         let arr = users.cart.items;
                                         let fprice = prod.price;
-                                        if (productQuantity > 1) {
+                                        
                                             fprice = productQuantity * prod.price;
-                                        }
+                                        
                                         arr.push({
                                             product: prod._id,
                                             quantity: productQuantity,
@@ -255,12 +255,12 @@ exports.postCart = async (req, res, next) => {
                                     }
                                 } else {
                                     let s;
-                                    if (productSize == "s") { s = prod.s }
-                                    if (productSize == "m") { s = prod.m }
-                                    if (productSize == "l") { s = prod.l }
-                                    if (productSize == "xl") { s = prod.xl }
-                                    if (productSize == "xxl") { s = prod.xxl }
-                                    if (productSize == "xxxl") { s = prod.xxxl }
+                                    if (productSize.toLowerCase() == "s") { s = prod.s }
+                                    if (productSize.toLowerCase() == "m") { s = prod.m }
+                                    if (productSize.toLowerCase() == "l") { s = prod.l }
+                                    if (productSize.toLowerCase() == "xl") { s = prod.xl }
+                                    if (productSize.toLowerCase() == "xxl") { s = prod.xxl }
+                                    if (productSize.toLowerCase() == "xxxl") { s = prod.xxxl }
                                     if (s >= 1) {
                                         if (prod.colorFlag) {
                                             let arr = users.cart.items;

@@ -1,7 +1,9 @@
 const user = require('../models/m-user');
 const products = require('../models/m-products');
 const order = require('../models/m-order');
-const { isDefined, isEmptyObject, decodeDataFromAccessToken,isValueExistInArray } = require('../handler/common');
+const store = require('../models/m-store');
+const { isDefined, isEmptyObject, decodeDataFromAccessToken, isValueExistInArray } = require('../handler/common');
+const { findOne } = require('../models/m-user');
 
 exports.postOrder = async (req, res, next) => {
     const d = req.body;
@@ -97,7 +99,7 @@ exports.postBuyNow = async (req, res, next) => {
             var dd = someDate.getDate();
             var mm = someDate.getMonth() + 1;
             var y = someDate.getFullYear();
-            var a=[];
+            var a = [];
             // for (let n of add) {
             //     if (n._id == req.body.inputAddressId) {
             //         a = n;
@@ -105,15 +107,15 @@ exports.postBuyNow = async (req, res, next) => {
             //         res.status(201).json({ status: false, message: "Address not found!" });
             //     }
             // }
-            a=await isValueExistInArray(add, req.body.inputAddressId);
-            if(a.length===0){
+            a = await isValueExistInArray(add, req.body.inputAddressId);
+            if (a.length === 0) {
                 return res.status(201).json({ status: false, message: "Address not found!" });
             }
             //console.log(a);
             var someFormattedDate = dd + '/' + mm + '/' + y;
-            const pro = await products.findOne({ _id: req.body.inputProductId});
+            const pro = await products.findOne({ _id: req.body.inputProductId });
             let fprice = 0;
-            if(req.body.inputQuantity>1){
+            if (req.body.inputQuantity > 1) {
                 fprice = pro.price * req.body.inputQuantity
             }
             let x = pro.images.split(',');
@@ -140,11 +142,11 @@ exports.postBuyNow = async (req, res, next) => {
                 store: pro.storeId
             });
             Order.save()
-            .then(result=>{
-                res.status(200).json({
-                    status: true
-                });
-            }).catch(err => console.log(err));
+                .then(result => {
+                    res.status(200).json({
+                        status: true
+                    });
+                }).catch(err => console.log(err));
         }).catch(err => console.log(err));
 }
 
@@ -216,26 +218,20 @@ exports.postUpdateOrderStatus = (req, res, next) => {
         }).catch(err => { console.log(err) });
 }
 
-exports.getOrder = (req, res, next) => {
-    const uid = req.body.inputUserId;
-    const sid = req.body.inputStoreId;
-    if (!uid && !sid) return res.status(201).json({ message: "Provide proper details" });
-
-    if (uid) {
-        order.find({ userId: uid })
-            .then(data => {
-                res.status(200).json({
-                    data: data
-                })
-            }).catch(err => { console.log(err) });
-    } else {
-        order.find({ store: sid })
-            .then(data => {
-                res.status(200).json({
-                    data: data
-                })
-            }).catch(err => { console.log(err) });
-    }
+exports.getOrder = async (req, res, next) => {
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
+    if (!id) return res.status(201).json({ status: false, message: "Unauthorised user" });
+    const stro = await findOne({userId:id});
+    if (!stro) return res.status(201).json({ status: false, message: "Store not found" });
+    order.find({ store: stro_id })
+        .then(data => {
+            res.status(200).json({
+                data: data
+            })
+        }).catch(err => { console.log(err) });
 }
 
 exports.getUserOrder = async (req, res, next) => {
@@ -244,8 +240,8 @@ exports.getUserOrder = async (req, res, next) => {
         id = data.userId;
     })
     if (!id) return res.status(201).json({ status: false, message: "Unauthorised user" });
-    const data = await order.find({userId:id});
+    const data = await order.find({ userId: id });
     res.status(200).json({
-        data:data
+        data: data
     })
 }
