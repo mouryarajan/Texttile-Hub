@@ -25,6 +25,7 @@ exports.postLoginCheck = async (req, res, next) => {
             firstName: data.name.firstName,
             lastName: data.name.lastName,
             phoneNumber: data.phoneNumber,
+            role: data.role,
             image: data.image,
             authToken: token,
             address: data.address
@@ -129,7 +130,6 @@ exports.postPassword = async (req, res, next) => {
 //Edit User
 exports.postEditUser = async (req, res, next) => {
     const d = req.body;
-    const phno = Number(d.inputPhoneNumber);
     let id;
     await decodeDataFromAccessToken(req.headers.token).then((data) => {
         id = data.userId;
@@ -139,7 +139,6 @@ exports.postEditUser = async (req, res, next) => {
             if (result) {
                 result.name.firstName = d.inputFirstName;
                 result.name.lastName = d.inputLastName;
-                result.phoneNumber = phno;
                 result.gender = d.inputGender;
                 result.email = d.inputEmail;
                 result.save()
@@ -394,9 +393,21 @@ exports.postGetCart = async (req, res, next) => {
     })
     if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
     user.findOne({ _id: id })
+    .populate({
+        path:'cart',
+        populate:{
+            path:'items',
+            populate:{
+                path:'product',
+                model:'tblproducts'
+            }
+            
+        }
+    })
         .then(users => {
             if (users) {
                 let doo = users.cart.items;
+                //console.log(doo);
                 let total = 0;
                 let count = 0;
                 arr = [];
@@ -404,7 +415,7 @@ exports.postGetCart = async (req, res, next) => {
                     total = total + n.price;
                     count = count + 1;
                     arr.push({
-                        product: n.product,
+                        product: n.product._id,
                         name: n.name,
                         image: n.image,
                         quantity: n.quantity,
@@ -412,7 +423,8 @@ exports.postGetCart = async (req, res, next) => {
                         color: n.color,
                         price: n.price,
                         total: total,
-                        count: count
+                        count: count,
+                        description: n.product.description
                     })
                 }
                 res.status(200).json({
