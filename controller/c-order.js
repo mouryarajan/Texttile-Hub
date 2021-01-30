@@ -1,7 +1,7 @@
 const user = require('../models/m-user');
 const products = require('../models/m-products');
 const order = require('../models/m-order');
-const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../handler/common');
+const { isDefined, isEmptyObject, decodeDataFromAccessToken,isValueExistInArray } = require('../handler/common');
 
 exports.postOrder = async (req, res, next) => {
     const d = req.body;
@@ -97,15 +97,19 @@ exports.postBuyNow = async (req, res, next) => {
             var dd = someDate.getDate();
             var mm = someDate.getMonth() + 1;
             var y = someDate.getFullYear();
-            var a;
-            for (let n of add) {
-                if (n._id == req.body.inputAddressId) {
-                    a = n;
-                    return
-                } else {
-                    return res.status(201).json({ status: false, message: "Address not found!" });
-                }
+            var a=[];
+            // for (let n of add) {
+            //     if (n._id == req.body.inputAddressId) {
+            //         a = n;
+            //     } else {
+            //         res.status(201).json({ status: false, message: "Address not found!" });
+            //     }
+            // }
+            a=await isValueExistInArray(add, req.body.inputAddressId);
+            if(a.length===0){
+                return res.status(201).json({ status: false, message: "Address not found!" });
             }
+            //console.log(a);
             var someFormattedDate = dd + '/' + mm + '/' + y;
             const pro = await products.findOne({ _id: req.body.inputProductId});
             let fprice = 0;
