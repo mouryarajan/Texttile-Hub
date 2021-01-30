@@ -200,26 +200,8 @@ exports.getProductDetails = (req, res, next) => {
     if (!productId) return res.status(201).json({ status: false, message: "Enter product id" });
     products.findOne({_id: productId}).populate('brandName').populate('category').populate('type').populate('fabric')
     .then(data=>{
-        let im = data.images.split(',');
-        let arr = {
-            colors: data.colors,
-            images: im,
-            review: data.review,
-            _id: data._id,
-            name: data.name,
-            brandName: data.brandName,
-            category: data.category,
-            price: data.price,
-            type: data.type,
-            quantity: data.quantity,
-            fabric: data.fabric,
-            description: data.description,
-            catologue: data.catologue,
-            storeId: data.storeId,
-            colorFlag: data.colorFlag
-        }
         res.status(200).json({
-            data: arr
+            data: data
         })
     })
 }

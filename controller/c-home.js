@@ -12,7 +12,7 @@ const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../hand
 exports.getHomeProducts = (req, res, next)=>{
     const page = req.body.page;
 
-    products.find()
+    products.find().populate('brandName').populate('category').populate('type').populate('fabric')
     .skip((page-1)*itemPerPage)
     .limit(itemPerPage)
     .then(data=>{
@@ -68,33 +68,20 @@ exports.postSearchProduct = async (req, res, next) => {
     if(!text){res.status(201).json({status:false,message:"Provide text!"})}
     let pro = [];
     let finalPro = [];
-    const prod = await products.find({ name: new RegExp(text, 'i')});
+    const prod = await products.find({ name: new RegExp(text, 'i')}).populate('brandName').populate('category').populate('type').populate('fabric');
     const cat = await category.findOne({ name: new RegExp(text, 'i')});
     const fab = await fabric.findOne({fabricName: new RegExp(text, 'i')});
     const typ = await type.findOne({typeName: new RegExp(text, 'i')});
     if(prod){
         for(let x of prod){
-            pro.push({
-                id: x._id,
-                name: x.name,
-                image: x.primarycolor,
-                description: x.description,
-                price: x.price 
-            })
+            pro.push(x)
         }
     }
     if(cat){
         const prod = await products.find({ category: cat._id});
         if(prod){
             for(let x of prod){
-                pro.push({
-                    id: x._id,
-                    name: x.name,
-                    image: x.primarycolor,
-                    description: x.description,
-                    price: x.price,
-                    demo: "demo"
-                })
+                pro.push(x)
             }
         }
     }
@@ -102,13 +89,7 @@ exports.postSearchProduct = async (req, res, next) => {
         const prod = await products.find({ fabric: fab._id});
         if(prod){
             for(let x of prod){
-                pro.push({
-                    id: x._id,
-                    name: x.name,
-                    image: x.primarycolor,
-                    description: x.description,
-                    price: x.price 
-                })
+                pro.push(x)
             }
         }
     }
@@ -116,19 +97,14 @@ exports.postSearchProduct = async (req, res, next) => {
         const prod = await products.find({ type: typ._id});
         if(prod){
             for(let x of prod){
-                pro.push({
-                    id: x._id,
-                    name: x.name,
-                    image: x.primarycolor,
-                    description: x.description,
-                    price: x.price 
-                })
+                pro.push(x)
             }
         }
     }
+    //console.log(pro);
     let uniqueObject = {}; 
     for (let i in pro) { 
-        objTitle = pro[i]['id']; 
+        objTitle = pro[i]['_id']; 
         uniqueObject[objTitle] = pro[i]; 
     }
     for (i in uniqueObject) { 
@@ -140,20 +116,12 @@ exports.postSearchProduct = async (req, res, next) => {
 }
 
 exports.getTrendingProduct = async (req, res, next) => {
-    products.find().limit(10)
+    products.find().populate('brandName').populate('category').populate('type').populate('fabric').limit(10)
     .then(data=>{
         res.status(200).json({
             data:data
         });
     })
-    // let arr = [];
-    // trending.find().populate('productId').sort({cart:'desc'})
-    // .then(data=>{
-    //     for(let x of data){
-    //         arr.push(c.productId);
-    //     }
-    //     res.status(200).json({data:arr});
-    // });
 }
 
 exports.postAdvertisement = (req, res, next) => {
