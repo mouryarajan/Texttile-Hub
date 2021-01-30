@@ -206,7 +206,7 @@ exports.postCart = async (req, res, next) => {
                                             quantity: productQuantity,
                                             color: productColor,
                                             name: prod.name,
-                                            image: prod.images,
+                                            image: req.body.inputImage,
                                             price: fprice
                                         });
                                         users.cart.items = arr;
@@ -234,7 +234,7 @@ exports.postCart = async (req, res, next) => {
                                             product: prod._id,
                                             quantity: productQuantity,
                                             name: prod.name,
-                                            image: prod.images,
+                                            image: req.body.inputImage,
                                             price: fprice
                                         });
                                         users.cart.items = arr;
@@ -274,7 +274,7 @@ exports.postCart = async (req, res, next) => {
                                                 color: productColor,
                                                 size: productSize,
                                                 name: prod.name,
-                                                image: prod.images,
+                                                image: req.body.inputImage,
                                                 price: fprice
                                             });
                                             users.cart.items = arr;
@@ -303,7 +303,7 @@ exports.postCart = async (req, res, next) => {
                                                 quantity: productQuantity,
                                                 size: productSize,
                                                 name: prod.name,
-                                                image: prod.images,
+                                                image: req.body.inputImage,
                                                 price: fprice
                                             });
                                             users.cart.items = arr;
