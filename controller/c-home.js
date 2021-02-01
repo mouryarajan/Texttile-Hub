@@ -47,6 +47,23 @@ exports.postShopeByCategory = (req, res, next) => {
         }).catch(err => { console.log(err) });
 }
 
+exports.postShopeByType = (req, res, next) => {
+    const cat = req.body.inputType;
+    if (!cat) return res.status(201).json({ message: "Provide proper details" });
+    products.find({ type: cat }).populate('brandName').populate('category').populate('type').populate('fabric').populate({path:'storeId',select:'isApproved'})
+        .then(data => {
+            let arr = [];
+            for(let x of data){
+                if(data.storeId.isApproved){
+                    arr.push(data)
+                }
+            }
+            res.status(200).json({
+                data: arr
+            })
+        }).catch(err => { console.log(err) });
+}
+
 exports.postShopeByBrand = (req, res, next) => {
     const cat = req.body.inputBrand;
     if (!cat) return res.status(201).json({ message: "Provide proper details" });

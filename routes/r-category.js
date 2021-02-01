@@ -16,9 +16,11 @@ router.get('/get-brand', brandController.getBrand);
 
 //Type
 router.post('/add-type', brandController.postType);
+router.get('/get-type', brandController.getType);
 
 //Fabric
 router.post('/add-fabric', brandController.postFabric);
+router.get('/get-fabric', brandController.getFabric);
 
 //common
 router.get('/auto-complete', brandController.autoComplete);

@@ -30,6 +30,7 @@ exports.postOrder = async (req, res, next) => {
             var y = someDate.getFullYear();
             var a;
             let sta = false;
+            console.log(add);
             for (let n of add) {
                 if (n._id == req.body.inputAddressId) {
                     a = n;

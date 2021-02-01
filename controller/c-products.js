@@ -152,10 +152,16 @@ exports.getProducts = async (req, res, next) => {
     });
     if (!id) return res.status(201).json({ status: false, message: "Enter store id" });
     const use = await store.findOne({userId: id});
-    products.find({ storeId: use._id }).populate('brandName').populate('category').populate('type').populate('fabric')
+    products.find({ storeId: use._id }).populate('brandName').populate('category').populate('type').populate('fabric').populate({path:'storeId',select:'isApproved'})
         .then(data => {
             if (data) {
-                res.status(200).json({ status: true, data: data });
+                let arr = [];
+                for(let x of data){
+                    if(x.storeId.isApproved){
+                        arr.push(x);
+                    }
+                }
+                res.status(200).json({ status: true, data: arr });
             } else {
                 res.status(201).json({ status: false, message: "Something went wrong." });
             }
@@ -165,10 +171,16 @@ exports.getProducts = async (req, res, next) => {
 exports.postProductList = async (req, res, next) => {
     sid = req.body.inputStoreId;
     if (!sid) return res.status(201).json({ status: false, message: "Enter store id" });
-    products.find({ storeId: sid }).populate('brandName').populate('category').populate('type').populate('fabric')
+    products.find({ storeId: sid }).populate('brandName').populate('category').populate('type').populate('fabric').populate({path:'storeId',select:'isApproved'})
         .then(data => {
             if (data) {
-                res.status(200).json({ status: true, data: data });
+                let arr = [];
+                for(let x of data){
+                    if(x.storeId.isApproved){
+                        arr.push(x);
+                    }
+                }
+                res.status(200).json({ status: true, data: arr });
             } else {
                 res.status(201).json({ status: false, message: "No data found" });
             }

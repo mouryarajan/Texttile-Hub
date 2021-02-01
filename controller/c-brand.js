@@ -60,6 +60,11 @@ exports.postType = (req, res, next) =>{
     }).catch(err=>{console.log(err);});
 }
 
+exports.getType = async (req, res, next) => {
+    const typ = await type.find();
+    res.status(200).json({data:typ})
+}
+
 exports.postFabric = (req, res, next) =>{
     const name = req.body.inputFabric;
     const Fabric = new fabric({
@@ -71,6 +76,10 @@ exports.postFabric = (req, res, next) =>{
             status: true
         });
     }).catch(err=>{console.log(err);});
+}
+exports.getFabric = async (req, res, next) => {
+    const fab = await fabric.find();
+    res.status(200).json({data:fab})
 }
 
 exports.autoComplete = async (req, res, next) => {
