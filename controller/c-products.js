@@ -170,7 +170,7 @@ exports.postProductList = async (req, res, next) => {
             if (data) {
                 res.status(200).json({ status: true, data: data });
             } else {
-                res.status(201).json({ status: false, message: "Something went wrong." });
+                res.status(201).json({ status: false, message: "No data found" });
             }
         }).catch(err => { console.log(err) });
 }

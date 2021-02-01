@@ -224,9 +224,9 @@ exports.getOrder = async (req, res, next) => {
         id = data.userId;
     })
     if (!id) return res.status(201).json({ status: false, message: "Unauthorised user" });
-    const stro = await findOne({userId:id});
+    const stro = await store.findOne({userId:id});
     if (!stro) return res.status(201).json({ status: false, message: "Store not found" });
-    order.find({ store: stro_id })
+    order.find({ store: stro._id })
         .then(data => {
             res.status(200).json({
                 data: data

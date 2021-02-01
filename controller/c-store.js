@@ -57,7 +57,8 @@ exports.postStore = async (req, res, next) => {
 
 exports.getStore = async (req, res, next) => {
     try {
-        const data = await store.find().select('storeImage').select('companyName');
+        const data = await store.find();
+        //.select('storeImage').select('companyName');
         res.status(200).json({
             status: true,
             data: data
@@ -69,7 +70,7 @@ exports.getStore = async (req, res, next) => {
 
 exports.getStoreHome = async (req, res, next) => {
     try {
-        const data = await store.find().select('companyName').select('storeImage');
+        const data = await store.find({isApproved:true}).select('companyName').select('storeImage');
         res.status(200).json({
             status: true,
             data: data

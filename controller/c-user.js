@@ -401,7 +401,6 @@ exports.postGetCart = async (req, res, next) => {
                 path:'product',
                 model:'tblproducts'
             }
-            
         }
     })
         .then(users => {
@@ -733,12 +732,17 @@ exports.postRecentItems = async (req, res, next) => {
                             let arr = result.recentItems.items;
                             var im = prod.images.split(',');
                             var fim = im[0];
-                            arr.push({
-                                product: productId,
-                                name: prod.name,
-                                image: fim,
-                                price: prod.price
-                            })
+                            if(isEmptyObject(arr)){
+                                arr.push({
+                                    product: productId,
+                                    name: prod.name,
+                                    image: fim,
+                                    price: prod.price
+                                })
+                            }else{
+                                
+                            }
+                            
                             result.recentItems.items = arr;
                             result.save()
                                 .then(data => {
@@ -766,12 +770,13 @@ exports.postGetRecentList = async (req, res, next) => {
     })
     if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
     user.findOne({ _id: id })
-        .limit(5)
         .then(users => {
             if (users) {
+                data = users.recentItems.items;
+                data.reverse();
                 res.status(200).json({
                     status: true,
-                    data: users.recentItems.items
+                    data: data
                 })
             } else {
                 res.status(201).json({ status: false, message: "User not found" });

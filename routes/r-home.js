@@ -12,5 +12,6 @@ router.post('/shop-by-fabric', homeController.postShopeByFabric);
 router.get('/trending-product', homeController.getTrendingProduct);
 
 router.post('/search-product', homeController.postSearchProduct);
+router.post('/filter-product', homeController.postFilter);
 
 module.exports = router;

@@ -9,121 +9,147 @@ const trending = require('../models/m-tranding');
 const itemPerPage = 1;
 const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../handler/common');
 
-exports.getHomeProducts = (req, res, next)=>{
+exports.getHomeProducts = (req, res, next) => {
     const page = req.body.page;
 
     products.find().populate('brandName').populate('category').populate('type').populate('fabric')
-    .skip((page-1)*itemPerPage)
-    .limit(itemPerPage)
-    .then(data=>{
-        if(!isEmptyObject(data)){
-            res.status(200).json({
-                status: true,
-                data: data
-            });
-        }else{
-            res.status(201).json({
-                status: false,
-                message: "Oop's Products not found!"
-            });
-        }
-    }).catch(err=>{console.log(err)});
+        .skip((page - 1) * itemPerPage)
+        .limit(itemPerPage)
+        .then(data => {
+            if (!isEmptyObject(data)) {
+                res.status(200).json({
+                    status: true,
+                    data: data
+                });
+            } else {
+                res.status(201).json({
+                    status: false,
+                    message: "Oop's Products not found!"
+                });
+            }
+        }).catch(err => { console.log(err) });
 }
 
 exports.postShopeByCategory = (req, res, next) => {
     const cat = req.body.inputCategoury;
     if (!cat) return res.status(201).json({ message: "Provide proper details" });
-    products.find({category:cat}).populate('brandName').populate('category').populate('type').populate('fabric')
-    .then(data=>{
-        res.status(200).json({
-            data:data
-        })
-    }).catch(err=>{console.log(err)});
+    products.find({ category: cat }).populate('brandName').populate('category').populate('type').populate('fabric')
+        .then(data => {
+            res.status(200).json({
+                data: data
+            })
+        }).catch(err => { console.log(err) });
 }
 
 exports.postShopeByBrand = (req, res, next) => {
     const cat = req.body.inputBrand;
     if (!cat) return res.status(201).json({ message: "Provide proper details" });
-    products.find({brandName:cat}).populate('brandName').populate('category').populate('type').populate('fabric')
-    .then(data=>{
-        res.status(200).json({
-            data:data
-        })
-    }).catch(err=>{console.log(err)});
+    products.find({ brandName: cat }).populate('brandName').populate('category').populate('type').populate('fabric')
+        .then(data => {
+            res.status(200).json({
+                data: data
+            })
+        }).catch(err => { console.log(err) });
 }
 
 exports.postShopeByFabric = (req, res, next) => {
     const cat = req.body.inputFabric;
     if (!cat) return res.status(201).json({ message: "Provide proper details" });
-    products.find({fabric:cat}).populate('brandName').populate('category').populate('type').populate('fabric')
-    .then(data=>{
-        res.status(200).json({
-            data:data
-        })
-    }).catch(err=>{console.log(err)});
+    products.find({ fabric: cat }).populate('brandName').populate('category').populate('type').populate('fabric')
+        .then(data => {
+            res.status(200).json({
+                data: data
+            })
+        }).catch(err => { console.log(err) });
 }
 
 exports.postSearchProduct = async (req, res, next) => {
     const text = req.body.inputSearch;
-    if(!text){res.status(201).json({status:false,message:"Provide text!"})}
+    if (!text) { res.status(201).json({ status: false, message: "Provide text!" }) }
     let pro = [];
     let finalPro = [];
-    const prod = await products.find({ name: new RegExp(text, 'i')}).populate('brandName').populate('category').populate('type').populate('fabric');
-    const cat = await category.findOne({ name: new RegExp(text, 'i')});
-    const fab = await fabric.findOne({fabricName: new RegExp(text, 'i')});
-    const typ = await type.findOne({typeName: new RegExp(text, 'i')});
-    if(prod){
-        for(let x of prod){
+    const prod = await products.find({ name: new RegExp(text, 'i') }).populate('brandName').populate('category').populate('type').populate('fabric');
+    const cat = await category.findOne({ name: new RegExp(text, 'i') });
+    const fab = await fabric.findOne({ fabricName: new RegExp(text, 'i') });
+    const typ = await type.findOne({ typeName: new RegExp(text, 'i') });
+    if (prod) {
+        for (let x of prod) {
             pro.push(x)
         }
     }
-    if(cat){
-        const prod = await products.find({ category: cat._id});
-        if(prod){
-            for(let x of prod){
+    if (cat) {
+        const prod = await products.find({ category: cat._id });
+        if (prod) {
+            for (let x of prod) {
                 pro.push(x)
             }
         }
     }
-    if(fab){
-        const prod = await products.find({ fabric: fab._id});
-        if(prod){
-            for(let x of prod){
+    if (fab) {
+        const prod = await products.find({ fabric: fab._id });
+        if (prod) {
+            for (let x of prod) {
                 pro.push(x)
             }
         }
     }
-    if(typ){
-        const prod = await products.find({ type: typ._id});
-        if(prod){
-            for(let x of prod){
+    if (typ) {
+        const prod = await products.find({ type: typ._id });
+        if (prod) {
+            for (let x of prod) {
                 pro.push(x)
             }
         }
     }
     //console.log(pro);
-    let uniqueObject = {}; 
-    for (let i in pro) { 
-        objTitle = pro[i]['_id']; 
-        uniqueObject[objTitle] = pro[i]; 
+    let uniqueObject = {};
+    for (let i in pro) {
+        objTitle = pro[i]['_id'];
+        uniqueObject[objTitle] = pro[i];
     }
-    for (i in uniqueObject) { 
-        finalPro.push(uniqueObject[i]); 
-    } 
+    for (i in uniqueObject) {
+        finalPro.push(uniqueObject[i]);
+    }
     res.status(200).json({
-        data:finalPro
+        data: finalPro
     });
 }
 
 exports.getTrendingProduct = async (req, res, next) => {
     products.find().populate('brandName').populate('category').populate('type').populate('fabric').limit(10)
-    .then(data=>{
-        res.status(200).json({
-            data:data
-        });
-    })
+        .then(data => {
+            res.status(200).json({
+                data: data
+            });
+        })
+}
+
+exports.postFilter = async (req, res, next) => {
+    let typ = req.body.inputType;
+    let cat = req.body.inputCategoury;
+    let bran = req.body.inputBrand;
+    let startPrice = req.body.inputStartPrice;
+    let endPrice = req.body.inputEndPrice;
+    let color = req.body.inputColor;
+    let data;
+    let arr = [];
+    if (typ != 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color == 0) {
+        cata = true;
+    } else if (typ == 0 && cat != 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color == 0) {
+
+    } else if (typ == 0 && cat == 0 && bran != 0 && startPrice == 0 && endPrice == 0 && color == 0) {
+
+    } else if (typ == 0 && cat == 0 && bran == 0 && startPrice != 0 && endPrice == 0 && color == 0) {
+
+    } else if (typ == 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice != 0 && color == 0) {
+
+    } else if (typ == 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color != 0) {
+
+    }   
+    data = isDefined(typ);
+    res.status(200).json({ cata });
 }
 
 exports.postAdvertisement = (req, res, next) => {
-    
+
 }
