@@ -749,14 +749,12 @@ exports.postRecentItems = async (req, res, next) => {
                                         arr.pop(x);
                                     }
                                 }
-                                if(status){
                                     arr.push({
                                         product: productId,
                                         name: prod.name,
                                         image: fim,
                                         price: prod.price
                                     })
-                                }
                             }
                             result.recentItems.items = arr;
                             result.save()
