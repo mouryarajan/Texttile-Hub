@@ -118,8 +118,12 @@ exports.postSearchProduct = async (req, res, next) => {
 exports.getTrendingProduct = async (req, res, next) => {
     trending.find().populate({path:'productId'}).sort({cart:'desc'})
         .then(data => {
+            let arr = [];
+            for(let x of data){
+                arr.push(x.productId);
+            }
             res.status(200).json({
-                data: data
+                data: arr
             });
         })
 }
