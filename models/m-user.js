@@ -123,8 +123,8 @@ const userSchema = new Schema({
         items: [
             {
                 product: {
-                    type: String,
-                    required: false,
+                    type: Schema.Types.ObjectId,
+                    ref: 'tblproducts'
                 },
                 name:{
                     type: String,

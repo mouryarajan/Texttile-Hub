@@ -732,6 +732,7 @@ exports.postRecentItems = async (req, res, next) => {
                             let arr = result.recentItems.items;
                             var im = prod.images.split(',');
                             var fim = im[0];
+                            let status = false;
                             if(isEmptyObject(arr)){
                                 arr.push({
                                     product: productId,
@@ -740,9 +741,21 @@ exports.postRecentItems = async (req, res, next) => {
                                     price: prod.price
                                 })
                             }else{
-                                
+                                for(let x of arr){
+                                    if(x.product == productId){
+                                        status=true;
+                                        arr.pop(x);
+                                    }
+                                }
+                                if(status){
+                                    arr.push({
+                                        product: productId,
+                                        name: prod.name,
+                                        image: fim,
+                                        price: prod.price
+                                    })
+                                }
                             }
-                            
                             result.recentItems.items = arr;
                             result.save()
                                 .then(data => {
@@ -770,6 +783,15 @@ exports.postGetRecentList = async (req, res, next) => {
     })
     if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
     user.findOne({ _id: id })
+        // .populate({
+        //     path:'recentItems',
+        //     populate: {
+        //         path: 'items',
+        //         populate:{
+        //             path:'product'
+        //         }
+        //     }
+        // })
         .then(users => {
             if (users) {
                 data = users.recentItems.items;
