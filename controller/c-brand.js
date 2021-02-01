@@ -42,6 +42,11 @@ exports.postBrand = async (req, res, next) => {
     }).catch(err=>{console.log(err);});
 }
 
+exports.getBrand = async (req, res, next) => {
+    const bran = brand.find();
+    res.status(200).json({data:bran})
+}
+
 exports.postType = (req, res, next) =>{
     const name = req.body.inputType;
     const Type = new type({

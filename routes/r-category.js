@@ -12,6 +12,7 @@ router.get('/get-category', categoryController.getCategory);
 
 //Brand
 router.post('/add-brand', brandController.postBrand);
+router.get('/get-brand', brandController.getBrand);
 
 //Type
 router.post('/add-type', brandController.postType);
