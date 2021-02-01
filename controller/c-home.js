@@ -103,7 +103,7 @@ exports.postSearchProduct = async (req, res, next) => {
         }
     }
     if (bran) {
-        const prod = await products.find({ type: typ._id });
+        const prod = await products.find({ brandName: bran._id });
         if (prod) {
             for (let x of prod) {
                 pro.push(x)
