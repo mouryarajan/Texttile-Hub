@@ -43,7 +43,7 @@ exports.postBrand = async (req, res, next) => {
 }
 
 exports.getBrand = async (req, res, next) => {
-    const bran = brand.find();
+    const bran = await brand.find();
     res.status(200).json({data:bran})
 }
 

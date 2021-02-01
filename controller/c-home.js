@@ -68,7 +68,7 @@ exports.postSearchProduct = async (req, res, next) => {
     if (!text) { res.status(201).json({ status: false, message: "Provide text!" }) }
     let pro = [];
     let finalPro = [];
-    const prod = await products.find({ name: new RegExp(text, 'i') }).populate('brandName').populate('category').populate('type').populate('fabric').pupulate({path:'storeId',select:'isApproved'});
+    const prod = await products.find({ name: new RegExp(text, 'i') }).populate('brandName').populate('category').populate('type').populate('fabric').populate({path:'storeId',select:'isApproved'});
     const bran = await brand.findOne({brandName:new RegExp(text, 'i')});
     const cat = await category.findOne({ name: new RegExp(text, 'i') });
     const fab = await fabric.findOne({ fabricName: new RegExp(text, 'i') });
@@ -82,7 +82,7 @@ exports.postSearchProduct = async (req, res, next) => {
         }
     }
     if (cat) {
-        const prod = await products.find({ category: cat._id }).populate('brandName').populate('category').populate('type').populate('fabric').pupulate({path:'storeId',select:'isApproved'});
+        const prod = await products.find({ category: cat._id }).populate('brandName').populate('category').populate('type').populate('fabric').populate({path:'storeId',select:'isApproved'});
         if (prod) {
             for (let x of prod) {
                 if(x.storeId.isApproved){
@@ -92,7 +92,7 @@ exports.postSearchProduct = async (req, res, next) => {
         }
     }
     if (fab) {
-        const prod = await products.find({ fabric: fab._id }).populate('brandName').populate('category').populate('type').populate('fabric').pupulate({path:'storeId',select:'isApproved'});
+        const prod = await products.find({ fabric: fab._id }).populate('brandName').populate('category').populate('type').populate('fabric').populate({path:'storeId',select:'isApproved'});
         if (prod) {
             for (let x of prod) {
                 if(x.storeId.isApproved){
@@ -102,7 +102,7 @@ exports.postSearchProduct = async (req, res, next) => {
         }
     }
     if (typ) {
-        const prod = await products.find({ type: typ._id }).populate('brandName').populate('category').populate('type').populate('fabric').pupulate({path:'storeId',select:'isApproved'});
+        const prod = await products.find({ type: typ._id }).populate('brandName').populate('category').populate('type').populate('fabric').populate({path:'storeId',select:'isApproved'});
         if (prod) {
             for (let x of prod) {
                 if(x.storeId.isApproved){
@@ -112,7 +112,7 @@ exports.postSearchProduct = async (req, res, next) => {
         }
     }
     if (bran) {
-        const prod = await products.find({ brandName: bran._id }).populate('brandName').populate('category').populate('type').populate('fabric').pupulate({path:'storeId',select:'isApproved'});
+        const prod = await products.find({ brandName: bran._id }).populate('brandName').populate('category').populate('type').populate('fabric').populate({path:'storeId',select:'isApproved'});
         if (prod) {
             for (let x of prod) {
                 if(x.storeId.isApproved){
@@ -122,7 +122,7 @@ exports.postSearchProduct = async (req, res, next) => {
         }
     }
     if (sto) {
-        const prod = await products.find({ storeId: sto._id }).populate('brandName').populate('category').populate('type').populate('fabric').pupulate({path:'storeId',select:'isApproved'});
+        const prod = await products.find({ storeId: sto._id }).populate('brandName').populate('category').populate('type').populate('fabric').populate({path:'storeId',select:'isApproved'});
         if (prod) {
             for (let x of prod) {
                 if(x.storeId.isApproved){
