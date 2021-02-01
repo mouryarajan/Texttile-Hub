@@ -116,7 +116,7 @@ exports.postSearchProduct = async (req, res, next) => {
 }
 
 exports.getTrendingProduct = async (req, res, next) => {
-    products.find().populate('brandName').populate('category').populate('type').populate('fabric').limit(10)
+    trending.find().populate({path:'productId'}).sort({cart:'desc'})
         .then(data => {
             res.status(200).json({
                 data: data

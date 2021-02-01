@@ -29,12 +29,16 @@ exports.postOrder = async (req, res, next) => {
             var mm = someDate.getMonth() + 1;
             var y = someDate.getFullYear();
             var a;
+            let sta = false;
             for (let n of add) {
-                if (n._id == d.addressid) {
+                if (n._id == req.body.inputAddressId) {
                     a = n;
-                } else {
-                    res.status(201).json({ status: false, message: "Address not found!" });
+                    sta=true;
+                    break;
                 }
+            }
+            if(!sta){
+                res.status(201).json({ status: false, message: "Address not found!" });
             }
             var someFormattedDate = dd + '/' + mm + '/' + y;
             for (let n of arr) {
@@ -100,18 +104,17 @@ exports.postBuyNow = async (req, res, next) => {
             var mm = someDate.getMonth() + 1;
             var y = someDate.getFullYear();
             var a = [];
-            // for (let n of add) {
-            //     if (n._id == req.body.inputAddressId) {
-            //         a = n;
-            //     } else {
-            //         res.status(201).json({ status: false, message: "Address not found!" });
-            //     }
-            // }
-            a = await isValueExistInArray(add, req.body.inputAddressId);
-            if (a.length === 0) {
-                return res.status(201).json({ status: false, message: "Address not found!" });
+            let sta = false;
+            for (let n of add) {
+                if (n._id == req.body.inputAddressId) {
+                    a = n;
+                    sta=true;
+                    break;
+                }
             }
-            //console.log(a);
+            if(!sta){
+                res.status(201).json({ status: false, message: "Address not found!" });
+            }
             var someFormattedDate = dd + '/' + mm + '/' + y;
             const pro = await products.findOne({ _id: req.body.inputProductId });
             let fprice = 0;
