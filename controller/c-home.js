@@ -73,6 +73,7 @@ exports.postSearchProduct = async (req, res, next) => {
     const cat = await category.findOne({ name: new RegExp(text, 'i') });
     const fab = await fabric.findOne({ fabricName: new RegExp(text, 'i') });
     const typ = await type.findOne({ typeName: new RegExp(text, 'i') });
+    const sto = await store.findOne({companyName: new RegExp(text, 'i')})
     if (prod) {
         for (let x of prod) {
             pro.push(x)
@@ -104,6 +105,14 @@ exports.postSearchProduct = async (req, res, next) => {
     }
     if (bran) {
         const prod = await products.find({ brandName: bran._id });
+        if (prod) {
+            for (let x of prod) {
+                pro.push(x)
+            }
+        }
+    }
+    if (sto) {
+        const prod = await products.find({ storeId: sto._id });
         if (prod) {
             for (let x of prod) {
                 pro.push(x)
