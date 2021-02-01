@@ -109,6 +109,10 @@ const storeSchema = new Schema({
     storeImage: {
         type: String,
         required: false
+    },
+    remark: {
+        type: String,
+        required: false
     }
 });
 

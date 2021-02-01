@@ -9,5 +9,6 @@ router.post('/add-store', storeController.postStore);
 router.post('/approve-store', storeController.approveStore);
 router.get('/store-list', storeController.getStore);
 router.get('/store-list-home', storeController.getStoreHome);
+router.get('/own-store-detail', storeController.getOwnStore);
 
 module.exports = router;

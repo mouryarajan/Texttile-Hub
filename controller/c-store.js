@@ -5,12 +5,12 @@ const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../hand
 exports.postStore = async (req, res, next) => {
     try {
         const d = req.body;
-        if(!d) return res.status(201).json({ status: false, message: "Provide Proper Data" });
+        if (!d) return res.status(201).json({ status: false, message: "Provide Proper Data" });
         let id;
         await decodeDataFromAccessToken(req.headers.token).then((data) => {
             id = data.userId;
         })
-        if(!id) return res.status(201).json({ status: false, message: "Auth token failed" });
+        if (!id) return res.status(201).json({ status: false, message: "Auth token failed" });
         const Store = new store({
             companyName: d.inputCompanyName,
             companyEmail: d.inputCompanyEmail,
@@ -70,7 +70,7 @@ exports.getStore = async (req, res, next) => {
 
 exports.getStoreHome = async (req, res, next) => {
     try {
-        const data = await store.find({isApproved:true}).select('companyName').select('storeImage');
+        const data = await store.find({ isApproved: true }).select('companyName').select('storeImage');
         res.status(200).json({
             status: true,
             data: data
@@ -89,11 +89,14 @@ exports.approveStore = async (req, res, next) => {
         const data = await store.findOne({ _id: storeId });
         if (!data) return res.status(201).json({ status: false, message: "Something Went Wrong" });
         data.isApproved = status;
+        if (!data.status) {
+            data.remark = req.body.inputRemark;
+        }
 
-        if(status){
-            user.findOne({_id:data.userId}).then(response=>{response.role="Merchant"; response.save();}).catch(err=>{console.log(err)});
-        }else{
-            user.findOne({_id:data.userId}).then(response=>{response.role="Customer"; response.save();}).catch(err=>{console.log(err)});
+        if (status) {
+            user.findOne({ _id: data.userId }).then(response => { response.role = "Merchant"; response.save(); }).catch(err => { console.log(err) });
+        } else {
+            user.findOne({ _id: data.userId }).then(response => { response.role = "Customer"; response.save(); }).catch(err => { console.log(err) });
         }
 
         const result = await data.save();
@@ -107,3 +110,16 @@ exports.approveStore = async (req, res, next) => {
     }
 }
 
+exports.getOwnStore = async (req, res, next) => {
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
+    if (!id) return res.status(201).json({ status: false, message: "Auth token failed" });
+    store.findOne({userId: id})
+    .then(data=>{
+        res.status(200).json({
+            data: data
+        })
+    }).catch(err=>console.log(err));
+}
