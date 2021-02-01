@@ -41,7 +41,8 @@ exports.postStore = async (req, res, next) => {
                 cancelCheck: d.inputCancelCheck,
             },
             userId: id,
-            storeImage: d.inputStoreImage
+            storeImage: d.inputStoreImage,
+            remark: null
         });
         const data = await Store.save();
         if (!data) return res.status(201).json({ status: false, message: "Something Went Wrong" });
@@ -52,6 +53,61 @@ exports.postStore = async (req, res, next) => {
         });
     } catch (err) {
         res.status(201).json({ err });
+    }
+}
+
+exports.editStore = async (req, res, next) => {
+    const d = req.body;
+    if (!d) return res.status(201).json({ status: false, message: "Provide Proper Data" });
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
+    if (!id) return res.status(201).json({ status: false, message: "Auth token failed" });
+    const data = await store.findOne({userId:id});
+    if(data){
+        data.companyName = d.inputCompanyName;
+        data.companyEmail = d.inputCompanyEmail;
+        data.brandName = d.inputBrandName;
+        data.gstNumber = d.inputGstNumber;
+        data.panNumber = d.inputPanNumber;
+        data.panName= d.inputPanName;
+        data.contactName= d.inputContactName;
+        data.contactNumber= d.inputContactNumber;
+        data.bankDetail = {
+            accountNumber: d.inputAccountNumber,
+            accountName: d.inputAccountName,
+            ifscCode: d.inputIfscCode,
+            bankName: d.inputBankName,
+        };
+        data.storeType= d.inputStoreType;
+        data.alternatePhoneNumber= d.inputAlternatePhoneNumber;
+        data.address= {
+            street: d.inputStreet,
+            landmark: d.inputLandmark,
+            city: d.inputCity,
+            state: d.inputState,
+            pincode: d.inputPincode,
+        };
+        data.document= {
+            panCard: d.inputPanCard,
+            gstCard: d.inputGstCard,
+            cancelCheck: d.inputCancelCheck,
+        };
+        data.userId= id;
+        data.storeImage= d.inputStoreImage;
+        data.remark = null;
+        data.save()
+        .then(result=>{
+            res.status(200).json({
+                status: true
+            })
+        }).catch(err=>console.log(err));
+    }else{
+        res.status(201).json({
+            status: false,
+            message: "Store not found"
+        })
     }
 }
 
@@ -116,10 +172,10 @@ exports.getOwnStore = async (req, res, next) => {
         id = data.userId;
     })
     if (!id) return res.status(201).json({ status: false, message: "Auth token failed" });
-    store.findOne({userId: id})
-    .then(data=>{
-        res.status(200).json({
-            data: data
-        })
-    }).catch(err=>console.log(err));
+    store.findOne({ userId: id })
+        .then(data => {
+            res.status(200).json({
+                data: data
+            })
+        }).catch(err => console.log(err));
 }

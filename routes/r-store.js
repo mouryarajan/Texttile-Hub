@@ -6,6 +6,7 @@ const storeController = require('../controller/c-store');
 
 //Routes
 router.post('/add-store', storeController.postStore);
+router.post('/edit-store', storeController.editStore);
 router.post('/approve-store', storeController.approveStore);
 router.get('/store-list', storeController.getStore);
 router.get('/store-list-home', storeController.getStoreHome);
