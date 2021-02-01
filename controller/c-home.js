@@ -69,6 +69,7 @@ exports.postSearchProduct = async (req, res, next) => {
     let pro = [];
     let finalPro = [];
     const prod = await products.find({ name: new RegExp(text, 'i') }).populate('brandName').populate('category').populate('type').populate('fabric');
+    const bran = await brand.findOne({brandName:new RegExp(text, 'i')});
     const cat = await category.findOne({ name: new RegExp(text, 'i') });
     const fab = await fabric.findOne({ fabricName: new RegExp(text, 'i') });
     const typ = await type.findOne({ typeName: new RegExp(text, 'i') });
@@ -94,6 +95,14 @@ exports.postSearchProduct = async (req, res, next) => {
         }
     }
     if (typ) {
+        const prod = await products.find({ type: typ._id });
+        if (prod) {
+            for (let x of prod) {
+                pro.push(x)
+            }
+        }
+    }
+    if (bran) {
         const prod = await products.find({ type: typ._id });
         if (prod) {
             for (let x of prod) {
