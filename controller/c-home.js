@@ -6,15 +6,15 @@ const brand = require('../models/m-brand');
 const fabric = require('../models/m-fabric');
 const type = require('../models/m-type');
 const trending = require('../models/m-tranding');
-const itemPerPage = 5;
+const itemPerPage = 1;
 const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../handler/common');
 
 exports.getHomeProducts = (req, res, next) => {
     const page = req.body.page;
 
     products.find().populate('brandName').populate('category').populate('type').populate('fabric').populate('storeId','isApproved')
-        .skip((page - 1) * itemPerPage)
-        .limit(itemPerPage)
+        //.skip((page - 1) * itemPerPage)
+        //.limit(itemPerPage)
         .then(data => {
             if (!isEmptyObject(data)) {
                 let arr = [];
