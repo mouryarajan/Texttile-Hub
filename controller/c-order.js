@@ -211,7 +211,6 @@ exports.postUpdateOrderStatus = (req, res, next) => {
     const oid = req.body.inputOrderid;
     const status = req.body.inputStatus;
     if (!oid) return res.status(201).json({ message: "Provide proper details" });
-    if (!status) return res.status(201).json({ message: "Provide proper details" });
     order.findOne({ _id: oid })
         .then(data => {
             data.status = status;
