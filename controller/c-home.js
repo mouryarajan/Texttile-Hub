@@ -6,20 +6,26 @@ const brand = require('../models/m-brand');
 const fabric = require('../models/m-fabric');
 const type = require('../models/m-type');
 const trending = require('../models/m-tranding');
-const itemPerPage = 1;
+const itemPerPage = 5;
 const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../handler/common');
 
 exports.getHomeProducts = (req, res, next) => {
     const page = req.body.page;
 
-    products.find().populate('brandName').populate('category').populate('type').populate('fabric')
+    products.find().populate('brandName').populate('category').populate('type').populate('fabric').populate('storeId','isApproved')
         .skip((page - 1) * itemPerPage)
         .limit(itemPerPage)
         .then(data => {
             if (!isEmptyObject(data)) {
+                let arr = [];
+                for(let x of data){
+                    if(x.storeId.isApproved){
+                        arr.push(x);
+                    }
+                }
                 res.status(200).json({
                     status: true,
-                    data: data
+                    data: arr
                 });
             } else {
                 res.status(201).json({
@@ -195,12 +201,17 @@ exports.getTrendingProduct = async (req, res, next) => {
         },{
             path:'fabric',
             model: 'tblfabric'
+        },{
+            path:'storeId',select:'isApproved',
+            model:'tblstore'
         }]
     }).sort({cart:'desc'})
         .then(data => {
             let arr = [];
             for(let x of data){
+                if(x.productId.storeId.isApproved){
                     arr.push(x.productId);
+                }
             }
             res.status(200).json({
                 data: arr

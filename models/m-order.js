@@ -8,8 +8,8 @@ const orderSchema = new Schema({
         ref: 'tbluser'
     },
     product: {
-        type: String,
-        required: true
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'tblproducts'
     },
     productName: {
         type: String,

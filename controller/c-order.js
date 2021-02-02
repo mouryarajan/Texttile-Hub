@@ -34,11 +34,11 @@ exports.postOrder = async (req, res, next) => {
             for (let n of add) {
                 if (n._id == req.body.inputAddressId) {
                     a = n;
-                    sta=true;
+                    sta = true;
                     break;
                 }
             }
-            if(!sta){
+            if (!sta) {
                 res.status(201).json({ status: false, message: "Address not found!" });
             }
             var someFormattedDate = dd + '/' + mm + '/' + y;
@@ -109,20 +109,17 @@ exports.postBuyNow = async (req, res, next) => {
             for (let n of add) {
                 if (n._id == req.body.inputAddressId) {
                     a = n;
-                    sta=true;
+                    sta = true;
                     break;
                 }
             }
-            if(!sta){
+            if (!sta) {
                 res.status(201).json({ status: false, message: "Address not found!" });
             }
             var someFormattedDate = dd + '/' + mm + '/' + y;
             const pro = await products.findOne({ _id: req.body.inputProductId });
             let fprice = 0;
-            if (req.body.inputQuantity > 1) {
-                fprice = pro.price * req.body.inputQuantity
-            }
-            let x = pro.images.split(',');
+            fprice = pro.price * req.body.inputQuantity;
             let Order = new order({
                 userId: id,
                 product: pro._id,
@@ -227,14 +224,40 @@ exports.getOrder = async (req, res, next) => {
         id = data.userId;
     })
     if (!id) return res.status(201).json({ status: false, message: "Unauthorised user" });
-    const stro = await store.findOne({userId:id});
+    const stro = await store.findOne({ userId: id });
     if (!stro) return res.status(201).json({ status: false, message: "Store not found" });
-    order.find({ store: stro._id }).populate({path:'userId',select:'name phoneNumber gender email'})
+    if(stro.isApproved==true){
+        order.find({ store: stro._id }).populate({ path: 'userId', select: 'name phoneNumber gender email' })
+        .populate({
+            path: 'product', select: 'brandName category type fabric',
+            populate: [
+                {
+                    path: 'brandName',
+                    model: 'tblbrand'
+                },
+                {
+                    path: 'category',
+                    model: 'tblcategory'
+                },
+                {
+                    path: 'type',
+                    model: 'tbltype'
+                },
+                {
+                    path: 'fabric',
+                    model: 'tblfabric'
+                }
+            ]
+        })
         .then(data => {
             res.status(200).json({
                 data: data
             })
         }).catch(err => { console.log(err) });
+    }else{
+        res.status(201).json({status:false,message:"You are not authorised user"});
+    }
+    
 }
 
 exports.getUserOrder = async (req, res, next) => {

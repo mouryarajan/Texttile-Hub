@@ -3,6 +3,7 @@ const brandstore = require('../models/m-brand-store');
 const category = require('../models/m-category');
 const fabric = require('../models/m-fabric');
 const type = require('../models/m-type');
+const store = require('../models/m-store');
 const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../handler/common');
 
 exports.postBrand = async (req, res, next) => {
@@ -44,7 +45,18 @@ exports.postBrand = async (req, res, next) => {
 
 exports.getBrand = async (req, res, next) => {
     const bran = await brand.find();
-    res.status(200).json({data:bran})
+    const branStore = await brandstore.find().populate('brandid');
+    let arr = [];
+    for(let x of branStore){
+        const stro = await store.findOne({userId:x.userid});
+        if(stro.isApproved){
+            arr.push({
+                _id:x.brandid._id,
+                brandName: x.brandid.brandName
+            });
+        }
+    }
+    res.status(200).json({data:arr})
 }
 
 exports.postType = (req, res, next) =>{
