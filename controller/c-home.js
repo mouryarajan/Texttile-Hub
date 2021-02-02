@@ -183,29 +183,24 @@ exports.postSearchProduct = async (req, res, next) => {
 exports.getTrendingProduct = async (req, res, next) => {
     trending.find().populate({
         path:'productId',
-        populate:{
+        populate:[{
             path:'brandName',
             model: 'tblbrand'
-        },
-        populate:{
+        },{
             path:'category',
             model: 'tblcategory'
-        },
-        populate:{
+        },{
             path:'type',
             model: 'tbltype'
-        },
-        populate:{
+        },{
             path:'fabric',
             model: 'tblfabric'
-        }
+        }]
     }).sort({cart:'desc'})
         .then(data => {
             let arr = [];
             for(let x of data){
-                if(x.productId.isApproved){
                     arr.push(x.productId);
-                }
             }
             res.status(200).json({
                 data: arr
