@@ -55,7 +55,7 @@ exports.postOrder = async (req, res, next) => {
                     product: n._id,
                     productName: n.name,
                     store: n.storeId,
-                    image: d.inputImage,
+                    image: x[0],
                     payment: d.paymentMode,
                     quantity: n.quantity,
                     size: s,
