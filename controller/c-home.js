@@ -38,7 +38,7 @@ exports.postShopeByCategory = (req, res, next) => {
             let arr = [];
             for(let x of data){
                 if(x.storeId.isApproved){
-                    arr.push(data)
+                    arr.push(x)
                 }
             }
             res.status(200).json({
@@ -55,7 +55,7 @@ exports.postShopeByType = (req, res, next) => {
             let arr = [];
             for(let x of data){
                 if(x.storeId.isApproved){
-                    arr.push(data)
+                    arr.push(x)
                 }
             }
             res.status(200).json({
@@ -72,7 +72,7 @@ exports.postShopeByBrand = (req, res, next) => {
             let arr = [];
             for(let x of data){
                 if(x.storeId.isApproved){
-                    arr.push(data)
+                    arr.push(x)
                 }
             }
             res.status(200).json({
@@ -89,7 +89,7 @@ exports.postShopeByFabric = (req, res, next) => {
             let arr = [];
             for(let x of data){
                 if(x.storeId.isApproved){
-                    arr.push(data)
+                    arr.push(x)
                 }
             }
             res.status(200).json({
@@ -181,11 +181,31 @@ exports.postSearchProduct = async (req, res, next) => {
 }
 
 exports.getTrendingProduct = async (req, res, next) => {
-    trending.find().populate({path:'productId'}).sort({cart:'desc'})
+    trending.find().populate({
+        path:'productId',
+        populate:{
+            path:'brandName',
+            model: 'tblbrand'
+        },
+        populate:{
+            path:'category',
+            model: 'tblcategory'
+        },
+        populate:{
+            path:'type',
+            model: 'tbltype'
+        },
+        populate:{
+            path:'fabric',
+            model: 'tblfabric'
+        }
+    }).sort({cart:'desc'})
         .then(data => {
             let arr = [];
             for(let x of data){
-                arr.push(x.productId);
+                if(x.productId.isApproved){
+                    arr.push(x.productId);
+                }
             }
             res.status(200).json({
                 data: arr
