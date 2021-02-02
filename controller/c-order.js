@@ -230,7 +230,7 @@ exports.getOrder = async (req, res, next) => {
     if (!id) return res.status(201).json({ status: false, message: "Unauthorised user" });
     const stro = await store.findOne({userId:id});
     if (!stro) return res.status(201).json({ status: false, message: "Store not found" });
-    order.find({ store: stro._id }).populate('userId')
+    order.find({ store: stro._id }).populate({path:'userId',select:'name phoneNumber gender email'})
         .then(data => {
             res.status(200).json({
                 data: data
