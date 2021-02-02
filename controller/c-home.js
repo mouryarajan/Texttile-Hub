@@ -37,7 +37,7 @@ exports.postShopeByCategory = (req, res, next) => {
         .then(data => {
             let arr = [];
             for(let x of data){
-                if(data.storeId.isApproved){
+                if(x.storeId.isApproved){
                     arr.push(data)
                 }
             }
@@ -54,7 +54,7 @@ exports.postShopeByType = (req, res, next) => {
         .then(data => {
             let arr = [];
             for(let x of data){
-                if(data.storeId.isApproved){
+                if(x.storeId.isApproved){
                     arr.push(data)
                 }
             }
@@ -71,7 +71,7 @@ exports.postShopeByBrand = (req, res, next) => {
         .then(data => {
             let arr = [];
             for(let x of data){
-                if(data.storeId.isApproved){
+                if(x.storeId.isApproved){
                     arr.push(data)
                 }
             }
@@ -88,7 +88,7 @@ exports.postShopeByFabric = (req, res, next) => {
         .then(data => {
             let arr = [];
             for(let x of data){
-                if(data.storeId.isApproved){
+                if(x.storeId.isApproved){
                     arr.push(data)
                 }
             }
