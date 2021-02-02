@@ -13,9 +13,8 @@ exports.postLoginCheck = async (req, res, next) => {
     if (!phno) return res.status(201).json({ status: false, message: "Enter Phone Number" });
     if (!password) return res.status(201).json({ status: false, message: "Enter Password" });
     try {
-        const data = await user.findOne({ phoneNumber: phno }).select('name').select('phoneNumber').select('password');
+        const data = await user.findOne({ phoneNumber: phno }).select('name').select('phoneNumber').select('password').select('role').select('email').select('gender');
         if (!data) return res.status(201).json({ status: false, message: "Phone Number or Password is Invalid!" });
-
         const validPassword = await bcrypt.compare(password, data.password);
         if (!validPassword) return res.status(201).json({ status: false, message: "invalid password!" });
         const token = jwt.sign({
@@ -26,9 +25,9 @@ exports.postLoginCheck = async (req, res, next) => {
             lastName: data.name.lastName,
             phoneNumber: data.phoneNumber,
             role: data.role,
-            image: data.image,
-            authToken: token,
-            address: data.address
+            email: data.email,
+            gender: data.gender,
+            authToken: token
         }
         res.status(200).json({
             status: true,
