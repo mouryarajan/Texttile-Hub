@@ -11,6 +11,9 @@ exports.postStore = async (req, res, next) => {
             id = data.userId;
         })
         if (!id) return res.status(201).json({ status: false, message: "Auth token failed" });
+        const payment = {
+            items: d.inputPaymentMode
+        }
         const Store = new store({
             companyName: d.inputCompanyName,
             companyEmail: d.inputCompanyEmail,
@@ -42,7 +45,8 @@ exports.postStore = async (req, res, next) => {
             },
             userId: id,
             storeImage: d.inputStoreImage,
-            remark: null
+            remark: null,
+            paymentMode: payment
         });
         const use = await user.findOne({_id:id});
         const data = await Store.save();
@@ -67,6 +71,9 @@ exports.editStore = async (req, res, next) => {
     })
     if (!id) return res.status(201).json({ status: false, message: "Auth token failed" });
     const data = await store.findOne({userId:id});
+    const payment = {
+        items: d.inputPaymentMode
+    }
     if(data){
         data.companyName = d.inputCompanyName;
         data.companyEmail = d.inputCompanyEmail;
@@ -99,6 +106,7 @@ exports.editStore = async (req, res, next) => {
         data.userId= id;
         data.storeImage= d.inputStoreImage;
         data.remark = null;
+        data.paymentMode = payment;
         data.save()
         .then(result=>{
             res.status(200).json({
@@ -122,6 +130,13 @@ exports.editMinorStore = async (req, res, nest) => {
     store.findOne({userId:id})
     .then(data=>{
         if(data){
+            let payment = data.paymentMode;
+            if(req.body.inputPaymentMode){
+                payment = {
+                    items: d.inputPaymentMode
+                }
+            }
+            data.paymentMode = payment;
             if(req.body.inputStoreImage){
                 data.storeImage = req.body.inputStoreImage;
             }

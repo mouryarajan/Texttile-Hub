@@ -113,6 +113,14 @@ const storeSchema = new Schema({
     remark: {
         type: String,
         required: false
+    },
+    paymentMode: {
+        items:[{
+            mode:{
+                type:String,
+                required:false
+            }
+        }]
     }
 });
 
