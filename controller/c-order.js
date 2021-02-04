@@ -233,18 +233,22 @@ exports.getOrder = async (req, res, next) => {
             populate: [
                 {
                     path: 'brandName',
+                    select: 'brandName',
                     model: 'tblbrand'
                 },
                 {
                     path: 'category',
+                    select: 'name image',
                     model: 'tblcategory'
                 },
                 {
                     path: 'type',
+                    select: 'typeName',
                     model: 'tbltype'
                 },
                 {
                     path: 'fabric',
+                    select: 'fabricName',
                     model: 'tblfabric'
                 }
             ]

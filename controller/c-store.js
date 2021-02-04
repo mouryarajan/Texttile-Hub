@@ -44,9 +44,11 @@ exports.postStore = async (req, res, next) => {
             storeImage: d.inputStoreImage,
             remark: null
         });
+        const use = await user.findOne({_id:id});
         const data = await Store.save();
         if (!data) return res.status(201).json({ status: false, message: "Something Went Wrong" });
-
+        use.storeRequest = true;
+        await use.save();
         res.status(200).json({
             status: true,
             message: "Wait for Approval!"
@@ -149,10 +151,10 @@ exports.approveStore = async (req, res, next) => {
             data.remark = req.body.inputRemark;
         }
 
-        if (status) {
-            user.findOne({ _id: data.userId }).then(response => { response.role = "Merchant"; response.save(); }).catch(err => { console.log(err) });
+        if (status == true || status == 'true') {
+            user.findOne({ _id: data.userId }).then(response => { response.role = "Merchant"; response.storeRequest=true; response.save(); }).catch(err => { console.log(err) });
         } else {
-            user.findOne({ _id: data.userId }).then(response => { response.role = "Customer"; response.save(); }).catch(err => { console.log(err) });
+            user.findOne({ _id: data.userId }).then(response => { response.role = "Customer"; response.storeRequest=false; response.save(); }).catch(err => { console.log(err) });
         }
 
         const result = await data.save();

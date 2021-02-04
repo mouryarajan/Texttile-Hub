@@ -27,7 +27,8 @@ exports.postLoginCheck = async (req, res, next) => {
             role: data.role,
             email: data.email,
             gender: data.gender,
-            authToken: token
+            authToken: token,
+            storeRequest: data.storeRequest
         }
         res.status(200).json({
             status: true,
@@ -733,6 +734,7 @@ exports.postRecentItems = async (req, res, next) => {
                             var im = prod.images.split(',');
                             var fim = im[0];
                             let status = false;
+                            let arrr=[];
                             if(isEmptyObject(arr)){
                                 arr.push({
                                     product: productId,
@@ -742,19 +744,19 @@ exports.postRecentItems = async (req, res, next) => {
                                 })
                             }else{
                                 for(let x of arr){
-                                    if(x.product == productId){
+                                    if(x.product.toString() != prod._id.toString()){
                                         status=true;
-                                        arr.pop(x);
+                                        arrr.push(x);
                                     }
                                 }
-                                    arr.push({
+                                    arrr.push({
                                         product: productId,
                                         name: prod.name,
                                         image: fim,
                                         price: prod.price
                                     })
                             }
-                            result.recentItems.items = arr;
+                            result.recentItems.items = arrr;
                             result.save()
                                 .then(data => {
                                     if (data) {

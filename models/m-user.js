@@ -145,6 +145,11 @@ const userSchema = new Schema({
         type: String,
         default: "Customer",
         required: true
+    },
+    storeRequest: {
+        type: Boolean,
+        default: false,
+        required: true
     }
 });
 
