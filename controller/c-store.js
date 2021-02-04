@@ -113,6 +113,40 @@ exports.editStore = async (req, res, next) => {
     }
 }
 
+exports.editMinorStore = async (req, res, nest) => {
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
+    if (!id) return res.status(201).json({ status: false, message: "Auth token failed" });
+    store.findOne({userId:id})
+    .then(data=>{
+        if(data){
+            if(req.body.inputStoreImage){
+                data.storeImage = req.body.inputStoreImage;
+            }
+            if(req.body.inputContactName){
+                data.contactName = req.body.inputContactName;
+            }
+            if(req.body.inputContactNumber){
+                data.contactNumber = req.body.inputContactNumber;
+            }
+            if(req.body.inputStoreType){
+                data.storeType = req.body.inputStoreType;
+            }
+            if(req.body.inputCompanyName){
+                data.companyName = req.body.inputCompanyName;
+            }
+            data.save()
+            .then(result=>{
+                res.status(201).json({status: true})
+            }).catch(err=>console.log(err));
+        }else{
+            res.status(201).json({message:"Store not found", status: false})
+        }
+    }).catch(err=>console.log(err));
+}
+
 exports.getStore = async (req, res, next) => {
     try {
         const data = await store.find();
