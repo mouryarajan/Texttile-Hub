@@ -11,9 +11,17 @@ exports.postStore = async (req, res, next) => {
             id = data.userId;
         })
         if (!id) return res.status(201).json({ status: false, message: "Auth token failed" });
-        const payment = {
-            items: d.inputPaymentMode
+        const pay = d.inputPaymentMode;
+        const payArray = pay.split(',');
+        const payment = [];
+        for (let x of payArray) {
+            payment.push({
+                mode: x
+            })
         }
+        const finalPayment = {
+            items: payment
+        };
         const Store = new store({
             companyName: d.inputCompanyName,
             companyEmail: d.inputCompanyEmail,
@@ -46,9 +54,9 @@ exports.postStore = async (req, res, next) => {
             userId: id,
             storeImage: d.inputStoreImage,
             remark: null,
-            paymentMode: payment
+            paymentMode: finalPayment
         });
-        const use = await user.findOne({_id:id});
+        const use = await user.findOne({ _id: id });
         const data = await Store.save();
         if (!data) return res.status(201).json({ status: false, message: "Something Went Wrong" });
         use.storeRequest = true;
@@ -70,50 +78,58 @@ exports.editStore = async (req, res, next) => {
         id = data.userId;
     })
     if (!id) return res.status(201).json({ status: false, message: "Auth token failed" });
-    const data = await store.findOne({userId:id});
-    const payment = {
-        items: d.inputPaymentMode
+    const data = await store.findOne({ userId: id });
+    const pay = d.inputPaymentMode;
+    const payArray = pay.split(',');
+    const payment = [];
+    for (let x of payArray) {
+        payment.push({
+            mode: x
+        })
     }
-    if(data){
+    const finalPayment = {
+        items: payment
+    };
+    if (data) {
         data.companyName = d.inputCompanyName;
         data.companyEmail = d.inputCompanyEmail;
         data.brandName = d.inputBrandName;
         data.gstNumber = d.inputGstNumber;
         data.panNumber = d.inputPanNumber;
-        data.panName= d.inputPanName;
-        data.contactName= d.inputContactName;
-        data.contactNumber= d.inputContactNumber;
+        data.panName = d.inputPanName;
+        data.contactName = d.inputContactName;
+        data.contactNumber = d.inputContactNumber;
         data.bankDetail = {
             accountNumber: d.inputAccountNumber,
             accountName: d.inputAccountName,
             ifscCode: d.inputIfscCode,
             bankName: d.inputBankName,
         };
-        data.storeType= d.inputStoreType;
-        data.alternatePhoneNumber= d.inputAlternatePhoneNumber;
-        data.address= {
+        data.storeType = d.inputStoreType;
+        data.alternatePhoneNumber = d.inputAlternatePhoneNumber;
+        data.address = {
             street: d.inputStreet,
             landmark: d.inputLandmark,
             city: d.inputCity,
             state: d.inputState,
             pincode: d.inputPincode,
         };
-        data.document= {
+        data.document = {
             panCard: d.inputPanCard,
             gstCard: d.inputGstCard,
             cancelCheck: d.inputCancelCheck,
         };
-        data.userId= id;
-        data.storeImage= d.inputStoreImage;
+        data.userId = id;
+        data.storeImage = d.inputStoreImage;
         data.remark = null;
-        data.paymentMode = payment;
+        data.paymentMode = finalPayment;
         data.save()
-        .then(result=>{
-            res.status(200).json({
-                status: true
-            })
-        }).catch(err=>console.log(err));
-    }else{
+            .then(result => {
+                res.status(200).json({
+                    status: true
+                })
+            }).catch(err => console.log(err));
+    } else {
         res.status(201).json({
             status: false,
             message: "Store not found"
@@ -127,39 +143,47 @@ exports.editMinorStore = async (req, res, nest) => {
         id = data.userId;
     })
     if (!id) return res.status(201).json({ status: false, message: "Auth token failed" });
-    store.findOne({userId:id})
-    .then(data=>{
-        if(data){
-            let payment = data.paymentMode;
-            if(req.body.inputPaymentMode){
-                payment = {
-                    items: d.inputPaymentMode
+    store.findOne({ userId: id })
+        .then(data => {
+            if (data) {
+                let finalPayment = data.paymentMode;
+                if (req.body.inputPaymentMode) {
+                    const pay = req.body.inputPaymentMode;
+                    const payArray = pay.split(',');
+                    const payment = [];
+                    for (let x of payArray) {
+                        payment.push({
+                            mode: x
+                        })
+                    }
+                    finalPayment = {
+                        items: payment
+                    };
                 }
+                data.paymentMode = finalPayment;
+                if (req.body.inputStoreImage) {
+                    data.storeImage = req.body.inputStoreImage;
+                }
+                if (req.body.inputContactName) {
+                    data.contactName = req.body.inputContactName;
+                }
+                if (req.body.inputContactNumber) {
+                    data.contactNumber = req.body.inputContactNumber;
+                }
+                if (req.body.inputStoreType) {
+                    data.storeType = req.body.inputStoreType;
+                }
+                if (req.body.inputCompanyName) {
+                    data.companyName = req.body.inputCompanyName;
+                }
+                data.save()
+                    .then(result => {
+                        res.status(201).json({ status: true })
+                    }).catch(err => console.log(err));
+            } else {
+                res.status(201).json({ message: "Store not found", status: false })
             }
-            data.paymentMode = payment;
-            if(req.body.inputStoreImage){
-                data.storeImage = req.body.inputStoreImage;
-            }
-            if(req.body.inputContactName){
-                data.contactName = req.body.inputContactName;
-            }
-            if(req.body.inputContactNumber){
-                data.contactNumber = req.body.inputContactNumber;
-            }
-            if(req.body.inputStoreType){
-                data.storeType = req.body.inputStoreType;
-            }
-            if(req.body.inputCompanyName){
-                data.companyName = req.body.inputCompanyName;
-            }
-            data.save()
-            .then(result=>{
-                res.status(201).json({status: true})
-            }).catch(err=>console.log(err));
-        }else{
-            res.status(201).json({message:"Store not found", status: false})
-        }
-    }).catch(err=>console.log(err));
+        }).catch(err => console.log(err));
 }
 
 exports.getStore = async (req, res, next) => {
@@ -201,9 +225,9 @@ exports.approveStore = async (req, res, next) => {
         }
 
         if (status == true || status == 'true') {
-            user.findOne({ _id: data.userId }).then(response => { response.role = "Merchant"; response.storeRequest=true; response.save(); }).catch(err => { console.log(err) });
+            user.findOne({ _id: data.userId }).then(response => { response.role = "Merchant"; response.storeRequest = true; response.save(); }).catch(err => { console.log(err) });
         } else {
-            user.findOne({ _id: data.userId }).then(response => { response.role = "Customer"; response.storeRequest=false; response.save(); }).catch(err => { console.log(err) });
+            user.findOne({ _id: data.userId }).then(response => { response.role = "Customer"; response.storeRequest = false; response.save(); }).catch(err => { console.log(err) });
         }
 
         const result = await data.save();
