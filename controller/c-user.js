@@ -107,7 +107,8 @@ exports.postPassword = async (req, res, next) => {
                         }, process.env.TOKEN_SECRET);
                         arr = {
                             phoneNumber: phno,
-                            authToken: token
+                            authToken: token,
+                            role: data.role
                         }
                         res.status(200).json({
                             status: true,

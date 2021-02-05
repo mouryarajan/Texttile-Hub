@@ -2,6 +2,7 @@ const products = require('../models/m-products');
 const user = require('../models/m-user');
 const store = require('../models/m-store');
 const cat = require('../models/m-category');
+const tranding = require('../models/m-tranding');
 const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../handler/common');
 
 exports.postProducts = async (req, res, next) => {
@@ -198,7 +199,8 @@ exports.postProductList = async (req, res, next) => {
 exports.removeProduct = (req, res, next) => {
     const pid = req.body.inputProductId;
     products.findByIdAndDelete(pid)
-        .then(data => {
+        .then(async data => {
+            await tranding.deleteMany({productId:pid});
             res.status(200).json({
                 status: "true"
             })

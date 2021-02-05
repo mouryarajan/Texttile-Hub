@@ -1,5 +1,6 @@
 const store = require('../models/m-store');
 const user = require('../models/m-user');
+const product = require('../models/m-products');
 const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../handler/common');
 
 exports.postStore = async (req, res, next) => {
@@ -184,6 +185,17 @@ exports.editMinorStore = async (req, res, nest) => {
                 res.status(201).json({ message: "Store not found", status: false })
             }
         }).catch(err => console.log(err));
+}
+
+exports.getPaymentMode = async (req, res, next) => {
+    pid = req.body.inputProductId;
+    if (!pid) return res.status(201).json({ status: false, message: "Provide product id" });
+    const prod = await product.findOne({_id:pid}).select('storeId');
+    const stro = await store.findOne({_id:prod.storeId}).select('paymentMode');
+    let data = stro.paymentMode.items;
+    res.status(200).json({
+        data: data
+    })
 }
 
 exports.getStore = async (req, res, next) => {

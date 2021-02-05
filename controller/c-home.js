@@ -12,14 +12,14 @@ const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../hand
 exports.getHomeProducts = (req, res, next) => {
     const page = req.body.page;
 
-    products.find().populate('brandName').populate('category').populate('type').populate('fabric').populate('storeId','isApproved')
+    products.find().populate('brandName').populate('category').populate('type').populate('fabric').populate('storeId', 'isApproved')
         //.skip((page - 1) * itemPerPage)
         //.limit(itemPerPage)
         .then(data => {
             if (!isEmptyObject(data)) {
                 let arr = [];
-                for(let x of data){
-                    if(x.storeId.isApproved){
+                for (let x of data) {
+                    if (x.storeId.isApproved) {
                         let ima = x.images.toString();
                         let im = ima.split(',');
                         arr.push({
@@ -46,11 +46,37 @@ exports.getHomeProducts = (req, res, next) => {
 exports.postShopeByCategory = (req, res, next) => {
     const cat = req.body.inputCategoury;
     if (!cat) return res.status(201).json({ message: "Provide proper details" });
-    products.find({ category: cat }).populate('brandName').populate({path:'storeId',select:'isApproved'}).select('storeId brandName name price images description')
+    products.find({ category: cat }).populate('brandName').populate({ path: 'storeId', select: 'isApproved' }).select('storeId brandName name price images description')
         .then(data => {
             let arr = [];
-            for(let x of data){
-                if(x.storeId.isApproved){
+            for (let x of data) {
+                if (x.storeId.isApproved) {
+                    let ima = x.images.toString();
+                    let im = ima.split(',');
+                    arr.push({
+                        product: x._id,
+                        name: x.name,
+                        price: x.price,
+                        image: im[0],
+                        brand: x.brandName.brandName,
+                        description: x.description
+                    })
+                }
+            }
+            res.status(200).json({
+                data: arr
+            })
+        }).catch(err => { console.log(err) });
+}
+
+exports.getStoreProduct = (req, res, next) => {
+    const sid = req.body.inputStoreId;
+    if (!sid) return res.status(201).json({ message: "Provide Store Id" });
+    products.find({ storeId: sid }).populate('brandName').populate({ path: 'storeId', select: 'isApproved' }).select('storeId brandName name price images description')
+        .then(data => {
+            let arr = [];
+            for (let x of data) {
+                if (x.storeId.isApproved) {
                     let ima = x.images.toString();
                     let im = ima.split(',');
                     arr.push({
@@ -72,12 +98,21 @@ exports.postShopeByCategory = (req, res, next) => {
 exports.postShopeByType = (req, res, next) => {
     const cat = req.body.inputType;
     if (!cat) return res.status(201).json({ message: "Provide proper details" });
-    products.find({ type: cat }).populate('brandName').populate('category').populate('type').populate('fabric').populate({path:'storeId',select:'isApproved'})
+    products.find({ type: cat }).populate('brandName').populate({ path: 'storeId', select: 'isApproved' }).select('storeId brandName name price images description')
         .then(data => {
             let arr = [];
-            for(let x of data){
-                if(x.storeId.isApproved){
-                    arr.push(x)
+            for (let x of data) {
+                if (x.storeId.isApproved) {
+                    let ima = x.images.toString();
+                    let im = ima.split(',');
+                    arr.push({
+                        product: x._id,
+                        name: x.name,
+                        price: x.price,
+                        image: im[0],
+                        brand: x.brandName.brandName,
+                        description: x.description
+                    })
                 }
             }
             res.status(200).json({
@@ -89,12 +124,21 @@ exports.postShopeByType = (req, res, next) => {
 exports.postShopeByBrand = (req, res, next) => {
     const cat = req.body.inputBrand;
     if (!cat) return res.status(201).json({ message: "Provide proper details" });
-    products.find({ brandName: cat }).populate('brandName').populate('category').populate('type').populate('fabric').populate({path:'storeId',select:'isApproved'})
+    products.find({ brandName: cat }).populate('brandName').populate({ path: 'storeId', select: 'isApproved' }).select('storeId brandName name price images description')
         .then(data => {
             let arr = [];
-            for(let x of data){
-                if(x.storeId.isApproved){
-                    arr.push(x)
+            for (let x of data) {
+                if (x.storeId.isApproved) {
+                    let ima = x.images.toString();
+                    let im = ima.split(',');
+                    arr.push({
+                        product: x._id,
+                        name: x.name,
+                        price: x.price,
+                        image: im[0],
+                        brand: x.brandName.brandName,
+                        description: x.description
+                    })
                 }
             }
             res.status(200).json({
@@ -106,12 +150,21 @@ exports.postShopeByBrand = (req, res, next) => {
 exports.postShopeByFabric = (req, res, next) => {
     const cat = req.body.inputFabric;
     if (!cat) return res.status(201).json({ message: "Provide proper details" });
-    products.find({ fabric: cat }).populate('brandName').populate('category').populate('type').populate('fabric').populate({path:'storeId',select:'isApproved'})
+    products.find({ fabric: cat }).populate('brandName').populate({ path: 'storeId', select: 'isApproved' }).select('storeId brandName name price images description')
         .then(data => {
             let arr = [];
-            for(let x of data){
-                if(x.storeId.isApproved){
-                    arr.push(x)
+            for (let x of data) {
+                if (x.storeId.isApproved) {
+                    let ima = x.images.toString();
+                    let im = ima.split(',');
+                    arr.push({
+                        product: x._id,
+                        name: x.name,
+                        price: x.price,
+                        image: im[0],
+                        brand: x.brandName.brandName,
+                        description: x.description
+                    })
                 }
             }
             res.status(200).json({
@@ -123,76 +176,130 @@ exports.postShopeByFabric = (req, res, next) => {
 exports.postSearchProduct = async (req, res, next) => {
     const text = req.body.inputSearch;
     if (!text) { res.status(201).json({ status: false, message: "Provide text!" }) }
-    let pro = [];
+    let arr = [];
     let finalPro = [];
-    const prod = await products.find({ name: new RegExp(text, 'i') }).populate('brandName','brandName').populate('category','name').populate('type','typeName').populate('fabric','fabricName').populate({path:'storeId',select:'isApproved'});
-    const bran = await brand.findOne({brandName:new RegExp(text, 'i')});
+    const prod = await products.find({ name: new RegExp(text, 'i') }).populate('brandName', 'brandName').populate({ path: 'storeId', select: 'isApproved' }).select('storeId brandName name price images description');
+    const bran = await brand.findOne({ brandName: new RegExp(text, 'i') });
     const cat = await category.findOne({ name: new RegExp(text, 'i') });
     const fab = await fabric.findOne({ fabricName: new RegExp(text, 'i') });
     const typ = await type.findOne({ typeName: new RegExp(text, 'i') });
-    const sto = await store.findOne({companyName: new RegExp(text, 'i')})
+    const sto = await store.findOne({ companyName: new RegExp(text, 'i') })
     if (prod) {
         for (let x of prod) {
-            if(x.storeId.isApproved){
-                pro.push(x)
+            if (x.storeId.isApproved) {
+                let ima = x.images.toString();
+                let im = ima.split(',');
+                arr.push({
+                    product: x._id,
+                    name: x.name,
+                    price: x.price,
+                    image: im[0],
+                    brand: x.brandName.brandName,
+                    description: x.description
+                })
             }
         }
     }
     if (cat) {
-        const prod = await products.find({ category: cat._id }).populate('brandName','brandName').populate('category','name').populate('type','typeName').populate('fabric','fabricName').populate({path:'storeId',select:'isApproved'});
+        const prod = await products.find({ category: cat._id }).populate('brandName', 'brandName').populate({ path: 'storeId', select: 'isApproved' }).select('storeId brandName name price images description');
         if (prod) {
             for (let x of prod) {
-                if(x.storeId.isApproved){
-                    pro.push(x)
+                if (x.storeId.isApproved) {
+                    let ima = x.images.toString();
+                    let im = ima.split(',');
+                    arr.push({
+                        product: x._id,
+                        name: x.name,
+                        price: x.price,
+                        image: im[0],
+                        brand: x.brandName.brandName,
+                        description: x.description
+                    })
                 }
             }
         }
     }
     if (fab) {
-        const prod = await products.find({ fabric: fab._id }).populate('brandName','brandName').populate('category','name').populate('type','typeName').populate('fabric','fabricName').populate({path:'storeId',select:'isApproved'});
+        const prod = await products.find({ fabric: fab._id }).populate('brandName', 'brandName').populate({ path: 'storeId', select: 'isApproved' }).select('storeId brandName name price images description');
         if (prod) {
             for (let x of prod) {
-                if(x.storeId.isApproved){
-                    pro.push(x)
+                if (x.storeId.isApproved) {
+                    let ima = x.images.toString();
+                    let im = ima.split(',');
+                    arr.push({
+                        product: x._id,
+                        name: x.name,
+                        price: x.price,
+                        image: im[0],
+                        brand: x.brandName.brandName,
+                        description: x.description
+                    })
                 }
             }
         }
     }
     if (typ) {
-        const prod = await products.find({ type: typ._id }).populate('brandName','brandName').populate('category','name').populate('type','typeName').populate('fabric','fabricName').populate({path:'storeId',select:'isApproved'});
+        const prod = await products.find({ type: typ._id }).populate('brandName', 'brandName').populate({ path: 'storeId', select: 'isApproved' }).select('storeId brandName name price images description');
         if (prod) {
             for (let x of prod) {
-                if(x.storeId.isApproved){
-                    pro.push(x)
+                if (x.storeId.isApproved) {
+                    let ima = x.images.toString();
+                    let im = ima.split(',');
+                    arr.push({
+                        product: x._id,
+                        name: x.name,
+                        price: x.price,
+                        image: im[0],
+                        brand: x.brandName.brandName,
+                        description: x.description
+                    })
                 }
             }
         }
     }
     if (bran) {
-        const prod = await products.find({ brandName: bran._id }).populate('brandName','brandName').populate('category','name').populate('type','typeName').populate('fabric','fabricName').populate({path:'storeId',select:'isApproved'});
+        const prod = await products.find({ brandName: bran._id }).populate('brandName', 'brandName').populate({ path: 'storeId', select: 'isApproved' }).select('storeId brandName name price images description');
         if (prod) {
             for (let x of prod) {
-                if(x.storeId.isApproved){
-                    pro.push(x)
+                if (x.storeId.isApproved) {
+                    let ima = x.images.toString();
+                    let im = ima.split(',');
+                    arr.push({
+                        product: x._id,
+                        name: x.name,
+                        price: x.price,
+                        image: im[0],
+                        brand: x.brandName.brandName,
+                        description: x.description
+                    })
                 }
             }
         }
     }
     if (sto) {
-        const prod = await products.find({ storeId: sto._id }).populate('brandName','brandName').populate('category','name').populate('type','typeName').populate('fabric','fabricName').populate({path:'storeId',select:'isApproved'});
+        const prod = await products.find({ storeId: sto._id }).populate('brandName', 'brandName').populate({ path: 'storeId', select: 'isApproved' }).select('storeId brandName name price images description');
         if (prod) {
             for (let x of prod) {
-                if(x.storeId.isApproved){
-                    pro.push(x)
+                if (x.storeId.isApproved) {
+                    let ima = x.images.toString();
+                    let im = ima.split(',');
+                    arr.push({
+                        product: x._id,
+                        name: x.name,
+                        price: x.price,
+                        image: im[0],
+                        brand: x.brandName.brandName,
+                        description: x.description
+                    })
                 }
             }
         }
     }
     //console.log(pro);
     let uniqueObject = {};
-    for (let i in pro) {
-        objTitle = pro[i]['_id'];
-        uniqueObject[objTitle] = pro[i];
+    for (let i in arr) {
+        objTitle = arr[i]['product'];
+        uniqueObject[objTitle] = arr[i];
     }
     for (i in uniqueObject) {
         finalPro.push(uniqueObject[i]);
@@ -203,10 +310,10 @@ exports.postSearchProduct = async (req, res, next) => {
 }
 
 exports.getTrendingProduct = async (req, res, next) => {
-    trending.find().populate({path:'productId'}).sort({cart:'desc'})
+    trending.find().populate({ path: 'productId' }).sort({ cart: 'desc' })
         .then(data => {
             let arr = [];
-            for(let x of data){
+            for (let x of data) {
                 let ima = x.productId.images.toString();
                 let im = ima.split(',');
                 arr.push({
@@ -243,7 +350,7 @@ exports.postFilter = async (req, res, next) => {
 
     } else if (typ == 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color != 0) {
 
-    }   
+    }
     data = isDefined(typ);
     res.status(200).json({ cata });
 }

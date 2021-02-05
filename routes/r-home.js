@@ -10,6 +10,7 @@ router.post('/shop-by-category', homeController.postShopeByCategory);
 router.post('/shop-by-brand', homeController.postShopeByBrand);
 router.post('/shop-by-fabric', homeController.postShopeByFabric);
 router.post('/shop-by-type', homeController.postShopeByType);
+router.post('/shop-by-store', homeController.getStoreProduct);
 router.get('/trending-product', homeController.getTrendingProduct);
 
 router.post('/search-product', homeController.postSearchProduct);
