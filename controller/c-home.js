@@ -20,7 +20,14 @@ exports.getHomeProducts = (req, res, next) => {
                 let arr = [];
                 for(let x of data){
                     if(x.storeId.isApproved){
-                        arr.push(x);
+                        let ima = x.images.toString();
+                        let im = ima.split(',');
+                        arr.push({
+                            product: x._id,
+                            name: x.name,
+                            image: im[0],
+                            price: x.price
+                        });
                     }
                 }
                 res.status(200).json({
@@ -39,12 +46,21 @@ exports.getHomeProducts = (req, res, next) => {
 exports.postShopeByCategory = (req, res, next) => {
     const cat = req.body.inputCategoury;
     if (!cat) return res.status(201).json({ message: "Provide proper details" });
-    products.find({ category: cat }).populate('brandName').populate('category').populate('type').populate('fabric').populate({path:'storeId',select:'isApproved'})
+    products.find({ category: cat }).populate('brandName').populate({path:'storeId',select:'isApproved'}).select('storeId brandName name price images description')
         .then(data => {
             let arr = [];
             for(let x of data){
                 if(x.storeId.isApproved){
-                    arr.push(x)
+                    let ima = x.images.toString();
+                    let im = ima.split(',');
+                    arr.push({
+                        product: x._id,
+                        name: x.name,
+                        price: x.price,
+                        image: im[0],
+                        brand: x.brandName.brandName,
+                        description: x.description
+                    })
                 }
             }
             res.status(200).json({
@@ -187,32 +203,21 @@ exports.postSearchProduct = async (req, res, next) => {
 }
 
 exports.getTrendingProduct = async (req, res, next) => {
-    trending.find().populate({
-        path:'productId',
-        populate:[{
-            path:'brandName',
-            select: 'brandName',
-            model: 'tblbrand'
-        },{
-            path:'category',
-            select: 'name image',
-            model: 'tblcategory'
-        },{
-            path:'type',
-            select: 'typeName',
-            model: 'tbltype'
-        },{
-            path:'fabric',
-            select:'fabricName',
-            model: 'tblfabric'
-        },{
-            path:'storeId',select:'isApproved companyName',
-            model:'tblstore'
-        }]
-    }).sort({cart:'desc'})
+    trending.find().populate({path:'productId'}).sort({cart:'desc'})
         .then(data => {
+            let arr = [];
+            for(let x of data){
+                let ima = x.productId.images.toString();
+                let im = ima.split(',');
+                arr.push({
+                    product: x.productId._id,
+                    name: x.productId.name,
+                    image: im[0],
+                    price: x.productId.price
+                });
+            }
             res.status(200).json({
-                data: data
+                data: arr
             });
         })
 }
