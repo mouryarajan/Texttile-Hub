@@ -242,7 +242,7 @@ exports.postReview = async (req, res, next) => {
             var arr = data.review.items;
             arr.push({
                 userId: d.id,
-                name: d.use.name.firstName,
+                name: use.name.firstName,
                 description: d.description,
                 rating: d.rating
             });
