@@ -142,6 +142,7 @@ exports.postEditUser = async (req, res, next) => {
                 result.name.lastName = d.inputLastName;
                 result.gender = d.inputGender;
                 result.email = d.inputEmail;
+                result.image = d.inputImage;
                 result.save()
                     .then(data => {
                         if (data) {

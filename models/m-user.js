@@ -13,6 +13,10 @@ const userSchema = new Schema({
             required: false
         }
     },
+    image: {    
+        type: String,
+        required: false
+    },
     phoneNumber: {
         type: Number,
         required: true
