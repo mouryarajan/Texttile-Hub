@@ -270,7 +270,16 @@ exports.getUserOrder = async (req, res, next) => {
         id = data.userId;
     })
     if (!id) return res.status(201).json({ status: false, message: "Unauthorised user" });
-    const data = await order.find({ userId: id });
+    const data = await order.find({ userId: id })
+    .populate({
+        path:'product',
+        select: 'brandName description',
+        populate:{
+            path: 'brandName',
+            select: 'brandName',
+            model: 'tblbrand'
+        }
+    });
     res.status(200).json({
         data: data
     })

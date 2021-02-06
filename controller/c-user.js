@@ -401,7 +401,12 @@ exports.postGetCart = async (req, res, next) => {
             path:'items',
             populate:{
                 path:'product',
-                model:'tblproducts'
+                model:'tblproducts',
+                populate: {
+                    path: 'brandName',
+                    select: 'brandName',
+                    model: 'tblbrand'
+                }
             }
         }
     })
@@ -425,7 +430,8 @@ exports.postGetCart = async (req, res, next) => {
                         price: n.price,
                         total: total,
                         count: count,
-                        description: n.product.description
+                        description: n.product.description,
+                        brandName: n.product.brandName.brandName
                     })
                 }
                 res.status(200).json({
