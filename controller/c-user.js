@@ -28,7 +28,8 @@ exports.postLoginCheck = async (req, res, next) => {
             email: data.email,
             gender: data.gender,
             authToken: token,
-            storeRequest: data.storeRequest
+            storeRequest: data.storeRequest,
+            image: data.image
         }
         res.status(200).json({
             status: true,
