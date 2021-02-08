@@ -108,9 +108,15 @@ exports.postPassword = async (req, res, next) => {
                             userId: data._id
                         }, process.env.TOKEN_SECRET);
                         arr = {
+                            firstName: data.name.firstName,
+                            lastName: data.name.lastName,
+                            phoneNumber: data.phoneNumber,
+                            email: data.email,
                             phoneNumber: phno,
                             authToken: token,
-                            role: data.role
+                            role: data.role,
+                            storeRequest: data.storeRequest,
+                            image: data.image,
                         }
                         res.status(200).json({
                             status: true,
@@ -185,14 +191,14 @@ exports.postCart = async (req, res, next) => {
         .then(users => {
             if (users) {
                 products.findById(productId).populate('brandName').populate('category').populate('type').populate('fabric')
-                    .then( async prod => {
+                    .then(async prod => {
                         if (prod) {
                             if (prod.quantity >= 1) {
-                                const trand = await tranding.findOne({productId:prod._id});
-                                if(trand){
-                                    trand.cart = trand.cart+1;
+                                const trand = await tranding.findOne({ productId: prod._id });
+                                if (trand) {
+                                    trand.cart = trand.cart + 1;
                                     trand.save();
-                                }else{
+                                } else {
                                     trands = new tranding({
                                         productId: prod._id,
                                         cart: 1
@@ -231,9 +237,9 @@ exports.postCart = async (req, res, next) => {
                                     } else {
                                         let arr = users.cart.items;
                                         let fprice = prod.price;
-                                        
-                                            fprice = productQuantity * prod.price;
-                                        
+
+                                        fprice = productQuantity * prod.price;
+
                                         arr.push({
                                             product: prod._id,
                                             quantity: productQuantity,
@@ -361,19 +367,19 @@ exports.postIncreaseQuantity = async (req, res, next) => {
     user.findOne({ _id: id })
         .then(result => {
             let cart = result.cart.items;
-            let arr=[];
+            let arr = [];
             for (let n of cart) {
-                if(n.product == pid){
-                    if(status){
-                        let aprice = n.price/n.quantity;
+                if (n.product == pid) {
+                    if (status) {
+                        let aprice = n.price / n.quantity;
                         n.quantity = n.quantity + 1;
-                        n.price = n.quantity*aprice;
-                    }else{
-                        if(n.quantity>1){
-                            let aprice = n.price/n.quantity;
+                        n.price = n.quantity * aprice;
+                    } else {
+                        if (n.quantity > 1) {
+                            let aprice = n.price / n.quantity;
                             n.quantity = n.quantity - 1;
-                            n.price = n.quantity*aprice;
-                        }else{
+                            n.price = n.quantity * aprice;
+                        } else {
                             break;
                         }
                     }
@@ -382,12 +388,12 @@ exports.postIncreaseQuantity = async (req, res, next) => {
             }
             result.cart.items = arr;
             result.save()
-            .then(d=>{
-                res.status(200).json({
-                    status: true
-                })
-            }).catch(err=>{console.log(err)});
-        }).catch(err=>{console.log(err)});
+                .then(d => {
+                    res.status(200).json({
+                        status: true
+                    })
+                }).catch(err => { console.log(err) });
+        }).catch(err => { console.log(err) });
 }
 
 //Get Cart
@@ -398,21 +404,21 @@ exports.postGetCart = async (req, res, next) => {
     })
     if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
     user.findOne({ _id: id })
-    .populate({
-        path:'cart',
-        populate:{
-            path:'items',
-            populate:{
-                path:'product',
-                model:'tblproducts',
+        .populate({
+            path: 'cart',
+            populate: {
+                path: 'items',
                 populate: {
-                    path: 'brandName',
-                    select: 'brandName',
-                    model: 'tblbrand'
+                    path: 'product',
+                    model: 'tblproducts',
+                    populate: {
+                        path: 'brandName',
+                        select: 'brandName',
+                        model: 'tblbrand'
+                    }
                 }
             }
-        }
-    })
+        })
         .then(users => {
             if (users) {
                 let doo = users.cart.items;
@@ -741,27 +747,27 @@ exports.postRecentItems = async (req, res, next) => {
                             var im = prod.images.split(',');
                             var fim = im[0];
                             let status = false;
-                            let arrr=[];
-                            if(isEmptyObject(arr)){
+                            let arrr = [];
+                            if (isEmptyObject(arr)) {
                                 arr.push({
                                     product: productId,
                                     name: prod.name,
                                     image: fim,
                                     price: prod.price
                                 })
-                            }else{
-                                for(let x of arr){
-                                    if(x.product.toString() != prod._id.toString()){
-                                        status=true;
+                            } else {
+                                for (let x of arr) {
+                                    if (x.product.toString() != prod._id.toString()) {
+                                        status = true;
                                         arrr.push(x);
                                     }
                                 }
-                                    arrr.push({
-                                        product: productId,
-                                        name: prod.name,
-                                        image: fim,
-                                        price: prod.price
-                                    })
+                                arrr.push({
+                                    product: productId,
+                                    name: prod.name,
+                                    image: fim,
+                                    price: prod.price
+                                })
                             }
                             result.recentItems.items = arrr;
                             result.save()
