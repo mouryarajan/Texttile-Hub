@@ -105,6 +105,7 @@ exports.editStore = async (req, res, next) => {
         data.panName = d.inputPanName;
         data.contactName = d.inputContactName;
         data.contactNumber = d.inputContactNumber;
+        data.upi = d.inputUpiId;
         data.bankDetail = {
             accountNumber: d.inputAccountNumber,
             accountName: d.inputAccountName,
