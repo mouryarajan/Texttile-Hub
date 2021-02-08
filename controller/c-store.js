@@ -205,7 +205,7 @@ exports.editMinorStore = async (req, res, nest) => {
                 }
                 data.save()
                     .then(result => {
-                        res.status(201).json({ status: true })
+                        res.status(200).json({ status: true })
                     }).catch(err => console.log(err));
             } else {
                 res.status(201).json({ message: "Store not found", status: false })
@@ -219,8 +219,12 @@ exports.getPaymentMode = async (req, res, next) => {
     const prod = await product.findOne({_id:pid}).select('storeId');
     const stro = await store.findOne({_id:prod.storeId}).select('paymentMode');
     let data = stro.paymentMode.items;
+    let arr = [];
+    for(let x of data){
+        arr.push(x.mode);
+    }
     res.status(200).json({
-        data: data
+        data: arr
     })
 }
 
