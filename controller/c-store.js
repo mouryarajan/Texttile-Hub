@@ -200,6 +200,9 @@ exports.editMinorStore = async (req, res, nest) => {
                 if(req.body.inputPincode){
                     data.address.pincode = req.body.inputPincode;
                 }
+                if(req.body.inputAlternatePhoneNumber){
+                    data.alternatePhoneNumber = req.body.inputAlternatePhoneNumber;
+                }
                 data.save()
                     .then(result => {
                         res.status(201).json({ status: true })
