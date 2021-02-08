@@ -416,11 +416,9 @@ exports.postGetCart = async (req, res, next) => {
             if (users) {
                 let doo = users.cart.items;
                 //console.log(doo);
-                let total = 0;
                 let count = 0;
                 arr = [];
                 for (let n of doo) {
-                    total = total + n.price;
                     count = count + 1;
                     arr.push({
                         product: n.product._id,
@@ -430,14 +428,13 @@ exports.postGetCart = async (req, res, next) => {
                         size: n.size,
                         color: n.color,
                         price: n.price,
-                        total: total,
                         count: count,
                         description: n.product.description,
-                        brandName: n.product.brandName.brandName
+                        brandName: n.product.brandName.brandName,
+                        primaryColor: n.product.primarycolor
                     })
                 }
                 res.status(200).json({
-                    status: true,
                     data: arr
                 })
             } else {
