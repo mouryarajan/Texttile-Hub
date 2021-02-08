@@ -121,6 +121,10 @@ const storeSchema = new Schema({
                 required:false
             }
         }]
+    },
+    upi: {
+        type: String,
+        required: false
     }
 });
 

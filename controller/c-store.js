@@ -23,6 +23,10 @@ exports.postStore = async (req, res, next) => {
         const finalPayment = {
             items: payment
         };
+        let upi = "";
+        if(d.inputUpiId){
+            upi = d.inputUpiId
+        }
         const Store = new store({
             companyName: d.inputCompanyName,
             companyEmail: d.inputCompanyEmail,
@@ -55,7 +59,8 @@ exports.postStore = async (req, res, next) => {
             userId: id,
             storeImage: d.inputStoreImage,
             remark: null,
-            paymentMode: finalPayment
+            paymentMode: finalPayment,
+            upi: upi
         });
         const use = await user.findOne({ _id: id });
         const data = await Store.save();
@@ -202,6 +207,9 @@ exports.editMinorStore = async (req, res, nest) => {
                 }
                 if(req.body.inputAlternatePhoneNumber){
                     data.alternatePhoneNumber = req.body.inputAlternatePhoneNumber;
+                }
+                if(req.body.inputUpiId){
+                    data.upi = req.body.inputAlternatePhoneNumber;
                 }
                 data.save()
                     .then(result => {
