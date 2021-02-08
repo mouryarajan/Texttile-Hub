@@ -126,9 +126,17 @@ exports.editStore = async (req, res, next) => {
         data.paymentMode = finalPayment;
         data.save()
             .then(result => {
-                res.status(200).json({
-                    status: true
-                })
+                if(result){
+                    res.status(200).json({
+                        status: true
+                    })
+                }else{
+                    res.status(201).json({
+                        status: false,
+                        message: "Something went wrong!"
+                    })
+                }
+                
             }).catch(err => console.log(err));
     } else {
         res.status(201).json({
@@ -174,8 +182,23 @@ exports.editMinorStore = async (req, res, nest) => {
                 if (req.body.inputStoreType) {
                     data.storeType = req.body.inputStoreType;
                 }
-                if (req.body.inputCompanyName) {
-                    data.companyName = req.body.inputCompanyName;
+                if(req.body.inputCompanyEmail){
+                    data.companyEmail = req.body.inputCompanyEmail;
+                }
+                if(req.body.inputStreet){
+                    data.address.street = req.body.inputStreet;
+                }
+                if(req.body.inputLandmark){
+                    data.address.landmark = req.body.inputLandmark;
+                }
+                if(req.body.inputCity){
+                    data.address.city = req.body.inputCity;
+                }
+                if(req.body.inputState){
+                    data.address.state = req.body.inputState;
+                }
+                if(req.body.inputPincode){
+                    data.address.pincode = req.body.inputPincode;
                 }
                 data.save()
                     .then(result => {
@@ -202,10 +225,17 @@ exports.getStore = async (req, res, next) => {
     try {
         const data = await store.find();
         //.select('storeImage').select('companyName');
-        res.status(200).json({
-            status: true,
-            data: data
-        });
+        if(data){
+            res.status(200).json({
+                status: true,
+                data: data
+            });
+        }else{
+            res.status(201).json({
+                status: false,
+                message: "Opp's no store available!"
+            });
+        }
     } catch (err) {
         res.status(201).json({ err });
     }

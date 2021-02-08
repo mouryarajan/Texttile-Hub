@@ -20,7 +20,6 @@ exports.postLoginCheck = async (req, res, next) => {
         const token = jwt.sign({
             userId: data._id
         }, process.env.TOKEN_SECRET);
-        console.log(data);
         arr = {
             firstName: data.name.firstName,
             lastName: data.name.lastName,
