@@ -30,7 +30,6 @@ exports.postOrder = async (req, res, next) => {
             var y = someDate.getFullYear();
             var a;
             let sta = false;
-            console.log(add);
             for (let n of add) {
                 if (n._id == req.body.inputAddressId) {
                     a = n;
@@ -49,7 +48,28 @@ exports.postOrder = async (req, res, next) => {
                 }
                 let x = n.image.split(',');
                 const pro = await products.findOne({ _id: n.product });
-
+                pro.quantity = pro.quantity - n.quantity;
+                if(n.size){
+                    if(n.size=='s'){
+                        pro.s = pro.s - n.quantity;
+                    }
+                    if(n.size=='m'){
+                        pro.m = pro.m - n.quantity;
+                    }
+                    if(n.size=='l'){
+                        pro.l = pro.l - n.quantity;
+                    }
+                    if(n.size=='xl'){
+                        pro.xl = pro.xl - n.quantity;
+                    }
+                    if(n.size=='xxl'){
+                        pro.xxl = pro.xxl - n.quantity;
+                    }
+                    if(n.size=='xxxl'){
+                        pro.xxxl = pro.xxxl - n.quantity;
+                    }
+                }
+                await pro.save();
                 let Order = new order({
                     userId: id,
                     product: n._id,
