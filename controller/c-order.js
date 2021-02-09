@@ -48,25 +48,75 @@ exports.postOrder = async (req, res, next) => {
                 }
                 let x = n.image.split(',');
                 const pro = await products.findOne({ _id: n.product });
-                pro.quantity = pro.quantity - n.quantity;
-                if(n.size){
-                    if(n.size=='s'){
-                        pro.s = pro.s - n.quantity;
+
+                if (pro.quantity >= n.quantity) {
+                    pro.quantity = pro.quantity - n.quantity;
+                } else {
+                    return res.status(201).json({
+                        message: "Out of Stock",
+                        status: false
+                    })
+                }
+                if (n.size) {
+                    if (n.size == 's') {
+                        if (pro.s >= Number(n.quantity)) {
+                            pro.s = pro.s - n.quantity;
+                        } else {
+                            return res.status(201).json({
+                                message: "Out of Stock",
+                                status: false
+                            })
+                        }
                     }
-                    if(n.size=='m'){
-                        pro.m = pro.m - n.quantity;
+                    if (n.size == 'm') {
+                        if(pro.m >= Number(n.quantity)){
+                            pro.m = pro.m - n.quantity;
+                        }else{
+                            return res.status(201).json({
+                                message: "Out of Stock",
+                                status: false
+                            })
+                        }
                     }
-                    if(n.size=='l'){
-                        pro.l = pro.l - n.quantity;
+                    if (n.size == 'l') {
+                        if(pro.l>=Number(n.quantity)){
+                            pro.l = pro.l - n.quantity;
+                        }else{
+                            return res.status(201).json({
+                                message: "Out of Stock",
+                                status: false
+                            })
+                        }
                     }
-                    if(n.size=='xl'){
-                        pro.xl = pro.xl - n.quantity;
+                    if (n.size == 'xl') {
+                        if(pro.xl>=Number(n.quantity)){
+                            pro.xl = pro.xl - n.quantity;
+                        }else{
+                            return res.status(201).json({
+                                message: "Out of Stock",
+                                status: false
+                            })
+                        }
                     }
-                    if(n.size=='xxl'){
-                        pro.xxl = pro.xxl - n.quantity;
+                    if (n.size == 'xxl') {
+                        if(pro.xxl>=Number(n.quantity)){
+                            pro.xxl = pro.xxl - n.quantity;
+                        }else{
+                            return res.status(201).json({
+                                message: "Out of Stock",
+                                status: false
+                            })
+                        }
                     }
-                    if(n.size=='xxxl'){
-                        pro.xxxl = pro.xxxl - n.quantity;
+                    if (n.size == 'xxxl') {
+                        if(pro.xxxl >= Number(n.quantity)){
+                            pro.xxxl = pro.xxxl - n.quantity;
+                        }else{
+                            return res.status(201).json({
+                                message: "Out of Stock",
+                                status: false
+                            })
+                        }
                     }
                 }
                 await pro.save();
@@ -138,6 +188,77 @@ exports.postBuyNow = async (req, res, next) => {
             }
             var someFormattedDate = dd + '/' + mm + '/' + y;
             const pro = await products.findOne({ _id: req.body.inputProductId });
+            if (pro.quantity >= req.body.inputQuantity) {
+                pro.quantity = pro.quantity - req.body.inputQuantity;
+            } else {
+                return res.status(201).json({
+                    message: "Out of Stock",
+                    status: false
+                })
+            }
+            if (req.body.inputSize) {
+                if (req.body.inputSize == 's') {
+                    if (pro.s >= Number(req.body.inputQuantity)) {
+                        pro.s = pro.s - Number(req.body.inputQuantity);
+                    } else {
+                        return res.status(201).json({
+                            message: "Out of Stock",
+                            status: false
+                        })
+                    }
+                }
+                if (req.body.inputSize == 'm') {
+                    if (pro.m >= Number(req.body.inputQuantity)) {
+                        pro.m = pro.m - Number(req.body.inputQuantity);
+                    } else {
+                        return res.status(201).json({
+                            message: "Out of Stock",
+                            status: false
+                        })
+                    }
+                }
+                if (req.body.inputSize == 'l') {
+                    if (pro.l >= Number(req.body.inputQuantity)) {
+                        pro.l = pro.l - Number(req.body.inputQuantity);
+                    } else {
+                        return res.status(201).json({
+                            message: "Out of Stock",
+                            status: false
+                        })
+                    }
+                }
+                if (req.body.inputSize == 'xl') {
+                    if (pro.xl >= Number(req.body.inputQuantity)) {
+                        pro.xl = pro.xl - Number(req.body.inputQuantity);
+                    } else {
+                        return res.status(201).json({
+                            message: "Out of Stock",
+                            status: false
+                        })
+                    }
+                }
+                if (req.body.inputSize == 'xxl') {
+                    if (pro.xxl >= Number(req.body.inputQuantity)) {
+                        pro.xxl = pro.xxl - Number(req.body.inputQuantity);
+                    } else {
+                        return res.status(201).json({
+                            message: "Out of Stock",
+                            status: false
+                        })
+                    }
+                }
+                if (req.body.inputSize == 'xxxl') {
+                    if (pro.xxxl >= Number(req.body.inputQuantity)) {
+                        pro.xxxl = pro.xxxl - Number(req.body.inputQuantity);
+                    } else {
+                        return res.status(201).json({
+                            message: "Out of Stock",
+                            status: false
+                        })
+                    }
+                }
+            }
+            await pro.save();
             let fprice = 0;
             fprice = pro.price * req.body.inputQuantity;
             let Order = new order({
@@ -246,42 +367,42 @@ exports.getOrder = async (req, res, next) => {
     if (!id) return res.status(201).json({ status: false, message: "Unauthorised user" });
     const stro = await store.findOne({ userId: id });
     if (!stro) return res.status(201).json({ status: false, message: "Store not found" });
-    if(stro.isApproved==true){
+    if (stro.isApproved == true) {
         order.find({ store: stro._id }).populate({ path: 'userId', select: 'name phoneNumber gender email' })
-        .populate({
-            path: 'product', select: 'brandName category type fabric',
-            populate: [
-                {
-                    path: 'brandName',
-                    select: 'brandName',
-                    model: 'tblbrand'
-                },
-                {
-                    path: 'category',
-                    select: 'name image',
-                    model: 'tblcategory'
-                },
-                {
-                    path: 'type',
-                    select: 'typeName',
-                    model: 'tbltype'
-                },
-                {
-                    path: 'fabric',
-                    select: 'fabricName',
-                    model: 'tblfabric'
-                }
-            ]
-        })
-        .then(data => {
-            res.status(200).json({
-                data: data
+            .populate({
+                path: 'product', select: 'brandName category type fabric',
+                populate: [
+                    {
+                        path: 'brandName',
+                        select: 'brandName',
+                        model: 'tblbrand'
+                    },
+                    {
+                        path: 'category',
+                        select: 'name image',
+                        model: 'tblcategory'
+                    },
+                    {
+                        path: 'type',
+                        select: 'typeName',
+                        model: 'tbltype'
+                    },
+                    {
+                        path: 'fabric',
+                        select: 'fabricName',
+                        model: 'tblfabric'
+                    }
+                ]
             })
-        }).catch(err => { console.log(err) });
-    }else{
-        res.status(201).json({status:false,message:"You are not authorised user"});
+            .then(data => {
+                res.status(200).json({
+                    data: data
+                })
+            }).catch(err => { console.log(err) });
+    } else {
+        res.status(201).json({ status: false, message: "You are not authorised user" });
     }
-    
+
 }
 
 exports.getUserOrder = async (req, res, next) => {
@@ -291,15 +412,15 @@ exports.getUserOrder = async (req, res, next) => {
     })
     if (!id) return res.status(201).json({ status: false, message: "Unauthorised user" });
     const data = await order.find({ userId: id })
-    .populate({
-        path:'product',
-        select: 'brandName description',
-        populate:{
-            path: 'brandName',
-            select: 'brandName',
-            model: 'tblbrand'
-        }
-    });
+        .populate({
+            path: 'product',
+            select: 'brandName description',
+            populate: {
+                path: 'brandName',
+                select: 'brandName',
+                model: 'tblbrand'
+            }
+        });
     res.status(200).json({
         data: data
     })
