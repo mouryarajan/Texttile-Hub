@@ -29,7 +29,8 @@ exports.postLoginCheck = async (req, res, next) => {
             gender: data.gender,
             authToken: token,
             storeRequest: data.storeRequest,
-            image: data.image
+            image: data.image,
+            storeStatus: data.storeStatus
         }
         res.status(200).json({
             status: true,
@@ -116,6 +117,7 @@ exports.postPassword = async (req, res, next) => {
                             role: data.role,
                             storeRequest: data.storeRequest,
                             image: data.image,
+                            storeStatus: data.storeStatus
                         }
                         res.status(200).json({
                             status: true,

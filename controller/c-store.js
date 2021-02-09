@@ -283,9 +283,9 @@ exports.approveStore = async (req, res, next) => {
         }
 
         if (status == true || status == 'true') {
-            user.findOne({ _id: data.userId }).then(response => { response.role = "Merchant"; response.storeRequest = true; response.save(); }).catch(err => { console.log(err) });
+            user.findOne({ _id: data.userId }).then(response => { response.role = "Merchant"; response.storeStatus = true; response.save(); }).catch(err => { console.log(err) });
         } else {
-            user.findOne({ _id: data.userId }).then(response => { response.role = "Customer"; response.storeRequest = false; response.save(); }).catch(err => { console.log(err) });
+            user.findOne({ _id: data.userId }).then(response => { response.role = "Customer"; response.storeStatus = false; response.save(); }).catch(err => { console.log(err) });
         }
 
         const result = await data.save();

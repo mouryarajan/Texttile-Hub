@@ -154,6 +154,11 @@ const userSchema = new Schema({
         type: Boolean,
         default: false,
         required: true
+    },
+    storeStatus: {
+        type: Boolean,
+        default: false,
+        required: true
     }
 });
 
