@@ -47,7 +47,7 @@ exports.postOrder = async (req, res, next) => {
                     s = n.size;
                 }
                 let x = n.image.split(',');
-                const pro = await products.findOne({ _id: n.product });
+                let pro = await products.findOne({ _id: n.product });
 
                 if (pro.quantity >= n.quantity) {
                     pro.quantity = pro.quantity - n.quantity;
@@ -187,7 +187,7 @@ exports.postBuyNow = async (req, res, next) => {
                 res.status(201).json({ status: false, message: "Address not found!" });
             }
             var someFormattedDate = dd + '/' + mm + '/' + y;
-            const pro = await products.findOne({ _id: req.body.inputProductId });
+            let pro = await products.findOne({ _id: req.body.inputProductId });
             if (pro.quantity >= req.body.inputQuantity) {
                 pro.quantity = pro.quantity - req.body.inputQuantity;
             } else {

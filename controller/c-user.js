@@ -420,7 +420,7 @@ exports.postGetCart = async (req, res, next) => {
                 }
             }
         })
-        .then(users => {
+        .then(async users => {
             if (users) {
                 let doo = users.cart.items;
                 //console.log(doo);
@@ -428,6 +428,42 @@ exports.postGetCart = async (req, res, next) => {
                 arr = [];
                 for (let n of doo) {
                     count = count + 1;
+                    let stock = true;
+                    if (n.product.quantity <= 0) {
+                        stock = false;
+                    }
+                    if (n.size) {
+                        if (n.size == 's') {
+                            if (n.product.s < n.quantity) {
+                                stock = false;
+                            }
+                        }
+                        if (n.size == 'm') {
+                            if (n.product.m < n.quantity) {
+                                stock = false;
+                            }
+                        }
+                        if (n.size == 'l') {
+                            if (n.product.l < n.quantity) {
+                                stock = false;
+                            }
+                        }
+                        if (n.size == 'xl') {
+                            if (n.product.xl < n.quantity) {
+                                stock = false;
+                            }
+                        }
+                        if (n.size == 'xxl') {
+                            if (n.product.xxl < n.quantity) {
+                                stock = false;
+                            }
+                        }
+                        if (n.size == 'xxxl') {
+                            if (n.product.xxxl < n.quantity) {
+                                stock = false;
+                            }
+                        }
+                    }
                     arr.push({
                         product: n.product._id,
                         name: n.name,
@@ -439,7 +475,8 @@ exports.postGetCart = async (req, res, next) => {
                         count: count,
                         description: n.product.description,
                         brandName: n.product.brandName.brandName,
-                        primaryColor: n.product.primarycolor
+                        primaryColor: n.product.primarycolor,
+                        stock: stock
                     })
                 }
                 res.status(200).json({
