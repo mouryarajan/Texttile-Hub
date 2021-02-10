@@ -220,7 +220,7 @@ exports.getSize = (req, res, next) => {
 exports.getProductDetails = (req, res, next) => {
     const productId = req.body.inputProductId;
     if (!productId) return res.status(201).json({ status: false, message: "Enter product id" });
-    products.findOne({ _id: productId }).populate('brandName', 'brandName').populate('category','name').populate('type','typeName').populate('fabric','fabricName').select('colors review images name brandName category price type quantity fabric description catologue colorFlag primarycolor')
+    products.findOne({ _id: productId }).populate('brandName', 'brandName').populate('category','name').populate('type','typeName').populate('fabric','fabricName').select('colors review images name brandName category price type quantity fabric description catologue colorFlag primarycolor quantity s m l xl xxl xxxl')
         .then(data => {
             res.status(200).json({
                 data: data
