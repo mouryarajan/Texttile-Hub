@@ -429,7 +429,7 @@ exports.postGetCart = async (req, res, next) => {
                 for (let n of doo) {
                     count = count + 1;
                     let stock = true;
-                    if (n.product.quantity <= 0) {
+                    if (Number(n.product.quantity) <= 0) {
                         stock = false;
                     }
                     if (n.size) {
