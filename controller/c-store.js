@@ -210,7 +210,7 @@ exports.editMinorStore = async (req, res, nest) => {
                     data.alternatePhoneNumber = req.body.inputAlternatePhoneNumber;
                 }
                 if(req.body.inputUpiId){
-                    data.upi = req.body.inputAlternatePhoneNumber;
+                    data.upi = req.body.inputUpiId;
                 }
                 data.save()
                     .then(result => {
@@ -226,6 +226,7 @@ exports.getPaymentMode = async (req, res, next) => {
     pid = req.body.inputProductId;
     if (!pid) return res.status(201).json({ status: false, message: "Provide product id" });
     const prod = await product.findOne({_id:pid}).select('storeId');
+    if(!prod) return res.status(201).json({ status: false, message: "Product not found with this id" });
     const stro = await store.findOne({_id:prod.storeId}).select('paymentMode');
     let data = stro.paymentMode.items;
     let arr = [];
