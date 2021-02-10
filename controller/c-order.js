@@ -52,7 +52,7 @@ exports.postOrder = async (req, res, next) => {
                 if (pro.quantity >= n.quantity) {
                     pro.quantity = pro.quantity - n.quantity;
                 } else {
-                    return res.status(201).json({
+                    res.status(201).json({
                         message: "Out of Stock",
                         status: false
                     })
@@ -62,7 +62,7 @@ exports.postOrder = async (req, res, next) => {
                         if (pro.s >= Number(n.quantity)) {
                             pro.s = pro.s - n.quantity;
                         } else {
-                            return res.status(201).json({
+                            res.status(201).json({
                                 message: "Out of Stock",
                                 status: false
                             })
@@ -72,7 +72,7 @@ exports.postOrder = async (req, res, next) => {
                         if(pro.m >= Number(n.quantity)){
                             pro.m = pro.m - n.quantity;
                         }else{
-                            return res.status(201).json({
+                            res.status(201).json({
                                 message: "Out of Stock",
                                 status: false
                             })
@@ -82,7 +82,7 @@ exports.postOrder = async (req, res, next) => {
                         if(pro.l>=Number(n.quantity)){
                             pro.l = pro.l - n.quantity;
                         }else{
-                            return res.status(201).json({
+                            res.status(201).json({
                                 message: "Out of Stock",
                                 status: false
                             })
@@ -92,7 +92,7 @@ exports.postOrder = async (req, res, next) => {
                         if(pro.xl>=Number(n.quantity)){
                             pro.xl = pro.xl - n.quantity;
                         }else{
-                            return res.status(201).json({
+                            res.status(201).json({
                                 message: "Out of Stock",
                                 status: false
                             })
@@ -102,7 +102,7 @@ exports.postOrder = async (req, res, next) => {
                         if(pro.xxl>=Number(n.quantity)){
                             pro.xxl = pro.xxl - n.quantity;
                         }else{
-                            return res.status(201).json({
+                            res.status(201).json({
                                 message: "Out of Stock",
                                 status: false
                             })
@@ -112,7 +112,7 @@ exports.postOrder = async (req, res, next) => {
                         if(pro.xxxl >= Number(n.quantity)){
                             pro.xxxl = pro.xxxl - n.quantity;
                         }else{
-                            return res.status(201).json({
+                            res.status(201).json({
                                 message: "Out of Stock",
                                 status: false
                             })
@@ -191,7 +191,7 @@ exports.postBuyNow = async (req, res, next) => {
             if (pro.quantity >= req.body.inputQuantity) {
                 pro.quantity = pro.quantity - req.body.inputQuantity;
             } else {
-                return res.status(201).json({
+                 res.status(201).json({
                     message: "Out of Stock",
                     status: false
                 })
@@ -201,7 +201,7 @@ exports.postBuyNow = async (req, res, next) => {
                     if (pro.s >= Number(req.body.inputQuantity)) {
                         pro.s = pro.s - Number(req.body.inputQuantity);
                     } else {
-                        return res.status(201).json({
+                         res.status(201).json({
                             message: "Out of Stock",
                             status: false
                         })
@@ -211,7 +211,7 @@ exports.postBuyNow = async (req, res, next) => {
                     if (pro.m >= Number(req.body.inputQuantity)) {
                         pro.m = pro.m - Number(req.body.inputQuantity);
                     } else {
-                        return res.status(201).json({
+                         res.status(201).json({
                             message: "Out of Stock",
                             status: false
                         })
@@ -221,7 +221,7 @@ exports.postBuyNow = async (req, res, next) => {
                     if (pro.l >= Number(req.body.inputQuantity)) {
                         pro.l = pro.l - Number(req.body.inputQuantity);
                     } else {
-                        return res.status(201).json({
+                         res.status(201).json({
                             message: "Out of Stock",
                             status: false
                         })
@@ -231,7 +231,7 @@ exports.postBuyNow = async (req, res, next) => {
                     if (pro.xl >= Number(req.body.inputQuantity)) {
                         pro.xl = pro.xl - Number(req.body.inputQuantity);
                     } else {
-                        return res.status(201).json({
+                         res.status(201).json({
                             message: "Out of Stock",
                             status: false
                         })
@@ -241,7 +241,7 @@ exports.postBuyNow = async (req, res, next) => {
                     if (pro.xxl >= Number(req.body.inputQuantity)) {
                         pro.xxl = pro.xxl - Number(req.body.inputQuantity);
                     } else {
-                        return res.status(201).json({
+                         res.status(201).json({
                             message: "Out of Stock",
                             status: false
                         })
@@ -251,7 +251,7 @@ exports.postBuyNow = async (req, res, next) => {
                     if (pro.xxxl >= Number(req.body.inputQuantity)) {
                         pro.xxxl = pro.xxxl - Number(req.body.inputQuantity);
                     } else {
-                        return res.status(201).json({
+                         res.status(201).json({
                             message: "Out of Stock",
                             status: false
                         })
