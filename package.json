@@ -15,7 +15,6 @@
     "express": "^4.17.1",
     "fast-two-sms": "^2.1.0",
     "jsonwebtoken": "^8.5.1",
-    "loadash": "^1.0.0",
     "lodash": "^4.17.20",
     "mongodb": "^3.6.3",
     "mongoose": "^5.11.8",
