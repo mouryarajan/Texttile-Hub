@@ -239,7 +239,7 @@ exports.postCart = async (req, res, next) => {
                                             image: req.body.inputImage,
                                             price: fprice,
                                             storeId: prod.storeId,
-                                            size: inputProductsize,
+                                            size: productSize,
                                             description: prod.description
                                         });
                                         users.cart.items = arr;
@@ -270,7 +270,7 @@ exports.postCart = async (req, res, next) => {
                                             image: req.body.inputImage,
                                             price: fprice,
                                             storeId: prod.storeId,
-                                            size:inputProductsize,
+                                            size:productSize,
                                             description: prod.description
                                         });
                                         users.cart.items = arr;
@@ -313,7 +313,7 @@ exports.postCart = async (req, res, next) => {
                                                 image: req.body.inputImage,
                                                 price: fprice,
                                                 storeId: prod.storeId,
-                                                size: inputProductsize,
+                                                size: productSize,
                                                 description: prod.description
                                             });
                                             users.cart.items = arr;
@@ -345,7 +345,7 @@ exports.postCart = async (req, res, next) => {
                                                 image: req.body.inputImage,
                                                 price: fprice,
                                                 storeId: prod.storeId,
-                                                size: inputProductsize,
+                                                size: productSize,
                                                 description: prod.description
                                             });
                                             users.cart.items = arr;
@@ -457,7 +457,7 @@ exports.postGetCart = async (req, res, next) => {
         .then(async users => {
             if (users) {
                 let doo = users.cart.items;
-                console.log(doo);
+                //console.log(doo);
                 let count = 0;
                 let arr = [];
                 for (let n of doo) {
