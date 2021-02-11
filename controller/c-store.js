@@ -37,7 +37,7 @@ exports.postStore = async (req, res, next) => {
             contactName: d.inputContactName,
             contactNumber: d.inputContactNumber,
             bankDetail: {
-                accountNumber: d.inputAccountNumber,
+                accountNumber: Number(d.inputAccountNumber),
                 accountName: d.inputAccountName,
                 ifscCode: d.inputIfscCode,
                 bankName: d.inputBankName,
@@ -107,7 +107,7 @@ exports.editStore = async (req, res, next) => {
         data.contactNumber = d.inputContactNumber;
         data.upi = d.inputUpiId;
         data.bankDetail = {
-            accountNumber: d.inputAccountNumber,
+            accountNumber: Number(d.inputAccountNumber),
             accountName: d.inputAccountName,
             ifscCode: d.inputIfscCode,
             bankName: d.inputBankName,
