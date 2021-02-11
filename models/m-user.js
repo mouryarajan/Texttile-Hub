@@ -104,7 +104,7 @@ const userSchema = new Schema({
                 },
                 storeId: {
                     type: Schema.Types.ObjectId,
-                    ref: 'tblstore'
+                    ref: 'tblstores'
                 }
             }
         ]

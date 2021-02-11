@@ -128,4 +128,4 @@ const storeSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('tblstore', storeSchema);
+module.exports = mongoose.model('tblstores', storeSchema);

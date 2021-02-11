@@ -85,10 +85,26 @@ exports.postPassword = async (req, res, next) => {
         if (data) {
             data.password = hashPassword
             data.save()
-                .then(result => {
-                    if (result) {
+                .then(data => {
+                    if (data) {
+                        const token = jwt.sign({
+                            userId: data._id
+                        }, process.env.TOKEN_SECRET);
+                        arr = {
+                            firstName: data.name.firstName,
+                            lastName: data.name.lastName,
+                            phoneNumber: data.phoneNumber,
+                            email: data.email,
+                            phoneNumber: phno,
+                            authToken: token,
+                            role: data.role,
+                            storeRequest: data.storeRequest,
+                            image: data.image,
+                            storeStatus: data.storeStatus
+                        }
                         res.status(200).json({
-                            status: true
+                            status: true,
+                            data: arr
                         })
                     } else {
                         res.status(201).json({
@@ -429,22 +445,11 @@ exports.postGetCart = async (req, res, next) => {
                     model: 'tblproducts',
                     populate: {
                         path: 'brandName',
-                        select: 'brandName',
-                        model: 'tblbrand',
-                    }
-                }
-            }
-        })
-        .populate({
-            path: 'cart',
-            populate: {
-                path: 'items',
-                populate: {
-                    path: 'product',
-                    model: 'tblproducts',
+                        model: 'tblbrand'
+                    },
                     populate: {
                         path: 'storeId',
-                        model: 'tblstore',
+                        model: 'tblstores'
                     }
                 }
             }

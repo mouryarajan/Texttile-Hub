@@ -91,7 +91,7 @@ const productSchema = new Schema({
     },
     storeId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'tblstore'
+        ref: 'tblstores'
     },
     review: {
         items: [
