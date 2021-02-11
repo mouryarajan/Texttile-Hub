@@ -495,18 +495,18 @@ exports.postGetCart = async (req, res, next) => {
                 const countryArray = await loadash.groupBy(arr, "storeId");
                 let finalProductArray = []
                 await Object.entries(countryArray).forEach(async ([key, value]) => {
-                    let tempDummyArray=[];
-                    value.map((item,index)=>{
-                        if(index!==0){
-                            delete item.storeId;
-                            delete item.storeImage;
-                            delete item.storeName;
+                    // let tempDummyArray=[];
+                    // value.map((item,index)=>{
+                    //     if(index!==0){
+                    //         delete item.storeId;
+                    //         delete item.storeImage;
+                    //         delete item.storeName;
                     
-                        } 
-                        tempDummyArray.push(item)
+                    //     } 
+                    //     tempDummyArray.push(item)
                         
-                    })
-                    finalProductArray.push(tempDummyArray)
+                    // })
+                    finalProductArray.push(value)
                 });
                 res.status(200).json({
                     data: finalProductArray
