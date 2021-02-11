@@ -97,6 +97,10 @@ const userSchema = new Schema({
                 price: {
                     type: Number,
                     required: false
+                },
+                storeId: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'tblstore'
                 }
             }
         ]

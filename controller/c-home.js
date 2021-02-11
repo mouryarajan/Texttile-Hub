@@ -407,77 +407,7 @@ exports.getTrendingProduct = async (req, res, next) => {
 }
 
 exports.postFilter = async (req, res, next) => {
-    let typ = req.body.inputType;
-    let cat = req.body.inputCategoury;
-    let bran = req.body.inputBrand;
-    let startPrice = req.body.inputStartPrice;
-    let endPrice = req.body.inputEndPrice;
-    let color = req.body.inputColor;
-    let data;
-    let arr = [];
-    if (typ != 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color == 0) {
-        cata = true;
-    } else if (typ == 0 && cat != 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color == 0) {
-
-    } else if (typ == 0 && cat == 0 && bran != 0 && startPrice == 0 && endPrice == 0 && color == 0) {
-
-    } else if (typ == 0 && cat == 0 && bran == 0 && startPrice != 0 && endPrice == 0 && color == 0) {
-
-    } else if (typ == 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice != 0 && color == 0) {
-
-    } else if (typ == 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color != 0) {
-
-    }
-    else if (typ == 0 && cat == 0 && bran != 0 && startPrice != 0 && endPrice != 0 && color != 0) {
-
-    }
-    else if (typ == 0 && cat == 0 && bran == 0 && startPrice != 0 && endPrice != 0 && color != 0) {
-
-    }
-    else if (typ == 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice != 0 && color != 0) {
-
-    }
-    else if (typ == 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color != 0) {
-
-    }
-    else if (typ == 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color != 0) {
-
-    }
-    else if (typ == 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color != 0) {
-
-    }
-    else if (typ == 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color != 0) {
-
-    }
-    else if (typ == 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color != 0) {
-
-    }
-    else if (typ == 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color != 0) {
-
-    }
-    else if (typ == 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color != 0) {
-
-    }
-    else if (typ == 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color != 0) {
-
-    }
-    else if (typ == 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color != 0) {
-
-    }
-    else if (typ == 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color != 0) {
-
-    }
-    else if (typ == 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color != 0) {
-
-    }
-    else if (typ == 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color != 0) {
-
-    }
-    else if (typ == 0 && cat == 0 && bran == 0 && startPrice == 0 && endPrice == 0 && color != 0) {
-
-    }
-    data = isDefined(typ);
-    res.status(200).json({ cata });
+    
 }
 
 exports.postAdvertisement = (req, res, next) => {

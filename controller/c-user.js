@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const products = require('../models/m-products');
 const tranding = require('../models/m-tranding');
 const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../handler/common');
+const loadash = require("lodash");
+const { populate } = require('../models/m-user');
 //const fast2sms = require('fast-two-sms');
 
 //Login 
@@ -219,7 +221,8 @@ exports.postCart = async (req, res, next) => {
                                             color: productColor,
                                             name: prod.name,
                                             image: req.body.inputImage,
-                                            price: fprice
+                                            price: fprice,
+                                            storeId: prod.storeId
                                         });
                                         users.cart.items = arr;
                                         users.save()
@@ -246,12 +249,12 @@ exports.postCart = async (req, res, next) => {
                                             quantity: productQuantity,
                                             name: prod.name,
                                             image: req.body.inputImage,
-                                            price: fprice
+                                            price: fprice,
+                                            storeId: prod.storeId
                                         });
                                         users.cart.items = arr;
                                         users.save()
                                             .then(data => {
-                                                trand.save();
                                                 if (data) {
                                                     res.status(200).json({
                                                         status: true
@@ -287,7 +290,8 @@ exports.postCart = async (req, res, next) => {
                                                 size: productSize,
                                                 name: prod.name,
                                                 image: req.body.inputImage,
-                                                price: fprice
+                                                price: fprice,
+                                                storeId: prod.storeId
                                             });
                                             users.cart.items = arr;
                                             users.save()
@@ -315,7 +319,8 @@ exports.postCart = async (req, res, next) => {
                                                 size: productSize,
                                                 name: prod.name,
                                                 image: req.body.inputImage,
-                                                price: fprice
+                                                price: fprice,
+                                                storeId: prod.storeId
                                             });
                                             users.cart.items = arr;
                                             users.save()
@@ -415,7 +420,12 @@ exports.postGetCart = async (req, res, next) => {
                     populate: {
                         path: 'brandName',
                         select: 'brandName',
-                        model: 'tblbrand'
+                        model: 'tblbrand',
+                    },
+                    populate:{
+                        path: 'storeId',
+                        select: 'companyName storeImage',
+                        model: 'tblstore'
                     }
                 }
             }
@@ -425,7 +435,7 @@ exports.postGetCart = async (req, res, next) => {
                 let doo = users.cart.items;
                 //console.log(doo);
                 let count = 0;
-                arr = [];
+                let arr = [];
                 for (let n of doo) {
                     count = count + 1;
                     let stock = true;
@@ -472,15 +482,34 @@ exports.postGetCart = async (req, res, next) => {
                         size: n.size,
                         color: n.color,
                         price: n.price,
-                        count: count,
                         description: n.product.description,
                         brandName: n.product.brandName.brandName,
                         primaryColor: n.product.primarycolor,
-                        stock: stock
+                        stock: stock,
+                        storeId: n.product.storeId._id,
+                        storeImage: n.product.storeId.storeImage,
+                        storeName: n.product.storeId.companyName
                     })
                 }
+
+                const countryArray = await loadash.groupBy(arr, "storeId");
+                let finalProductArray = []
+                await Object.entries(countryArray).forEach(async ([key, value]) => {
+                    let tempDummyArray=[];
+                    value.map((item,index)=>{
+                        if(index!==0){
+                            delete item.storeId;
+                            delete item.storeImage;
+                            delete item.storeName;
+                    
+                        } 
+                        tempDummyArray.push(item)
+                        
+                    })
+                    finalProductArray.push(tempDummyArray)
+                });
                 res.status(200).json({
-                    data: arr
+                    data: finalProductArray
                 })
             } else {
                 res.status(201).json({ status: false, message: "User not found" });
