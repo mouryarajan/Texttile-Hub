@@ -124,7 +124,7 @@ exports.postOrder = async (req, res, next) => {
                     await pro.save();
                     let Order = new order({
                         userId: id,
-                        product: n._id,
+                        product: pro._id,
                         productName: n.name,
                         store: n.storeId,
                         image: x[0],
@@ -144,6 +144,7 @@ exports.postOrder = async (req, res, next) => {
                         phoneNumber: data.phoneNumber,
                         store: pro.storeId
                     });
+                    console.log(order);
                     await Order.save();
                 }
             }

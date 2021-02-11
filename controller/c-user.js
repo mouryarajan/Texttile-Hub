@@ -222,7 +222,9 @@ exports.postCart = async (req, res, next) => {
                                             name: prod.name,
                                             image: req.body.inputImage,
                                             price: fprice,
-                                            storeId: prod.storeId
+                                            storeId: prod.storeId,
+                                            size: inputProductsize,
+                                            description: prod.description
                                         });
                                         users.cart.items = arr;
                                         users.save()
@@ -248,9 +250,12 @@ exports.postCart = async (req, res, next) => {
                                             product: prod._id,
                                             quantity: productQuantity,
                                             name: prod.name,
+                                            color: productColor,
                                             image: req.body.inputImage,
                                             price: fprice,
-                                            storeId: prod.storeId
+                                            storeId: prod.storeId,
+                                            size:inputProductsize,
+                                            description: prod.description
                                         });
                                         users.cart.items = arr;
                                         users.save()
@@ -291,7 +296,9 @@ exports.postCart = async (req, res, next) => {
                                                 name: prod.name,
                                                 image: req.body.inputImage,
                                                 price: fprice,
-                                                storeId: prod.storeId
+                                                storeId: prod.storeId,
+                                                size: inputProductsize,
+                                                description: prod.description
                                             });
                                             users.cart.items = arr;
                                             users.save()
@@ -318,9 +325,12 @@ exports.postCart = async (req, res, next) => {
                                                 quantity: productQuantity,
                                                 size: productSize,
                                                 name: prod.name,
+                                                color: productColor,
                                                 image: req.body.inputImage,
                                                 price: fprice,
-                                                storeId: prod.storeId
+                                                storeId: prod.storeId,
+                                                size: inputProductsize,
+                                                description: prod.description
                                             });
                                             users.cart.items = arr;
                                             users.save()
@@ -421,11 +431,20 @@ exports.postGetCart = async (req, res, next) => {
                         path: 'brandName',
                         select: 'brandName',
                         model: 'tblbrand',
-                    },
-                    populate:{
+                    }
+                }
+            }
+        })
+        .populate({
+            path: 'cart',
+            populate: {
+                path: 'items',
+                populate: {
+                    path: 'product',
+                    model: 'tblproducts',
+                    populate: {
                         path: 'storeId',
-                        select: 'companyName storeImage',
-                        model: 'tblstore'
+                        model: 'tblstore',
                     }
                 }
             }
@@ -433,7 +452,7 @@ exports.postGetCart = async (req, res, next) => {
         .then(async users => {
             if (users) {
                 let doo = users.cart.items;
-                //console.log(doo);
+                console.log(doo);
                 let count = 0;
                 let arr = [];
                 for (let n of doo) {

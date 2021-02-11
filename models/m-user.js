@@ -98,6 +98,10 @@ const userSchema = new Schema({
                     type: Number,
                     required: false
                 },
+                description: {
+                    type: String,
+                    required: false
+                },
                 storeId: {
                     type: Schema.Types.ObjectId,
                     ref: 'tblstore'
