@@ -2,6 +2,8 @@ const user = require('../models/m-user');
 const products = require('../models/m-products');
 const order = require('../models/m-order');
 const store = require('../models/m-store');
+const fetch = require('node-fetch');
+let base64 = require('base-64');
 const { isDefined, isEmptyObject, decodeDataFromAccessToken, isValueExistInArray } = require('../handler/common');
 const { findOne } = require('../models/m-user');
 
