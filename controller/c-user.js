@@ -832,20 +832,23 @@ exports.postRecentItems = async (req, res, next) => {
         .then(result => {
             if (result) {
                 products.findById(productId)
-                    .then(prod => {
+                    .then(async prod => {
                         if (prod) {
                             let arr = result.recentItems.items;
                             var im = prod.images.split(',');
                             var fim = im[0];
                             let status = false;
                             let arrr = [];
-                            if (isEmptyObject(arr)) {
+                            let empty = await isEmptyObject(arr);
+                            //console.log(empty);
+                            if (empty) {
                                 arr.push({
                                     product: productId,
                                     name: prod.name,
                                     image: fim,
                                     price: prod.price
                                 })
+                                result.recentItems.items = arr;
                             } else {
                                 for (let x of arr) {
                                     if (x.product.toString() != prod._id.toString()) {
@@ -859,8 +862,8 @@ exports.postRecentItems = async (req, res, next) => {
                                     image: fim,
                                     price: prod.price
                                 })
+                                result.recentItems.items = arrr;
                             }
-                            result.recentItems.items = arrr;
                             result.save()
                                 .then(data => {
                                     if (data) {

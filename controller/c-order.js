@@ -154,14 +154,16 @@ exports.postOrder = async (req, res, next) => {
                         }).catch(err => { console.log(err) });
                 }
             }
-            for (let x of arr) {
-                if (x.storeId == sid) {
-                    data.removeFromCart(x.product);
+            if (d.paymentMode == "COD") {
+                for (let x of arr) {
+                    if (x.storeId == sid) {
+                        data.removeFromCart(x.product);
+                    }
                 }
             }
-
             //Razor Pay
-            const amount = totalAmount*100;
+            //const amount = totalAmount*100;
+            const amount = 100;
             const currency = "INR";
             const receipt = "order_rcptid_11";
             const body = { amount: amount, currency: currency, receipt: receipt };
@@ -191,30 +193,50 @@ exports.postOrder = async (req, res, next) => {
 exports.postOrderStatus = async (req, res, next) => {
     const orderId = req.body.inputOrderId;
     const status = req.body.inputPaymentStatus;
-    try{
-        if(status == true || status == 'true'){
-            for(let n of orderId){
-                order.findOne({_id:n})
-                .then(data=>{
-                    if(data){
-                        data.paymentStatus = true;
-                        data.save();
-                    }else{
-                        res.status(201).json({
-                            message: "Something Went Wrong!"
-                        })
-                    }
-                })
+    const storeId = req.body.inputStoreId;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
+    if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
+    try {
+        if (status == true || status == 'true') {
+            for (let n of orderId) {
+                order.findOne({ _id: n })
+                    .then(async result => {
+                        if (result) {
+                            result.paymentStatus = true;
+                            await result.save();
+                            user.findOne({ _id: id })
+                                .then(data => {
+                                    if (data) {
+                                        let arr = data.cart.items;
+                                        for (let x of arr) {
+                                            if (x.storeId == storeId) {
+                                                data.removeFromCart(x.product);
+                                            }
+                                        }
+                                    } else {
+                                        res.status(201).json({
+                                            message: "Something Went Wrong!"
+                                        })
+                                    }
+                                });
+                        } else {
+                            res.status(201).json({
+                                message: "Something Went Wrong!"
+                            })
+                        }
+                    })
             }
-        }else{
-            for(let n of orderId){
+        } else {
+            for (let n of orderId) {
                 await order.findByIdAndDelete(orderId);
             }
         }
         res.status(200).json({
             status: true
         })
-    }catch{
+    } catch {
         res.status(201).json({
             message: "Something Went Wrong!"
         })
