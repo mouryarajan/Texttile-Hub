@@ -5,6 +5,7 @@ const router = express.Router();
 const orderController = require('../controller/c-order');
 
 router.post('/order', orderController.postOrder);
+router.post('/update-payment-status', orderController.postOrderStatus);
 router.post('/buy-now', orderController.postBuyNow);
 router.get('/get-order', orderController.getOrder);
 router.post('/update-payment-order', orderController.postUpdateOrderPayment);

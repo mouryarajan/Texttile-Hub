@@ -44,6 +44,8 @@ exports.postOrder = async (req, res, next) => {
                 res.status(201).json({ status: false, message: "Address not found!" });
             }
             var someFormattedDate = dd + '/' + mm + '/' + y;
+            let orderIdArray = [];
+            let totalAmount = 0;
             for (let n of arr) {
                 let pro = await products.findOne({ _id: n.product });
                 if (pro.storeId.toString() == sid.toString()) {
@@ -52,7 +54,6 @@ exports.postOrder = async (req, res, next) => {
                         s = n.size;
                     }
                     let x = n.image.split(',');
-
                     if (pro.quantity >= n.quantity) {
                         pro.quantity = pro.quantity - n.quantity;
                     } else {
@@ -124,6 +125,7 @@ exports.postOrder = async (req, res, next) => {
                         }
                     }
                     await pro.save();
+                    totalAmount = totalAmount + Number(n.price);
                     let Order = new order({
                         userId: id,
                         product: pro._id,
@@ -146,8 +148,10 @@ exports.postOrder = async (req, res, next) => {
                         phoneNumber: data.phoneNumber,
                         store: pro.storeId
                     });
-                    console.log(order);
-                    await Order.save();
+                    Order.save()
+                        .then(data => {
+                            orderIdArray.push(data._id);
+                        }).catch(err => { console.log(err) });
                 }
             }
             for (let x of arr) {
@@ -155,8 +159,66 @@ exports.postOrder = async (req, res, next) => {
                     data.removeFromCart(x.product);
                 }
             }
-            res.status(200).json({ message: "order placed successfully" });
+
+            //Razor Pay
+            const amount = totalAmount*100;
+            const currency = "INR";
+            const receipt = "order_rcptid_11";
+            const body = { amount: amount, currency: currency, receipt: receipt };
+
+            let url = 'https://api.razorpay.com/v1/orders';
+            let username = 'rzp_live_t67U0BoWeFiPpO';
+            let password = '7lIb1BrxQvhZ6rJEFoZfEYMQ';
+
+            let headers = new fetch.Headers();
+            headers.append('Content-Type', 'text/json');
+            headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password));
+
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(body),
+                headers: headers,
+            }).then(response => response.json())
+                .then(json => {
+                    res.status(200).json({
+                        razorPayId: json.id,
+                        orderId: orderIdArray
+                    });
+                }).catch(err => { console.log(err) });
         }).catch(err => { console.log(err) });
+}
+
+exports.postOrderStatus = async (req, res, next) => {
+    const orderId = req.body.inputOrderId;
+    const status = req.body.inputPaymentStatus;
+    try{
+        if(status == true || status == 'true'){
+            for(let n of orderId){
+                order.findOne({_id:n})
+                .then(data=>{
+                    if(data){
+                        data.paymentStatus = true;
+                        data.save();
+                    }else{
+                        res.status(201).json({
+                            message: "Something Went Wrong!"
+                        })
+                    }
+                })
+            }
+        }else{
+            for(let n of orderId){
+                await order.findByIdAndDelete(orderId);
+            }
+        }
+        res.status(200).json({
+            status: true
+        })
+    }catch{
+        res.status(201).json({
+            message: "Something Went Wrong!"
+        })
+    }
 }
 
 exports.postBuyNow = async (req, res, next) => {
@@ -312,7 +374,7 @@ exports.postBuyNow = async (req, res, next) => {
                     })
                         .then(response => response.json())
                         .then(json => {
-                            if(typeof json.id !== 'undefined' && json.id !== null && json.id !== ""){
+                            if (typeof json.id !== 'undefined' && json.id !== null && json.id !== "") {
                                 res.status(200).json({
                                     status: true,
                                     data: {
@@ -320,7 +382,7 @@ exports.postBuyNow = async (req, res, next) => {
                                         razorPayId: json.id
                                     }
                                 });
-                            }else{
+                            } else {
                                 res.status(201).json({
                                     status: false,
                                     message: "Something went wrong"
@@ -334,46 +396,46 @@ exports.postBuyNow = async (req, res, next) => {
 exports.postUpdateOrderPayment = async (req, res, next) => {
     const orderId = req.body.inputOrderId;
     const paymentStatus = req.body.inputPaymentStatus;
-    if(paymentStatus == true || paymentStatus=='true'){
-        order.findOne({_id: orderId})
-        .then(result=>{
-            if(result){
-                result.paymentStatus = true;
-                result.save()
-                .then(data=>{
-                    if(data){
-                        res.status(200).json({
-                            status: true
-                        });
-                    }else{
-                        res.status(201).json({
-                            status: false,
-                            message: "Something went wrong"
-                        });
-                    }
-                }).catch(err => console.log(err));
-            }else{
-                res.status(201).json({
-                    status: false,
-                    message: "Order not found with respected order id"
-                });
-            }
-        }).catch(err => console.log(err));
-    }else{
+    if (paymentStatus == true || paymentStatus == 'true') {
+        order.findOne({ _id: orderId })
+            .then(result => {
+                if (result) {
+                    result.paymentStatus = true;
+                    result.save()
+                        .then(data => {
+                            if (data) {
+                                res.status(200).json({
+                                    status: true
+                                });
+                            } else {
+                                res.status(201).json({
+                                    status: false,
+                                    message: "Something went wrong"
+                                });
+                            }
+                        }).catch(err => console.log(err));
+                } else {
+                    res.status(201).json({
+                        status: false,
+                        message: "Order not found with respected order id"
+                    });
+                }
+            }).catch(err => console.log(err));
+    } else {
         order.findByIdAndDelete(orderId)
-        .then(result=>{
-            if(result){
-                res.status(200).json({
-                    status: true,
-                    message: "Order removed!"
-                });
-            }else{
-                res.status(201).json({
-                    status: false,
-                    message: "Something went wrong"
-                });
-            }
-        }).catch(err => console.log(err));
+            .then(result => {
+                if (result) {
+                    res.status(200).json({
+                        status: true,
+                        message: "Order removed!"
+                    });
+                } else {
+                    res.status(201).json({
+                        status: false,
+                        message: "Something went wrong"
+                    });
+                }
+            }).catch(err => console.log(err));
     }
 }
 
