@@ -148,8 +148,8 @@ exports.postOrder = async (req, res, next) => {
                     await Order.save();
                 }
             }
-            for(let x of arr){
-                if(x.storeId==sid){
+            for (let x of arr) {
+                if (x.storeId == sid) {
                     data.removeFromCart(x.product);
                 }
             }
@@ -291,9 +291,32 @@ exports.postBuyNow = async (req, res, next) => {
             });
             Order.save()
                 .then(result => {
-                    res.status(200).json({
-                        status: true
-                    });
+                    const amount = 100;
+                    const currency = "INR";
+                    const receipt = "order_rcptid_11";
+                    const body = { amount: amount, currency: currency, receipt: receipt };
+
+                    let url = 'https://api.razorpay.com/v1/orders';
+                    let username = 'rzp_live_t67U0BoWeFiPpO';
+                    let password = '7lIb1BrxQvhZ6rJEFoZfEYMQ';
+
+                    let headers = new fetch.Headers();
+                    headers.append('Content-Type', 'text/json');
+                    headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password));
+                    fetch(url, {
+                        method: 'POST',
+                        body: JSON.stringify(body),
+                        headers: headers,
+                    })
+                        .then(response => response.json())
+                        .then(json => {
+                            res.status(200).json({
+                                status: true,
+                                orderId: result._id,
+                                razorPayId: json.id
+                            });
+                        });
+
                 }).catch(err => console.log(err));
         }).catch(err => console.log(err));
 }
