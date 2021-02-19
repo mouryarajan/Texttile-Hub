@@ -12,6 +12,7 @@ router.post('/shop-by-fabric', homeController.postShopeByFabric);
 router.post('/shop-by-type', homeController.postShopeByType);
 router.post('/shop-by-store', homeController.getStoreProduct);
 router.get('/trending-product', homeController.getTrendingProduct);
+router.post('/payment', homeController.payment);
 
 router.post('/search-product', homeController.postSearchProduct);
 router.post('/filter-product', homeController.postFilter);

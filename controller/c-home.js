@@ -7,7 +7,10 @@ const fabric = require('../models/m-fabric');
 const type = require('../models/m-type');
 const trending = require('../models/m-tranding');
 const itemPerPage = 1;
+const fetch = require('node-fetch');
+let base64 = require('base-64');
 const { isDefined, isEmptyObject, decodeDataFromAccessToken, getAverage } = require('../handler/common');
+const router = require('../routes/r-home');
 
 exports.getHomeProducts = (req, res, next) => {
     const page = req.body.page;
@@ -406,8 +409,37 @@ exports.getTrendingProduct = async (req, res, next) => {
         })
 }
 
+exports.payment = async (req, res, next) => {
+    const amount = req.body.amount;
+    const currency = req.body.currency;
+    const receipt = req.body.receipt;
+    const body = { amount: amount, currency: currency, receipt: receipt };
+
+    let url = 'https://api.razorpay.com/v1/orders';
+    let username = 'rzp_live_t67U0BoWeFiPpO';
+    let password = '7lIb1BrxQvhZ6rJEFoZfEYMQ';
+
+    let headers = new fetch.Headers();
+    headers.append('Content-Type', 'text/json');
+    headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password));
+
+    fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: headers,
+    })
+        .then(response => response.json())
+        .then(json => {
+            //console.log(json)
+            res.status(200).json({
+                data:json
+            });
+        });
+
+}
+
 exports.postFilter = async (req, res, next) => {
-    
+
 }
 
 exports.postAdvertisement = (req, res, next) => {
