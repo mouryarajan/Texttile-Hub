@@ -88,6 +88,11 @@ const orderSchema = new Schema({
     phoneNumber: {
         type: Number,
         required: true
+    },
+    paymentStatus: {
+        type: Boolean,
+        default: false,
+        required: true
     }
 });
 

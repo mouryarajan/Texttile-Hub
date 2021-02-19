@@ -331,6 +331,52 @@ exports.postBuyNow = async (req, res, next) => {
         }).catch(err => console.log(err));
 }
 
+exports.postUpdateOrderPayment = async (req, res, next) => {
+    const orderId = req.body.inputOrderId;
+    const paymentStatus = req.body.inputPaymentStatus;
+    if(paymentStatus == true || paymentStatus=='true'){
+        order.findOne({_id: orderId})
+        .then(result=>{
+            if(result){
+                result.paymentStatus = true;
+                result.save()
+                .then(data=>{
+                    if(data){
+                        res.status(200).json({
+                            status: true
+                        });
+                    }else{
+                        res.status(201).json({
+                            status: false,
+                            message: "Something went wrong"
+                        });
+                    }
+                }).catch(err => console.log(err));
+            }else{
+                res.status(201).json({
+                    status: false,
+                    message: "Order not found with respected order id"
+                });
+            }
+        }).catch(err => console.log(err));
+    }else{
+        order.findByIdAndDelete(orderId)
+        .then(result=>{
+            if(result){
+                res.status(200).json({
+                    status: true,
+                    message: "Order removed!"
+                });
+            }else{
+                res.status(201).json({
+                    status: false,
+                    message: "Something went wrong"
+                });
+            }
+        }).catch(err => console.log(err));
+    }
+}
+
 exports.orderAddressUpdate = (req, res, next) => {
     const oid = req.body.inputOrderid;
     const d = req.body;
