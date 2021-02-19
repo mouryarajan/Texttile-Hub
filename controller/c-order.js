@@ -312,13 +312,21 @@ exports.postBuyNow = async (req, res, next) => {
                     })
                         .then(response => response.json())
                         .then(json => {
-                            res.status(200).json({
-                                status: true,
-                                orderId: result._id,
-                                razorPayId: json.id
-                            });
+                            if(typeof json.id !== 'undefined' && json.id !== null && json.id !== ""){
+                                res.status(200).json({
+                                    status: true,
+                                    data: {
+                                        orderId: result._id,
+                                        razorPayId: json.id
+                                    }
+                                });
+                            }else{
+                                res.status(201).json({
+                                    status: false,
+                                    message: "Something went wrong"
+                                });
+                            }
                         });
-
                 }).catch(err => console.log(err));
         }).catch(err => console.log(err));
 }
