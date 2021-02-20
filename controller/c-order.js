@@ -132,7 +132,7 @@ exports.postOrder = async (req, res, next) => {
                         productName: n.name,
                         store: n.storeId,
                         image: x[0],
-                        payment: d.paymentMode,
+                        payment: d.inputPaymentMode,
                         quantity: n.quantity,
                         size: s,
                         color: n.color,
@@ -154,7 +154,7 @@ exports.postOrder = async (req, res, next) => {
                         }).catch(err => { console.log(err) });
                 }
             }
-            if (d.paymentMode == "COD") {
+            if (d.inputPaymentMode == "COD") {
                 for (let x of arr) {
                     if (x.storeId == sid) {
                         data.removeFromCart(x.product);
