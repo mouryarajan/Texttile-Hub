@@ -63,7 +63,7 @@ exports.postOrder = async (req, res, next) => {
                         })
                     }
                     if (n.size) {
-                        if (n.size == 's') {
+                        if (n.size.toLowerCase() == 's') {
                             if (pro.s >= Number(n.quantity)) {
                                 pro.s = pro.s - n.quantity;
                             } else {
@@ -73,7 +73,7 @@ exports.postOrder = async (req, res, next) => {
                                 })
                             }
                         }
-                        if (n.size == 'm') {
+                        if (n.size.toLowerCase() == 'm') {
                             if (pro.m >= Number(n.quantity)) {
                                 pro.m = pro.m - n.quantity;
                             } else {
@@ -83,7 +83,7 @@ exports.postOrder = async (req, res, next) => {
                                 })
                             }
                         }
-                        if (n.size == 'l') {
+                        if (n.size.toLowerCase() == 'l') {
                             if (pro.l >= Number(n.quantity)) {
                                 pro.l = pro.l - n.quantity;
                             } else {
@@ -93,7 +93,7 @@ exports.postOrder = async (req, res, next) => {
                                 })
                             }
                         }
-                        if (n.size == 'xl') {
+                        if (n.size.toLowerCase() == 'xl') {
                             if (pro.xl >= Number(n.quantity)) {
                                 pro.xl = pro.xl - n.quantity;
                             } else {
@@ -103,7 +103,7 @@ exports.postOrder = async (req, res, next) => {
                                 })
                             }
                         }
-                        if (n.size == 'xxl') {
+                        if (n.size.toLowerCase() == 'xxl') {
                             if (pro.xxl >= Number(n.quantity)) {
                                 pro.xxl = pro.xxl - n.quantity;
                             } else {
@@ -113,7 +113,7 @@ exports.postOrder = async (req, res, next) => {
                                 })
                             }
                         }
-                        if (n.size == 'xxxl') {
+                        if (n.size.toLowerCase() == 'xxxl') {
                             if (pro.xxxl >= Number(n.quantity)) {
                                 pro.xxxl = pro.xxxl - n.quantity;
                             } else {
@@ -156,7 +156,7 @@ exports.postOrder = async (req, res, next) => {
                         }).catch(err => { console.log(err) });
                 }
             }
-            
+
             if (d.inputPaymentMode == "COD") {
                 for (let x of arr) {
                     if (x.storeId == sid) {
@@ -212,12 +212,46 @@ exports.postOrderStatus = async (req, res, next) => {
                             result.paymentStatus = true;
                             await result.save();
                             user.findOne({ _id: id })
-                                .then(data => {
+                                .then(async data => {
                                     if (data) {
                                         let arr = data.cart.items;
-                                        for (let x of arr) {
-                                            if (x.storeId == storeId) {
-                                                data.removeFromCart(x.product);
+                                        for (let n of arr) {
+                                            let pro = await products.findOne({ _id: n.product });
+                                            if (n.size) {
+                                                if (n.size.toLowerCase() == 's') {
+                                                    if (pro.s >= Number(n.quantity)) {
+                                                        pro.s = pro.s - n.quantity;
+                                                    }
+                                                }
+                                                if (n.size.toLowerCase() == 'm') {
+                                                    if (pro.m >= Number(n.quantity)) {
+                                                        pro.m = pro.m - n.quantity;
+                                                    }
+                                                }
+                                                if (n.size.toLowerCase() == 'l') {
+                                                    if (pro.l >= Number(n.quantity)) {
+                                                        pro.l = pro.l - n.quantity;
+                                                    }
+                                                }
+                                                if (n.size.toLowerCase() == 'xl') {
+                                                    if (pro.xl >= Number(n.quantity)) {
+                                                        pro.xl = pro.xl - n.quantity;
+                                                    }
+                                                }
+                                                if (n.size.toLowerCase() == 'xxl') {
+                                                    if (pro.xxl >= Number(n.quantity)) {
+                                                        pro.xxl = pro.xxl - n.quantity;
+                                                    }
+                                                }
+                                                if (n.size.toLowerCase() == 'xxxl') {
+                                                    if (pro.xxxl >= Number(n.quantity)) {
+                                                        pro.xxxl = pro.xxxl - n.quantity;
+                                                    }
+                                                }
+                                            }
+                                            await pro.save();
+                                            if (n.storeId == storeId) {
+                                                data.removeFromCart(n.product);
                                             }
                                         }
                                     } else {
@@ -235,7 +269,7 @@ exports.postOrderStatus = async (req, res, next) => {
             }
         } else {
             for (let n of orderId) {
-                await order.findByIdAndDelete(orderId);
+                await order.findByIdAndDelete(n);
             }
         }
         res.status(200).json({
