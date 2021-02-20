@@ -1,6 +1,8 @@
 const category = require('../models/m-category');
 
 exports.postCategory = (req, res, next) => {
+    if (!req.body.inputCategoryName) return res.status(201).json({ status: false, message: "Enter categoury name" });
+    if (!req.body.inputImage) return res.status(201).json({ status: false, message: "Enter Image" });
     const Category = new category({
         name: req.body.inputCategoryName,
         image: req.body.inputImage
@@ -24,6 +26,7 @@ exports.postEditCategory = (req, res, next) => {
     const cid = req.body.inputCategoryId;
     const name = req.body.inputCategoryName;
     if (!cid) return res.status(201).json({ status: false, message: "Please Provide Proper Data" });
+    if (!name) return res.status(201).json({ status: false, message: "Please Provide Proper Data" });
 
     category.findById(cid)
         .then(result => {

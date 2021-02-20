@@ -11,7 +11,9 @@ exports.postBrand = async (req, res, next) => {
     await decodeDataFromAccessToken(req.headers.token).then((data) => {
         id = data.userId;
     });
+    if (!id) return res.status(201).json({ status: false, message: "Unauthorized access" });
     const name = req.body.inputBrandName;
+    if (!name) return res.status(201).json({ status: false, message: "Enter brand name" });
     brand.findOne({ brandName: name })
         .then(data => {
             if (data) {
@@ -67,6 +69,7 @@ exports.getBrand = async (req, res, next) => {
 
 exports.postType = (req, res, next) => {
     const name = req.body.inputType;
+    if (!name) return res.status(201).json({ status: false, message: "Enter Type!" });
     const Type = new type({
         typeName: name
     });
@@ -85,6 +88,7 @@ exports.getType = async (req, res, next) => {
 
 exports.postFabric = (req, res, next) => {
     const name = req.body.inputFabric;
+    if (!name) return res.status(201).json({ status: false, message: "Enter Fabric Name" });
     const Fabric = new fabric({
         fabricName: name
     });
