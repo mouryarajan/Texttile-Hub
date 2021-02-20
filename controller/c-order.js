@@ -124,7 +124,9 @@ exports.postOrder = async (req, res, next) => {
                             }
                         }
                     }
-                    await pro.save();
+                    if (d.inputPaymentMode == "COD") {
+                        await pro.save();
+                    }
                     totalAmount = totalAmount + Number(n.price);
                     let Order = new order({
                         userId: id,
@@ -154,6 +156,7 @@ exports.postOrder = async (req, res, next) => {
                         }).catch(err => { console.log(err) });
                 }
             }
+            
             if (d.inputPaymentMode == "COD") {
                 for (let x of arr) {
                     if (x.storeId == sid) {
@@ -161,6 +164,7 @@ exports.postOrder = async (req, res, next) => {
                     }
                 }
             }
+
             //Razor Pay
             //const amount = totalAmount*100;
             const amount = 100;
@@ -194,6 +198,7 @@ exports.postOrderStatus = async (req, res, next) => {
     const orderId = req.body.inputOrderId;
     const status = req.body.inputPaymentStatus;
     const storeId = req.body.inputStoreId;
+    if (!storeId) return res.status(201).json({ status: false, message: "Enter Store Id" });
     await decodeDataFromAccessToken(req.headers.token).then((data) => {
         id = data.userId;
     })

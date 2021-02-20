@@ -12,86 +12,92 @@ exports.postBrand = async (req, res, next) => {
         id = data.userId;
     });
     const name = req.body.inputBrandName;
-    brand.findOne({brandName: name})
-    .then(data=>{
-        if(data){
-            const BrandStore = new brandstore({
-                brandid: data._id,
-                userid: id
-            });
-            BrandStore.save();
-            res.status(200).json({
-                status: true
-            })
-        }else{
-            const Brand = new brand({
-                brandName: name
-            });
-            Brand.save()
-            .then(result=>{
+    brand.findOne({ brandName: name })
+        .then(data => {
+            if (data) {
                 const BrandStore = new brandstore({
-                    brandid: result._id,
+                    brandid: data._id,
                     userid: id
-                }); 
+                });
                 BrandStore.save();
                 res.status(200).json({
                     status: true
                 })
-            });
-            
-        }
-    }).catch(err=>{console.log(err);});
+            } else {
+                const Brand = new brand({
+                    brandName: name
+                });
+                Brand.save()
+                    .then(result => {
+                        if (result) {
+                            const BrandStore = new brandstore({
+                                brandid: result._id,
+                                userid: id
+                            });
+                            BrandStore.save();
+                            res.status(200).json({
+                                status: true
+                            })
+                        }else{
+                            res.status(201).json({
+                                status: false,
+                                messsage: "Something went wrong!"
+                            })
+                        }
+                    });
+
+            }
+        }).catch(err => { console.log(err); });
 }
 
 exports.getBrand = async (req, res, next) => {
-    const bran = await brand.find();
     const branStore = await brandstore.find().populate('brandid');
     let arr = [];
-    for(let x of branStore){
-        const stro = await store.findOne({userId:x.userid});
-        if(stro.isApproved){
+    for (let x of branStore) {
+        const stro = await store.findOne({ userId: x.userid });
+        if (stro.isApproved) {
             arr.push({
-                _id:x.brandid._id,
+                _id: x.brandid._id,
                 brandName: x.brandid.brandName
             });
         }
     }
-    res.status(200).json({data:arr})
+    res.status(200).json({ data: arr })
 }
 
-exports.postType = (req, res, next) =>{
+exports.postType = (req, res, next) => {
     const name = req.body.inputType;
     const Type = new type({
         typeName: name
     });
     Type.save()
-    .then(data=>{
-        res.status(200).json({
-            status: true
-        });
-    }).catch(err=>{console.log(err);});
+        .then(data => {
+            res.status(200).json({
+                status: true
+            });
+        }).catch(err => { console.log(err); });
 }
 
 exports.getType = async (req, res, next) => {
     const typ = await type.find();
-    res.status(200).json({data:typ})
+    res.status(200).json({ data: typ })
 }
 
-exports.postFabric = (req, res, next) =>{
+exports.postFabric = (req, res, next) => {
     const name = req.body.inputFabric;
     const Fabric = new fabric({
         fabricName: name
     });
     Fabric.save()
-    .then(data=>{
-        res.status(200).json({
-            status: true
-        });
-    }).catch(err=>{console.log(err);});
+        .then(data => {
+            res.status(200).json({
+                status: true
+            });
+        }).catch(err => { console.log(err); });
 }
 exports.getFabric = async (req, res, next) => {
     const fab = await fabric.find();
-    res.status(200).json({data:fab})
+    res.status(200).json({ data: fab })
 }
 
 exports.autoComplete = async (req, res, next) => {
@@ -103,21 +109,21 @@ exports.autoComplete = async (req, res, next) => {
     let bran = [];
     let ty = [];
     let fab = [];
-    for(let x of cat){
+    for (let x of cat) {
         let y = x._id + "#" + x.name;
         cata.push(y)
     }
-    for(let x of brandList){
+    for (let x of brandList) {
         let y = x._id + "#" + x.brandName;
-        bran.push( y)
+        bran.push(y)
     }
-    for(let x of typeList){
+    for (let x of typeList) {
         let y = x._id + "#" + x.typeName;
-        ty.push( y)
+        ty.push(y)
     }
-    for(let x of fabricList){
+    for (let x of fabricList) {
         let y = x._id + "#" + x.fabricName;
-        fab.push( y)
+        fab.push(y)
     }
 
     res.send({
@@ -126,5 +132,5 @@ exports.autoComplete = async (req, res, next) => {
         type: ty,
         fabric: fab
     })
-} 
+}
 
