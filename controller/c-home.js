@@ -439,7 +439,64 @@ exports.payment = async (req, res, next) => {
 }
 
 exports.postFilter = async (req, res, next) => {
-
+    let searchKey = req.body;
+    let priceClause = null;
+    if(isDefined(searchKey.inputStartPrice) && isDefined(searchKey.inputEndPrice)){
+        priceClause = {
+            price:{
+                $gte: searchKey.inputStartPrice,
+                $lt: searchKey.inputEndPrice
+            }
+        }
+    }
+    if(isDefined(searchKey.inputBrandId)){
+        priceClause = {
+            ...priceClause,
+            brandName: searchKey.inputBrandId
+        }
+    }
+    if(isDefined(searchKey.inputStoreId)){
+        priceClause = {
+            ...priceClause,
+            storeId: searchKey.inputStoreId
+        }
+    }
+    if(isDefined(searchKey.inputCategouryId)){
+        priceClause = {
+            ...priceClause,
+            category: searchKey.inputCategouryId
+        }
+    }
+    if(isDefined(searchKey.inputTypeId)){
+        priceClause = {
+            ...priceClause,
+            type: searchKey.inputTypeId
+        }
+    }
+    if(isDefined(searchKey.inputFabricId)){
+        priceClause = {
+            ...priceClause,
+            fabric: searchKey.inputFabricId
+        }
+    }
+    if(isDefined(searchKey.inputColor)){
+        priceClause = {
+            ...priceClause,
+            primarycolor: searchKey.inputColor
+        }
+    }
+    console.log(priceClause);
+    const data = await products.find().where(priceClause);
+    if(data){
+        res.status(200).json({
+            data: data
+        })
+    }else{
+        res.status(200).json({
+            data: "NO product fount with this filter, Try another one!"
+        })
+    }
+    
 }
 
 exports.postAdvertisement = (req, res, next) => {

@@ -56,7 +56,7 @@ exports.postRegister = async (req, res, next) => {
         }
         const otp = Number(Math.floor(100000 + Math.random() * 900000));
         arr = {
-            otp: otp
+             otp
         }
         // let sms = "Your Ecommerce Otp is" + otp.toString() + "please don't share it with others" 
         // let resp = await fast2sms.sendMessage({authorization: uL52IUqO6JQ1cjToHykehX3ENSdlpsZn7WYitD8xr40gFmAfKRK0tXQMjrvAbeCpWnhV9EyclPZ4zxR7, message:sms, numbers: [phno]});
@@ -158,10 +158,13 @@ exports.postPassword = async (req, res, next) => {
 //Edit User
 exports.postEditUser = async (req, res, next) => {
     const d = req.body;
-    let id;
+    let id = null;
     await decodeDataFromAccessToken(req.headers.token).then((data) => {
-        id = data.userId;
+        if(data){
+            id = data.userId;
+        }
     })
+    if (id === null) return res.status(201).json({ status: false, message: "Unauthorised user" });
     user.findById(id)
         .then(result => {
             if (result) {
