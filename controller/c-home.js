@@ -444,8 +444,8 @@ exports.postFilter = async (req, res, next) => {
     if (isDefined(searchKey.inputStartPrice) && isDefined(searchKey.inputEndPrice)) {
         priceClause = {
             price: {
-                $gte: searchKey.inputStartPrice,
-                $lt: searchKey.inputEndPrice
+                $gte: Number(searchKey.inputStartPrice),
+                $lt: Number(searchKey.inputEndPrice)
             }
         }
     }
