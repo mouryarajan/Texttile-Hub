@@ -432,7 +432,7 @@ exports.payment = async (req, res, next) => {
         .then(json => {
             //console.log(json)
             res.status(200).json({
-                data:json
+                data: json
             });
         });
 
@@ -441,62 +441,86 @@ exports.payment = async (req, res, next) => {
 exports.postFilter = async (req, res, next) => {
     let searchKey = req.body;
     let priceClause = null;
-    if(isDefined(searchKey.inputStartPrice) && isDefined(searchKey.inputEndPrice)){
+    if (isDefined(searchKey.inputStartPrice) && isDefined(searchKey.inputEndPrice)) {
         priceClause = {
-            price:{
+            price: {
                 $gte: searchKey.inputStartPrice,
                 $lt: searchKey.inputEndPrice
             }
         }
     }
-    if(isDefined(searchKey.inputBrandId)){
+    if (isDefined(searchKey.inputBrandId)) {
         priceClause = {
             ...priceClause,
-            brandName: searchKey.inputBrandId
+            brandName: { $in: searchKey.inputBrandId }
         }
     }
-    if(isDefined(searchKey.inputStoreId)){
+    if (isDefined(searchKey.inputStoreId)) {
         priceClause = {
             ...priceClause,
-            storeId: searchKey.inputStoreId
+            storeId: { $in: searchKey.inputStoreId }
         }
     }
-    if(isDefined(searchKey.inputCategouryId)){
+    if (isDefined(searchKey.inputCategouryId)) {
         priceClause = {
             ...priceClause,
-            category: searchKey.inputCategouryId
+            category: { $in: searchKey.inputCategouryId }
         }
     }
-    if(isDefined(searchKey.inputTypeId)){
+    if (isDefined(searchKey.inputTypeId)) {
         priceClause = {
             ...priceClause,
-            type: searchKey.inputTypeId
+            type: { $in: searchKey.inputTypeId }
         }
     }
-    if(isDefined(searchKey.inputFabricId)){
+    if (isDefined(searchKey.inputFabricId)) {
         priceClause = {
             ...priceClause,
-            fabric: searchKey.inputFabricId
+            fabric: { $in: searchKey.inputFabricId }
         }
     }
-    if(isDefined(searchKey.inputColor)){
+    if (isDefined(searchKey.inputColor)) {
         priceClause = {
             ...priceClause,
-            primarycolor: searchKey.inputColor
+            primarycolor: { $in: searchKey.inputColor }
         }
     }
-    console.log(priceClause);
-    const data = await products.find().where(priceClause);
-    if(data){
+    //console.log(priceClause);
+    const data = await products.find().populate({ path: 'storeId', select: 'isApproved' }).where(priceClause);
+
+    let arr = [];
+    for (let x of data) {
+        if (x.storeId.isApproved) {
+            let reviewData = x.review.items;
+            let avgArray = [];
+            reviewData.forEach((element) => {
+                avgArray.push(element.rating);
+            });
+            const avg = getAverage(avgArray);
+            let ima = x.images.toString();
+            let im = ima.split(',');
+            arr.push({
+                product: x._id,
+                name: x.name,
+                price: x.price,
+                image: im[0],
+                brand: x.brandName.brandName,
+                description: x.description,
+                rating: avg
+            })
+        }
+    }
+
+    if (data) {
         res.status(200).json({
-            data: data
+            data: arr
         })
-    }else{
+    } else {
         res.status(200).json({
             data: "NO product fount with this filter, Try another one!"
         })
     }
-    
+
 }
 
 exports.postAdvertisement = (req, res, next) => {
