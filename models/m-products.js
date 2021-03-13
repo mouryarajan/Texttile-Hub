@@ -50,28 +50,64 @@ const productSchema = new Schema({
         ref: 'tbltype'
     },
     s: {
-        type: Number,
-        required: false
+        quantity: {
+            type: Number,
+            required: false
+        },
+        price: {
+            type: Number,
+            required: false
+        }
     },
     m: {
-        type: Number,
-        required: false
+        quantity: {
+            type: Number,
+            required: false
+        },
+        price: {
+            type: Number,
+            required: false
+        }
     },
     l: {
-        type: Number,
-        required: false
+        quantity: {
+            type: Number,
+            required: false
+        },
+        price: {
+            type: Number,
+            required: false
+        }
     },
     xl: {
-        type: Number,
-        required: false
+        quantity: {
+            type: Number,
+            required: false
+        },
+        price: {
+            type: Number,
+            required: false
+        }
     },
     xxl: {
-        type: Number,
-        required: false
+        quantity: {
+            type: Number,
+            required: false
+        },
+        price: {
+            type: Number,
+            required: false
+        }
     },
     xxxl: {
-        type: Number,
-        required: false
+        quantity: {
+            type: Number,
+            required: false
+        },
+        price: {
+            type: Number,
+            required: false
+        }
     },
     quantity: {
         type: Number,

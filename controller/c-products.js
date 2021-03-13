@@ -94,12 +94,30 @@ exports.postProducts = async (req, res, next) => {
                         description: d.inputDescription,
                         catologue: d.inputCatologue,
                         storeId: st._id,
-                        s: d.inputSquantity,
-                        m: d.inputMquantity,
-                        l: d.inputLquantity,
-                        xl: d.inputXLquantity,
-                        xxl: d.inputXXLquantity,
-                        xxl: d.inputXXXLquantity,
+                        s: {
+                            quantity: d.inputSquantity,
+                            price: d.inputSprice
+                        },
+                        m: {
+                            quantity: d.inputMquantity,
+                            price: d.inputMprice
+                        },
+                        l: {
+                            quantity: d.inputLquantity,
+                            price: d.inputLprice
+                        },
+                        xl: {
+                            quantity: d.inputXLquantity,
+                            price: d.inputXLprice
+                        },
+                        xxl: {
+                            quantity: d.inputXXLquantity,
+                            price: d.inputXXLprice
+                        },
+                        xxxl: {
+                            quantity: d.inputXXXLquantity,
+                            price: d.inputXXXLprice
+                        },
                         colorFlag: true
                     });
                     Products.save()
@@ -124,12 +142,30 @@ exports.postProducts = async (req, res, next) => {
                         description: d.inputDescription,
                         catologue: d.inputCatologue,
                         storeId: st._id,
-                        s: d.inputSquantity,
-                        m: d.inputMquantity,
-                        l: d.inputLquantity,
-                        xl: d.inputXLquantity,
-                        xxl: d.inputXXLquantity,
-                        xxxl: d.inputXXXLquantity,
+                        s: {
+                            quantity: d.inputSquantity,
+                            price: d.inputSprice
+                        },
+                        m: {
+                            quantity: d.inputMquantity,
+                            price: d.inputMprice
+                        },
+                        l: {
+                            quantity: d.inputLquantity,
+                            price: d.inputLprice
+                        },
+                        xl: {
+                            quantity: d.inputXLquantity,
+                            price: d.inputXLprice
+                        },
+                        xxl: {
+                            quantity: d.inputXXLquantity,
+                            price: d.inputXXLprice
+                        },
+                        xxxl: {
+                            quantity: d.inputXXXLquantity,
+                            price: d.inputXXXLprice
+                        },
                         colorFlag: false
                     });
                     Products.save()
@@ -142,7 +178,7 @@ exports.postProducts = async (req, res, next) => {
                         }).catch(err => { console.log(err) });
                 }
             }
-        }else{
+        } else {
             res.status(201).json({
                 status: false,
                 message: 'You are not authorized to add product'
@@ -200,7 +236,7 @@ exports.removeProduct = (req, res, next) => {
     const pid = req.body.inputProductId;
     products.findByIdAndDelete(pid)
         .then(async data => {
-            await tranding.deleteMany({productId:pid});
+            await tranding.deleteMany({ productId: pid });
             res.status(200).json({
                 status: "true"
             })
@@ -220,7 +256,7 @@ exports.getSize = (req, res, next) => {
 exports.getProductDetails = (req, res, next) => {
     const productId = req.body.inputProductId;
     if (!productId) return res.status(201).json({ status: false, message: "Enter product id" });
-    products.findOne({ _id: productId }).populate('brandName', 'brandName').populate('category','name').populate('type','typeName').populate('fabric','fabricName').select('colors review images name brandName category price type quantity fabric description catologue colorFlag primarycolor quantity s m l xl xxl xxxl')
+    products.findOne({ _id: productId }).populate('brandName', 'brandName').populate('category', 'name').populate('type', 'typeName').populate('fabric', 'fabricName').select('colors review images name brandName category price type quantity fabric description catologue colorFlag primarycolor quantity s m l xl xxl xxxl')
         .then(data => {
             res.status(200).json({
                 data: data

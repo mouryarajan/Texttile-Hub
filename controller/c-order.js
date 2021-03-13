@@ -54,75 +54,86 @@ exports.postOrder = async (req, res, next) => {
                         s = n.size;
                     }
                     let x = n.image.split(',');
+
                     if (pro.quantity >= n.quantity) {
-                        pro.quantity = pro.quantity - n.quantity;
+
+                    }
+                    if (pro.quantity >= n.quantity) {
+                        if (n.size) {
+                            if (n.size.toLowerCase() == 's') {
+                                if (pro.s.quantity >= Number(n.quantity)) {
+                                    pro.s.quantity = pro.s.quantity - n.quantity;
+                                    pro.quantity = pro.quantity - n.quantity;
+                                } else {
+                                    res.status(201).json({
+                                        message: "Out of Stock",
+                                        status: false
+                                    })
+                                }
+                            }
+                            if (n.size.toLowerCase() == 'm') {
+                                if (pro.m.quantity >= Number(n.quantity)) {
+                                    pro.m.quantity = pro.m.quantity - n.quantity;
+                                    pro.quantity = pro.quantity - n.quantity;
+                                } else {
+                                    res.status(201).json({
+                                        message: "Out of Stock",
+                                        status: false
+                                    })
+                                }
+                            }
+                            if (n.size.toLowerCase() == 'l') {
+                                if (pro.l.quantity >= Number(n.quantity)) {
+                                    pro.l.quantity = pro.l.quantity - n.quantity;
+                                    pro.quantity = pro.quantity - n.quantity;
+                                } else {
+                                    res.status(201).json({
+                                        message: "Out of Stock",
+                                        status: false
+                                    })
+                                }
+                            }
+                            if (n.size.toLowerCase() == 'xl') {
+                                if (pro.xl.quantity >= Number(n.quantity)) {
+                                    pro.xl.quantity = pro.xl.quantity - n.quantity;
+                                    pro.quantity = pro.quantity - n.quantity;
+                                } else {
+                                    res.status(201).json({
+                                        message: "Out of Stock",
+                                        status: false
+                                    })
+                                }
+                            }
+                            if (n.size.toLowerCase() == 'xxl') {
+                                if (pro.xxl.quantity >= Number(n.quantity)) {
+                                    pro.xxl.quantity = pro.xxl.quantity - n.quantity;
+                                    pro.quantity = pro.quantity - n.quantity;
+                                } else {
+                                    res.status(201).json({
+                                        message: "Out of Stock",
+                                        status: false
+                                    })
+                                }
+                            }
+                            if (n.size.toLowerCase() == 'xxxl') {
+                                if (pro.xxxl.quantity >= Number(n.quantity)) {
+                                    pro.xxxl.quantity = pro.xxxl.quantity - n.quantity;
+                                    pro.quantity = pro.quantity - n.quantity;
+                                } else {
+                                    res.status(201).json({
+                                        message: "Out of Stock",
+                                        status: false
+                                    })
+                                }
+                            }
+                        } else {
+                            pro.quantity = pro.quantity - n.quantity;
+                        }
                     } else {
                         res.status(201).json({
                             message: "Out of Stock",
                             status: false
                         })
-                    }
-                    if (n.size) {
-                        if (n.size.toLowerCase() == 's') {
-                            if (pro.s >= Number(n.quantity)) {
-                                pro.s = pro.s - n.quantity;
-                            } else {
-                                res.status(201).json({
-                                    message: "Out of Stock",
-                                    status: false
-                                })
-                            }
-                        }
-                        if (n.size.toLowerCase() == 'm') {
-                            if (pro.m >= Number(n.quantity)) {
-                                pro.m = pro.m - n.quantity;
-                            } else {
-                                res.status(201).json({
-                                    message: "Out of Stock",
-                                    status: false
-                                })
-                            }
-                        }
-                        if (n.size.toLowerCase() == 'l') {
-                            if (pro.l >= Number(n.quantity)) {
-                                pro.l = pro.l - n.quantity;
-                            } else {
-                                res.status(201).json({
-                                    message: "Out of Stock",
-                                    status: false
-                                })
-                            }
-                        }
-                        if (n.size.toLowerCase() == 'xl') {
-                            if (pro.xl >= Number(n.quantity)) {
-                                pro.xl = pro.xl - n.quantity;
-                            } else {
-                                res.status(201).json({
-                                    message: "Out of Stock",
-                                    status: false
-                                })
-                            }
-                        }
-                        if (n.size.toLowerCase() == 'xxl') {
-                            if (pro.xxl >= Number(n.quantity)) {
-                                pro.xxl = pro.xxl - n.quantity;
-                            } else {
-                                res.status(201).json({
-                                    message: "Out of Stock",
-                                    status: false
-                                })
-                            }
-                        }
-                        if (n.size.toLowerCase() == 'xxxl') {
-                            if (pro.xxxl >= Number(n.quantity)) {
-                                pro.xxxl = pro.xxxl - n.quantity;
-                            } else {
-                                res.status(201).json({
-                                    message: "Out of Stock",
-                                    status: false
-                                })
-                            }
-                        }
                     }
                     if (d.inputPaymentMode == "COD") {
                         await pro.save();
@@ -318,76 +329,84 @@ exports.postBuyNow = async (req, res, next) => {
                 res.status(201).json({ status: false, message: "Address not found!" });
             }
             var someFormattedDate = dd + '/' + mm + '/' + y;
+
             let pro = await products.findOne({ _id: req.body.inputProductId });
             if (pro.quantity >= req.body.inputQuantity) {
-                pro.quantity = pro.quantity - req.body.inputQuantity;
+                if (req.body.inputSize) {
+                    if (req.body.inputSize == 's') {
+                        if (pro.s.quantity >= Number(req.body.inputQuantity)) {
+                            pro.s.quantity = pro.s.quantity - Number(req.body.inputQuantity);
+                            pro.quantity = pro.quantity - req.body.inputQuantity;
+                        } else {
+                            res.status(201).json({
+                                message: "Out of Stock",
+                                status: false
+                            })
+                        }
+                    }
+                    if (req.body.inputSize == 'm') {
+                        if (pro.m.quantity >= Number(req.body.inputQuantity)) {
+                            pro.m.quantity = pro.m.quantity - Number(req.body.inputQuantity);
+                            pro.quantity = pro.quantity - req.body.inputQuantity;
+                        } else {
+                            res.status(201).json({
+                                message: "Out of Stock",
+                                status: false
+                            })
+                        }
+                    }
+                    if (req.body.inputSize == 'l') {
+                        if (pro.l.quantity >= Number(req.body.inputQuantity)) {
+                            pro.l.quantity = pro.l.quantity - Number(req.body.inputQuantity);
+                            pro.quantity = pro.quantity - req.body.inputQuantity;
+                        } else {
+                            res.status(201).json({
+                                message: "Out of Stock",
+                                status: false
+                            })
+                        }
+                    }
+                    if (req.body.inputSize == 'xl') {
+                        if (pro.xl.quantity >= Number(req.body.inputQuantity)) {
+                            pro.xl.quantity = pro.xl.quantity - Number(req.body.inputQuantity);
+                            pro.quantity = pro.quantity - req.body.inputQuantity;
+                        } else {
+                            res.status(201).json({
+                                message: "Out of Stock",
+                                status: false
+                            })
+                        }
+                    }
+                    if (req.body.inputSize == 'xxl') {
+                        if (pro.xxl.quantity >= Number(req.body.inputQuantity)) {
+                            pro.xxl.quantity = pro.xxl.quantity - Number(req.body.inputQuantity);
+                            pro.quantity = pro.quantity - req.body.inputQuantity;
+                        } else {
+                            res.status(201).json({
+                                message: "Out of Stock",
+                                status: false
+                            })
+                        }
+                    }
+                    if (req.body.inputSize == 'xxxl') {
+                        if (pro.xxxl.quantity >= Number(req.body.inputQuantity)) {
+                            pro.xxxl.quantity = pro.xxxl.quantity - Number(req.body.inputQuantity);
+                            pro.quantity = pro.quantity - req.body.inputQuantity;
+                        } else {
+                            res.status(201).json({
+                                message: "Out of Stock",
+                                status: false
+                            })
+                        }
+                    }
+                } else {
+                    pro.quantity = pro.quantity - req.body.inputQuantity;
+                }
             } else {
                 res.status(201).json({
                     message: "Out of Stock",
                     status: false
                 })
-            }
-            if (req.body.inputSize) {
-                if (req.body.inputSize == 's') {
-                    if (pro.s >= Number(req.body.inputQuantity)) {
-                        pro.s = pro.s - Number(req.body.inputQuantity);
-                    } else {
-                        res.status(201).json({
-                            message: "Out of Stock",
-                            status: false
-                        })
-                    }
-                }
-                if (req.body.inputSize == 'm') {
-                    if (pro.m >= Number(req.body.inputQuantity)) {
-                        pro.m = pro.m - Number(req.body.inputQuantity);
-                    } else {
-                        res.status(201).json({
-                            message: "Out of Stock",
-                            status: false
-                        })
-                    }
-                }
-                if (req.body.inputSize == 'l') {
-                    if (pro.l >= Number(req.body.inputQuantity)) {
-                        pro.l = pro.l - Number(req.body.inputQuantity);
-                    } else {
-                        res.status(201).json({
-                            message: "Out of Stock",
-                            status: false
-                        })
-                    }
-                }
-                if (req.body.inputSize == 'xl') {
-                    if (pro.xl >= Number(req.body.inputQuantity)) {
-                        pro.xl = pro.xl - Number(req.body.inputQuantity);
-                    } else {
-                        res.status(201).json({
-                            message: "Out of Stock",
-                            status: false
-                        })
-                    }
-                }
-                if (req.body.inputSize == 'xxl') {
-                    if (pro.xxl >= Number(req.body.inputQuantity)) {
-                        pro.xxl = pro.xxl - Number(req.body.inputQuantity);
-                    } else {
-                        res.status(201).json({
-                            message: "Out of Stock",
-                            status: false
-                        })
-                    }
-                }
-                if (req.body.inputSize == 'xxxl') {
-                    if (pro.xxxl >= Number(req.body.inputQuantity)) {
-                        pro.xxxl = pro.xxxl - Number(req.body.inputQuantity);
-                    } else {
-                        res.status(201).json({
-                            message: "Out of Stock",
-                            status: false
-                        })
-                    }
-                }
             }
             await pro.save();
             let fprice = 0;

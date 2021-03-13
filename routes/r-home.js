@@ -15,6 +15,7 @@ router.get('/trending-product', homeController.getTrendingProduct);
 router.post('/payment', homeController.payment);
 
 router.post('/search-product', homeController.postSearchProduct);
+router.post('/search-product-sample', homeController.postSearchProductSample);
 router.post('/filter-product', homeController.postFilter);
 
 module.exports = router;

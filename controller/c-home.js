@@ -389,6 +389,15 @@ exports.postSearchProduct = async (req, res, next) => {
     });
 }
 
+exports.postSearchProductSample = async (req, res, next) => {
+    const text = req.body.inputSearch;
+    if (!text) { res.status(201).json({ status: false, message: "Provide text!" }) }
+    const pro = await products.find({"brandName.brandName":"Nike"}).populate('brandName');
+    res.status(200).json({
+        data: pro
+    });
+}
+
 exports.getTrendingProduct = async (req, res, next) => {
     trending.find().populate({ path: 'productId' }).sort({ cart: 'desc' })
         .then(data => {
