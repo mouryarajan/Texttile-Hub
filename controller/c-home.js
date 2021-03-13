@@ -11,6 +11,7 @@ const fetch = require('node-fetch');
 let base64 = require('base-64');
 const { isDefined, isEmptyObject, decodeDataFromAccessToken, getAverage } = require('../handler/common');
 const router = require('../routes/r-home');
+const _ = require('lodash')
 
 exports.getHomeProducts = (req, res, next) => {
     const page = req.body.page;
@@ -389,12 +390,65 @@ exports.postSearchProduct = async (req, res, next) => {
     });
 }
 
+function isCherries(fruit) {
+    return fruit.name === 'Black Saree';
+}
 exports.postSearchProductSample = async (req, res, next) => {
     const text = req.body.inputSearch;
     if (!text) { res.status(201).json({ status: false, message: "Provide text!" }) }
-    const pro = await products.find({"brandName.brandName":"Nike"}).populate('brandName');
+    const pro = await products.find().populate({ path: "brandName", select: { brandName: 1, _id: 0 } }).populate({ path: "category", select: { _id: 0, name: 1 } }).populate({ path: "type", select: { _id: 0, typeName: 1 } }).populate({ path: "fabric", select: { _id: 0, fabricName: 1 } }).populate({ path: "storeId", select: { companyName: 1, _id: 0 } }).select('brandName category type fabric storeId name primarycolor images price');
+    let arr = [];
+
+    let dataUsingProductName = pro.filter(function (e) {
+        return e.name.toString().toLowerCase().indexOf(text) > -1;
+    });
+
+    let dataUsingBrandName = pro.filter(function (e) {
+        return e.brandName.brandName.toString().toLowerCase().indexOf(text) > -1;
+    });
+
+    let dataUsingCategoryName = pro.filter(function (e) {
+        return e.category.name.toString().toLowerCase().indexOf(text) > -1;
+    });
+    let dataUsingFabricName = pro.filter(function (e) {
+        return e.fabric.fabricName.toString().toLowerCase().indexOf(text) > -1;
+    });
+    let dataUsingTypeName = pro.filter(function (e) {
+        return e.type.typeName.toString().toLowerCase().indexOf(text) > -1;
+    });
+    let dataUsingStoreName = pro.filter(function (e) {
+        return e.storeId.companyName.toString().toLowerCase().indexOf(text) > -1;
+    });
+    // let dataUsingColorName = pro.filter(function (e) {
+    //     return e.primarycolor.toString().toLowerCase().indexOf(text)>-1;
+    // });
+
+    arr = [...dataUsingBrandName, ...dataUsingCategoryName, ...dataUsingProductName, ...dataUsingTypeName, ...dataUsingFabricName, ...dataUsingStoreName]
+
+    let uniqueObject = {};
+    let finalPro = []
+    for (let i in arr) {
+        objTitle = arr[i]['_id'];
+        uniqueObject[objTitle] = arr[i];
+    }
+    for (i in uniqueObject) {
+        finalPro.push(uniqueObject[i]);
+    }
+    //console.log(dataUsingCategoryName.length,dataUsingProductName.length)
+    //console.log(arr)
+
+    let finalArray = [];
+    for (let i in finalPro) {
+        console.log(finalPro[i]);
+        finalArray.push({
+            product:finalPro[i]._id,
+            name:finalPro[i].name,
+            image: finalPro[i].images.split(',')[0],
+            price: finalPro[i].price
+        })
+    }
     res.status(200).json({
-        data: pro
+        data: finalArray
     });
 }
 
