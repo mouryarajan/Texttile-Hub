@@ -212,7 +212,7 @@ exports.postShopeByFabric = (req, res, next) => {
         }).catch(err => { console.log(err) });
 }
 
-exports.postSearchProduct = async (req, res, next) => {
+exports.postSearchProductSample = async (req, res, next) => {
     const text = req.body.inputSearch;
     if (!text) { res.status(201).json({ status: false, message: "Provide text!" }) }
     let arr = [];
@@ -393,62 +393,82 @@ exports.postSearchProduct = async (req, res, next) => {
 function isCherries(fruit) {
     return fruit.name === 'Black Saree';
 }
-exports.postSearchProductSample = async (req, res, next) => {
+exports.postSearchProduct = async (req, res, next) => {
+    console.log("calledd---")
     const text = req.body.inputSearch;
     if (!text) { res.status(201).json({ status: false, message: "Provide text!" }) }
     const pro = await products.find().populate({ path: "brandName", select: { brandName: 1, _id: 0 } }).populate({ path: "category", select: { _id: 0, name: 1 } }).populate({ path: "type", select: { _id: 0, typeName: 1 } }).populate({ path: "fabric", select: { _id: 0, fabricName: 1 } }).populate({ path: "storeId", select: { companyName: 1, _id: 0 } }).select('brandName category type fabric storeId name primarycolor images price');
     let arr = [];
 
     let dataUsingProductName = pro.filter(function (e) {
-        return e.name.toString().toLowerCase().indexOf(text.toString().toLowerCase()) > -1;
+        if (isDefined(e.name)) {
+            return e.name.toString().toLowerCase().indexOf(text.toString().toLowerCase()) > -1;
+        }
     });
 
     let dataUsingBrandName = pro.filter(function (e) {
-        return e.brandName.brandName.toString().toLowerCase().indexOf(text.toString().toLowerCase()) > -1;
+        if (isDefined(e.brandName.brandName)) {
+            return e.brandName.brandName.toString().toLowerCase().indexOf(text.toString().toLowerCase()) > -1;
+        }
     });
 
     let dataUsingCategoryName = pro.filter(function (e) {
-        return e.category.name.toString().toLowerCase().indexOf(text.toString().toLowerCase()) > -1;
+        if (isDefined(e.category.name)) {
+            return e.category.name.toString().toLowerCase().indexOf(text.toString().toLowerCase()) > -1;
+        }
     });
     let dataUsingFabricName = pro.filter(function (e) {
-        return e.fabric.fabricName.toString().toLowerCase().indexOf(text.toString().toLowerCase()) > -1;
+        if (isDefined(e.fabric.fabricName)) {
+            return e.fabric.fabricName.toString().toLowerCase().indexOf(text.toString().toLowerCase()) > -1;
+        }
     });
     let dataUsingTypeName = pro.filter(function (e) {
-        return e.type.typeName.toString().toLowerCase().indexOf(text.toString().toLowerCase()) > -1;
+        if (isDefined(e.type.typeName)) {
+            return e.type.typeName.toString().toLowerCase().indexOf(text.toString().toLowerCase()) > -1;
+        }
     });
     let dataUsingStoreName = pro.filter(function (e) {
-        return e.storeId.companyName.toString().toLowerCase().indexOf(text.toString().toLowerCase()) > -1;
+        if (isDefined(e.storeId.companyName)) {
+            return e.storeId.companyName.toString().toLowerCase().indexOf(text.toString().toLowerCase()) > -1;
+        }
     });
-    // let dataUsingColorName = pro.filter(function (e) {
-    //     return e.primarycolor.toString().toLowerCase().indexOf(text)>-1;
-    // });
+    let dataUsingColorName = pro.filter(function (e) {
+        if (isDefined(e.primarycolor)) {
+            return e.primarycolor.toString().toLowerCase().indexOf(text) > -1;
+        }
+
+    });
 
 
-    console.log(dataUsingStoreName.length)
-    arr = [...dataUsingBrandName, ...dataUsingCategoryName, ...dataUsingProductName, ...dataUsingTypeName, ...dataUsingFabricName, ...dataUsingStoreName]
+
+    arr = [...dataUsingBrandName, ...dataUsingCategoryName, ...dataUsingProductName, ...dataUsingTypeName, ...dataUsingFabricName, ...dataUsingStoreName, ...dataUsingColorName]
 
     let uniqueObject = {};
-    let finalPro = []
+    let finalArray = []
     for (let i in arr) {
         objTitle = arr[i]['_id'];
         uniqueObject[objTitle] = arr[i];
     }
     for (i in uniqueObject) {
-        finalPro.push(uniqueObject[i]);
+        finalArray.push({
+            product: uniqueObject[i]._id,
+            name: uniqueObject[i].name,
+            image: isDefined(uniqueObject[i].images)? uniqueObject[i].images.split(',')[0]:'https://cosmolearning.org/images_dir/down/image-not-available.jpg',
+            price: uniqueObject[i].price
+        })
     }
     //console.log(dataUsingCategoryName.length,dataUsingProductName.length)
     //console.log(arr)
 
-    let finalArray = [];
-    for (let i in finalPro) {
-        console.log(finalPro[i]);
-        finalArray.push({
-            product:finalPro[i]._id,
-            name:finalPro[i].name,
-            image: finalPro[i].images.split(',')[0],
-            price: finalPro[i].price
-        })
-    }
+    // let finalArray = [];
+    // for (let i in finalPro) {
+    //     finalArray.push({
+    //         product: finalPro[i]._id,
+    //         name: finalPro[i].name,
+    //         image: finalPro[i].images.split(',')[0],
+    //         price: finalPro[i].price
+    //     })
+    // }
     res.status(200).json({
         data: finalArray
     });
