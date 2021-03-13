@@ -400,29 +400,31 @@ exports.postSearchProductSample = async (req, res, next) => {
     let arr = [];
 
     let dataUsingProductName = pro.filter(function (e) {
-        return e.name.toString().toLowerCase().indexOf(text) > -1;
+        return e.name.toString().toLowerCase().indexOf(text.toString().toLowerCase()) > -1;
     });
 
     let dataUsingBrandName = pro.filter(function (e) {
-        return e.brandName.brandName.toString().toLowerCase().indexOf(text) > -1;
+        return e.brandName.brandName.toString().toLowerCase().indexOf(text.toString().toLowerCase()) > -1;
     });
 
     let dataUsingCategoryName = pro.filter(function (e) {
-        return e.category.name.toString().toLowerCase().indexOf(text) > -1;
+        return e.category.name.toString().toLowerCase().indexOf(text.toString().toLowerCase()) > -1;
     });
     let dataUsingFabricName = pro.filter(function (e) {
-        return e.fabric.fabricName.toString().toLowerCase().indexOf(text) > -1;
+        return e.fabric.fabricName.toString().toLowerCase().indexOf(text.toString().toLowerCase()) > -1;
     });
     let dataUsingTypeName = pro.filter(function (e) {
-        return e.type.typeName.toString().toLowerCase().indexOf(text) > -1;
+        return e.type.typeName.toString().toLowerCase().indexOf(text.toString().toLowerCase()) > -1;
     });
     let dataUsingStoreName = pro.filter(function (e) {
-        return e.storeId.companyName.toString().toLowerCase().indexOf(text) > -1;
+        return e.storeId.companyName.toString().toLowerCase().indexOf(text.toString().toLowerCase()) > -1;
     });
     // let dataUsingColorName = pro.filter(function (e) {
     //     return e.primarycolor.toString().toLowerCase().indexOf(text)>-1;
     // });
 
+
+    console.log(dataUsingStoreName.length)
     arr = [...dataUsingBrandName, ...dataUsingCategoryName, ...dataUsingProductName, ...dataUsingTypeName, ...dataUsingFabricName, ...dataUsingStoreName]
 
     let uniqueObject = {};
