@@ -9,6 +9,7 @@ const { findOne } = require('../models/m-user');
 
 exports.postOrder = async (req, res, next) => {
     const d = req.body;
+    const productPrice = d.inputProductPrice;
     if (!d) return res.status(201).json({ status: false, message: "Missing data" });
     let id;
     await decodeDataFromAccessToken(req.headers.token).then((data) => {
@@ -147,7 +148,7 @@ exports.postOrder = async (req, res, next) => {
                         color: n.color,
                         placeDate: tday,
                         deliverDate: someFormattedDate,
-                        amount: n.price,
+                        amount: productPrice,
                         type: a.type,
                         street: a.street,
                         landmark: a.landmark,
@@ -291,6 +292,7 @@ exports.postOrderStatus = async (req, res, next) => {
 
 exports.postBuyNow = async (req, res, next) => {
     let id;
+    const productPrice = d.inputProductPrice;
     await decodeDataFromAccessToken(req.headers.token).then((data) => {
         id = data.userId;
     })
@@ -419,7 +421,7 @@ exports.postBuyNow = async (req, res, next) => {
                 color: req.body.inputColor,
                 placeDate: tday,
                 deliverDate: someFormattedDate,
-                amount: fprice,
+                amount: productPrice,
                 type: a.type,
                 street: a.street,
                 landmark: a.landmark,

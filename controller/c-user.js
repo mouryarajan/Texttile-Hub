@@ -205,6 +205,7 @@ exports.postCart = async (req, res, next) => {
     const productSize = req.body.inputProductsize;
     const productColor = req.body.inputProductColor;
     const productQuantity = req.body.inputProductQuantity;
+    const productPrice = req.body.inputProductPrice;
     if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
     if (!productId) return res.status(201).json({ status: false, message: "Enter Product Id" });
     if (!productQuantity) return res.status(201).json({ status: false, message: "Enter Product Quantity" });
@@ -240,7 +241,7 @@ exports.postCart = async (req, res, next) => {
                                             color: productColor,
                                             name: prod.name,
                                             image: req.body.inputImage,
-                                            price: fprice,
+                                            price: productPrice,
                                             storeId: prod.storeId,
                                             size: productSize,
                                             description: prod.description
@@ -271,7 +272,7 @@ exports.postCart = async (req, res, next) => {
                                             name: prod.name,
                                             color: productColor,
                                             image: req.body.inputImage,
-                                            price: fprice,
+                                            price: productPrice,
                                             storeId: prod.storeId,
                                             size: productSize,
                                             description: prod.description
@@ -314,7 +315,7 @@ exports.postCart = async (req, res, next) => {
                                                 size: productSize,
                                                 name: prod.name,
                                                 image: req.body.inputImage,
-                                                price: fprice,
+                                                price: productPrice,
                                                 storeId: prod.storeId,
                                                 size: productSize,
                                                 description: prod.description
@@ -346,7 +347,7 @@ exports.postCart = async (req, res, next) => {
                                                 name: prod.name,
                                                 color: productColor,
                                                 image: req.body.inputImage,
-                                                price: fprice,
+                                                price: productPrice,
                                                 storeId: prod.storeId,
                                                 size: productSize,
                                                 description: prod.description
