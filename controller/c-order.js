@@ -292,7 +292,7 @@ exports.postOrderStatus = async (req, res, next) => {
 
 exports.postBuyNow = async (req, res, next) => {
     let id;
-    const productPrice = d.inputProductPrice;
+    const productPrice = req.body.inputProductPrice;
     await decodeDataFromAccessToken(req.headers.token).then((data) => {
         id = data.userId;
     })
