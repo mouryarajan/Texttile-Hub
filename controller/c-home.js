@@ -394,7 +394,6 @@ function isCherries(fruit) {
     return fruit.name === 'Black Saree';
 }
 exports.postSearchProduct = async (req, res, next) => {
-    console.log("calledd---")
     const text = req.body.inputSearch;
     if (!text) { res.status(201).json({ status: false, message: "Provide text!" }) }
     const pro = await products.find().populate({ path: "brandName", select: { brandName: 1, _id: 0 } }).populate({ path: "category", select: { _id: 0, name: 1 } }).populate({ path: "type", select: { _id: 0, typeName: 1 } }).populate({ path: "fabric", select: { _id: 0, fabricName: 1 } }).populate({ path: "storeId", select: { companyName: 1, _id: 0 } }).select('brandName category type fabric storeId name primarycolor images price');

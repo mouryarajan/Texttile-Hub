@@ -54,10 +54,6 @@ exports.postOrder = async (req, res, next) => {
                         s = n.size;
                     }
                     let x = n.image.split(',');
-
-                    if (pro.quantity >= n.quantity) {
-
-                    }
                     if (pro.quantity >= n.quantity) {
                         if (n.size) {
                             if (n.size.toLowerCase() == 's') {
@@ -331,12 +327,12 @@ exports.postBuyNow = async (req, res, next) => {
             var someFormattedDate = dd + '/' + mm + '/' + y;
 
             let pro = await products.findOne({ _id: req.body.inputProductId });
-            if (pro.quantity >= req.body.inputQuantity) {
+            if (pro.quantity >= Number(req.body.inputQuantity)) {
                 if (req.body.inputSize) {
                     if (req.body.inputSize == 's') {
                         if (pro.s.quantity >= Number(req.body.inputQuantity)) {
                             pro.s.quantity = pro.s.quantity - Number(req.body.inputQuantity);
-                            pro.quantity = pro.quantity - req.body.inputQuantity;
+                            pro.quantity = pro.quantity - Number(req.body.inputQuantity);
                         } else {
                             res.status(201).json({
                                 message: "Out of Stock",
@@ -347,7 +343,7 @@ exports.postBuyNow = async (req, res, next) => {
                     if (req.body.inputSize == 'm') {
                         if (pro.m.quantity >= Number(req.body.inputQuantity)) {
                             pro.m.quantity = pro.m.quantity - Number(req.body.inputQuantity);
-                            pro.quantity = pro.quantity - req.body.inputQuantity;
+                            pro.quantity = pro.quantity - Number(req.body.inputQuantity);
                         } else {
                             res.status(201).json({
                                 message: "Out of Stock",
@@ -358,7 +354,7 @@ exports.postBuyNow = async (req, res, next) => {
                     if (req.body.inputSize == 'l') {
                         if (pro.l.quantity >= Number(req.body.inputQuantity)) {
                             pro.l.quantity = pro.l.quantity - Number(req.body.inputQuantity);
-                            pro.quantity = pro.quantity - req.body.inputQuantity;
+                            pro.quantity = pro.quantity - Number(req.body.inputQuantity);
                         } else {
                             res.status(201).json({
                                 message: "Out of Stock",
@@ -369,7 +365,7 @@ exports.postBuyNow = async (req, res, next) => {
                     if (req.body.inputSize == 'xl') {
                         if (pro.xl.quantity >= Number(req.body.inputQuantity)) {
                             pro.xl.quantity = pro.xl.quantity - Number(req.body.inputQuantity);
-                            pro.quantity = pro.quantity - req.body.inputQuantity;
+                            pro.quantity = pro.quantity - Number(req.body.inputQuantity);
                         } else {
                             res.status(201).json({
                                 message: "Out of Stock",
@@ -380,7 +376,7 @@ exports.postBuyNow = async (req, res, next) => {
                     if (req.body.inputSize == 'xxl') {
                         if (pro.xxl.quantity >= Number(req.body.inputQuantity)) {
                             pro.xxl.quantity = pro.xxl.quantity - Number(req.body.inputQuantity);
-                            pro.quantity = pro.quantity - req.body.inputQuantity;
+                            pro.quantity = pro.quantity - Number(req.body.inputQuantity);
                         } else {
                             res.status(201).json({
                                 message: "Out of Stock",
@@ -391,7 +387,7 @@ exports.postBuyNow = async (req, res, next) => {
                     if (req.body.inputSize == 'xxxl') {
                         if (pro.xxxl.quantity >= Number(req.body.inputQuantity)) {
                             pro.xxxl.quantity = pro.xxxl.quantity - Number(req.body.inputQuantity);
-                            pro.quantity = pro.quantity - req.body.inputQuantity;
+                            pro.quantity = pro.quantity - Number(req.body.inputQuantity);
                         } else {
                             res.status(201).json({
                                 message: "Out of Stock",
@@ -400,7 +396,7 @@ exports.postBuyNow = async (req, res, next) => {
                         }
                     }
                 } else {
-                    pro.quantity = pro.quantity - req.body.inputQuantity;
+                    pro.quantity = pro.quantity - Number(req.body.inputQuantity);
                 }
             } else {
                 res.status(201).json({
@@ -410,7 +406,7 @@ exports.postBuyNow = async (req, res, next) => {
             }
             await pro.save();
             let fprice = 0;
-            fprice = pro.price * req.body.inputQuantity;
+            fprice = pro.price * Number(req.body.inputQuantity);
             let Order = new order({
                 userId: id,
                 product: pro._id,
@@ -418,7 +414,7 @@ exports.postBuyNow = async (req, res, next) => {
                 store: pro.storeId,
                 image: req.body.inputImage,
                 payment: req.body.inputPaymentMode,
-                quantity: req.body.inputQuantity,
+                quantity: Number(req.body.inputQuantity),
                 size: req.body.inputSize,
                 color: req.body.inputColor,
                 placeDate: tday,
