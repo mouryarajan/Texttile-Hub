@@ -227,7 +227,7 @@ exports.postCart = async (req, res, next) => {
                                     })
                                     trands.save();
                                 }
-                                if (prod.category.name == "Saree") {
+                                if (prod.category.name.toLowerCase() == "saree") {
                                     if (prod.colorFlag) {
                                         let arr = users.cart.items;
                                         let fprice = prod.price;
@@ -273,7 +273,7 @@ exports.postCart = async (req, res, next) => {
                                             image: req.body.inputImage,
                                             price: fprice,
                                             storeId: prod.storeId,
-                                            size:productSize,
+                                            size: productSize,
                                             description: prod.description
                                         });
                                         users.cart.items = arr;
@@ -294,13 +294,13 @@ exports.postCart = async (req, res, next) => {
                                 } else {
                                     let s;
                                     let produ = productSize.toLowerCase();
-                                    if (produ.toLowerCase() == "s") { s = prod.s }
-                                    if (produ.toLowerCase() == "m") { s = prod.m }
-                                    if (produ.toLowerCase() == "l") { s = prod.l }
-                                    if (produ.toLowerCase() == "xl") { s = prod.xl }
-                                    if (produ.toLowerCase() == "xxl") { s = prod.xxl }
-                                    if (produ.toLowerCase() == "xxxl") { s = prod.xxxl }
-                                    if (s >= 1) {
+                                    if (produ.toLowerCase() == "s") { s = prod.s.quantity }
+                                    if (produ.toLowerCase() == "m") { s = prod.m.quantity }
+                                    if (produ.toLowerCase() == "l") { s = prod.l.quantity }
+                                    if (produ.toLowerCase() == "xl") { s = prod.xl.quantity }
+                                    if (produ.toLowerCase() == "xxl") { s = prod.xxl.quantity }
+                                    if (produ.toLowerCase() == "xxxl") { s = prod.xxxl.quantity }
+                                    if (s >= Number(productQuantity)) {
                                         if (prod.colorFlag) {
                                             let arr = users.cart.items;
                                             let fprice = prod.price;
