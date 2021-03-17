@@ -1,7 +1,7 @@
 const store = require('../models/m-store');
 const user = require('../models/m-user');
 const product = require('../models/m-products');
-const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../handler/common');
+const { isDefined, isEmptyObject, decodeDataFromAccessToken, notification } = require('../handler/common');
 
 exports.postStore = async (req, res, next) => {
     try {
@@ -24,7 +24,7 @@ exports.postStore = async (req, res, next) => {
             items: payment
         };
         let upi = "";
-        if(d.inputUpiId){
+        if (d.inputUpiId) {
             upi = d.inputUpiId
         }
         const Store = new store({
@@ -67,6 +67,17 @@ exports.postStore = async (req, res, next) => {
         if (!data) return res.status(201).json({ status: false, message: "Something Went Wrong" });
         use.storeRequest = true;
         await use.save();
+        const adminUser = await user.find({ role: "Admin" }).select('role otpToken');
+        if (adminUser) {
+            for (let i in adminUser) {
+                if (i.otpToken) {
+                    token = i.otpToken;
+                    title = "Store Request!";
+                    body = use.name.firstName + "has requested for store approval!";
+                    sta = notification(token, title, body);
+                }
+            }
+        }
         res.status(200).json({
             status: true,
             message: "Wait for Approval!"
@@ -132,17 +143,17 @@ exports.editStore = async (req, res, next) => {
         data.paymentMode = finalPayment;
         data.save()
             .then(result => {
-                if(result){
+                if (result) {
                     res.status(200).json({
                         status: true
                     })
-                }else{
+                } else {
                     res.status(201).json({
                         status: false,
                         message: "Something went wrong!"
                     })
                 }
-                
+
             }).catch(err => console.log(err));
     } else {
         res.status(201).json({
@@ -188,28 +199,28 @@ exports.editMinorStore = async (req, res, nest) => {
                 if (req.body.inputStoreType) {
                     data.storeType = req.body.inputStoreType;
                 }
-                if(req.body.inputCompanyEmail){
+                if (req.body.inputCompanyEmail) {
                     data.companyEmail = req.body.inputCompanyEmail;
                 }
-                if(req.body.inputStreet){
+                if (req.body.inputStreet) {
                     data.address.street = req.body.inputStreet;
                 }
-                if(req.body.inputLandmark){
+                if (req.body.inputLandmark) {
                     data.address.landmark = req.body.inputLandmark;
                 }
-                if(req.body.inputCity){
+                if (req.body.inputCity) {
                     data.address.city = req.body.inputCity;
                 }
-                if(req.body.inputState){
+                if (req.body.inputState) {
                     data.address.state = req.body.inputState;
                 }
-                if(req.body.inputPincode){
+                if (req.body.inputPincode) {
                     data.address.pincode = req.body.inputPincode;
                 }
-                if(req.body.inputAlternatePhoneNumber){
+                if (req.body.inputAlternatePhoneNumber) {
                     data.alternatePhoneNumber = req.body.inputAlternatePhoneNumber;
                 }
-                if(req.body.inputUpiId){
+                if (req.body.inputUpiId) {
                     data.upi = req.body.inputUpiId;
                 }
                 data.save()
@@ -225,12 +236,12 @@ exports.editMinorStore = async (req, res, nest) => {
 exports.getPaymentMode = async (req, res, next) => {
     pid = req.body.inputProductId;
     if (!pid) return res.status(201).json({ status: false, message: "Provide product id" });
-    const prod = await product.findOne({_id:pid}).select('storeId');
-    if(!prod) return res.status(201).json({ status: false, message: "Product not found with this id" });
-    const stro = await store.findOne({_id:prod.storeId}).select('paymentMode');
+    const prod = await product.findOne({ _id: pid }).select('storeId');
+    if (!prod) return res.status(201).json({ status: false, message: "Product not found with this id" });
+    const stro = await store.findOne({ _id: prod.storeId }).select('paymentMode');
     let data = stro.paymentMode.items;
     let arr = [];
-    for(let x of data){
+    for (let x of data) {
         arr.push(x.mode);
     }
     res.status(200).json({
@@ -242,12 +253,12 @@ exports.getStore = async (req, res, next) => {
     try {
         const data = await store.find();
         //.select('storeImage').select('companyName');
-        if(data){
+        if (data) {
             res.status(200).json({
                 status: true,
                 data: data
             });
-        }else{
+        } else {
             res.status(201).json({
                 status: false,
                 message: "Opp's no store available!"
@@ -284,9 +295,29 @@ exports.approveStore = async (req, res, next) => {
         }
 
         if (status == true || status == 'true') {
-            user.findOne({ _id: data.userId }).then(response => { response.role = "Merchant"; response.storeStatus = true; response.save(); }).catch(err => { console.log(err) });
+            user.findOne({ _id: data.userId }).then(response => {
+                response.role = "Merchant";
+                response.storeStatus = true;
+                response.save();
+                if (response.otpToken) {
+                    token = response.otpToken;
+                    title = "Store Request";
+                    body = "Hey we are glad to inform you that you store request has been approved!";
+                    status = notification(token, title, body);
+                }
+            }).catch(err => { console.log(err) });
         } else {
-            user.findOne({ _id: data.userId }).then(response => { response.role = "Customer"; response.storeStatus = false; response.save(); }).catch(err => { console.log(err) });
+            user.findOne({ _id: data.userId }).then(response => {
+                response.role = "Customer";
+                response.storeStatus = false;
+                response.save();
+                if (response.otpToken) {
+                    token = response.otpToken;
+                    title = "Store Request";
+                    body = "Hey we are sorry to inform you that your store request has been disapproved!";
+                    status = notification(token, title, body);
+                }
+            }).catch(err => { console.log(err) });
         }
 
         const result = await data.save();

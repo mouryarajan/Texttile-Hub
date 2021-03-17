@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "marothiatextile-88b17",
+  "private_key_id": "402bbb7aa6e3b7029e2d22913adfeb36f25f5b05",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQD5gvSNrxPZxm7j\nsASQDeGGhgaEF0zizp3vx26sC7XEdOP1aJCe9I+8RGgydkFQupqwgnC8UYkXMCuE\nvizQoATUTBQ0ffJAU8U67ex6lTceoy89qIPz9CStPSPsdvStJbdKqkIpKvptzFMR\nSju1tpW/Jl1vNH2pAgmLIhNnAMdQJxQjeElOW0B/H0zKgU8l8IcDuiM5SqUt2yQA\n/oTJ+XGQGI/Uy39Ngv56A4yzfvE6yDHfogV7BhjPFLluBslpaSIRSa+abXCvKgSC\ntCFEJTZedRPvNDredpEAV+B33YldxkaGrIY5iJJexbvjRpgw55MCv7yQ9NH1qMKU\nikKXSAk/AgMBAAECggEAUWqq9CSh/JjkjEVeZ8cvxR6st6OGwiebn6da9KbpjA58\naBLTxhqVYGCOA5FU5MvPODOIJ9sPOdLNEIahxv3ANaoRmcNTLixnmkASvzk7gDLN\ncngvfoY3BZSCyWFTm8BH3ARMjHRqvTNEE8s+SqAmovYY3PWq32A7zvuyixTU9ND2\nr8iiGCvwJ98v2URyJQDSlxN2txLMoy/PGLnWXHZIJJIe803oVNRwLscigoAZrjF3\n4f4wIedrd12Dozq4I6aeJt8Nm6TMidMPUSX7UBsefCHOfYqiGw9mEzMcrODLkC2g\nNNRUCmipVfZK4aNsJoxHyDH7Ay5Vag+f7zQNVxXIUQKBgQD8/1RTrB88NxJQGhy3\nmFTyXFTDNz6TXTQ0qGDzT36RYe1xCtOZea2Jopq0iOrfrkhJlcbbj7ZsHXj956CN\nosId9MKg0KHk5APEwrjVaiGtWltY1oTJoCB0ILxgr7YfSBH+jitSMOOnx8QPFyI3\njvM4vrKk1/th4Ezf6XSbGGcZOQKBgQD8eQj3YkLP9Vzlmn6TfVbrexc09C22Kkkg\nceAHv5fHSExJIyRf2eHGQPEw0/X6LYs4FOtiCcVVS8h9+SAOFxao+GWIgEnKRlX8\n2ntbSw0FamzZnkrRe2sbuqOCXiIR7jvJ0JZDBk0sBBQvHVmLEflaP4do8aQW4fqY\n22x2JkSONwKBgGZC5ljzx6RVNke+ZkEnh553B6Ponph+Ie3u6VEvnp8xEAKTN7hf\nYG+zlAjJFvbWwU1NBxYUXs4Qk6k9iL33PbNSDaFm8ylLqOJNOty4i2hAj4+3FfFR\nkgyedsY1/81hGjTkTkpojHxy2KKo3SHL3C/hlN/glTGYsjoHaSSPloyxAoGBAOcS\nqAAzMM9A1GtYwWygFQOlPxI6QfQuM4u8bbzpwDKmmxt9THdl5VwcaCO2e7UkJf2I\nN/8czj1JBRE3B/2daCHyZotOTzsQsPahyLE/uYUxaLqsQ/ICsX9JjQluumQK1THa\n9QwXIl6cxRRyGlhMdRoCdx63uuUuortwaI6ia7B1AoGBAJtVvwwEc0QydBcD3dxh\nJkIC8/ceEsuVky21YdcvTwz0s+Baoh/4CpQpkL95QJJSpz30hgWS5uztqZA1S8Sb\nL31iZfLwswEgdQMJ97aDto25b+j6gCrLvVXQmNo6ywe4Z+I+cVKK7iVLXixDxlDO\nn9Mu07ftCh891nNjvGQqb54U\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-gqiy2@marothiatextile-88b17.iam.gserviceaccount.com",
+  "client_id": "115899413699929265489",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-gqiy2%40marothiatextile-88b17.iam.gserviceaccount.com"
+}

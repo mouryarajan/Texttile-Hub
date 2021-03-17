@@ -28,4 +28,5 @@ router.post('/add-recent-item', userController.postRecentItems);
 router.get('/get-recent-item', userController.postGetRecentList);
 
 router.post('/cart-quantity', userController.postIncreaseQuantity);
+router.post('/add-notification-token', userController.addNotificationToken);
 module.exports = router;

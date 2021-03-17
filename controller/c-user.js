@@ -56,7 +56,7 @@ exports.postRegister = async (req, res, next) => {
         }
         const otp = Number(Math.floor(100000 + Math.random() * 900000));
         arr = {
-             otp
+            otp
         }
         // let sms = "Your Ecommerce Otp is" + otp.toString() + "please don't share it with others" 
         // let resp = await fast2sms.sendMessage({authorization: uL52IUqO6JQ1cjToHykehX3ENSdlpsZn7WYitD8xr40gFmAfKRK0tXQMjrvAbeCpWnhV9EyclPZ4zxR7, message:sms, numbers: [phno]});
@@ -160,7 +160,7 @@ exports.postEditUser = async (req, res, next) => {
     const d = req.body;
     let id = null;
     await decodeDataFromAccessToken(req.headers.token).then((data) => {
-        if(data){
+        if (data) {
             id = data.userId;
         }
     })
@@ -529,10 +529,10 @@ exports.postGetCart = async (req, res, next) => {
                     //         delete item.storeId;
                     //         delete item.storeImage;
                     //         delete item.storeName;
-                    
+
                     //     } 
                     //     tempDummyArray.push(item)
-                        
+
                     // })
                     finalProductArray.push(value)
                 });
@@ -915,6 +915,38 @@ exports.postGetRecentList = async (req, res, next) => {
                 res.status(201).json({ status: false, message: "User not found" });
             }
         }).catch(err => { console.log(err) });
+}
+
+//Adding Otp Token
+exports.addNotificationToken = async (req, res, next) => {
+    let id;
+    await decodeDataFromAccessToken(req.headers.token).then((data) => {
+        id = data.userId;
+    })
+    if (!id) return res.status(201).json({ status: false, message: "Enter User Id" });
+    user.findOne({ _id: id })
+        .then(data => {
+            if (data) {
+                data.otpToken = req.body.inputOtpToken;
+                data.save()
+                    .then(result => {
+                        if (result) {
+                            res.status(200).json({
+                                status: true
+                            })
+                        } else {
+                            res.status(201).json({
+                                message: "Something Went Wrong Unable to Update the Record!"
+                            })
+                        }
+                    })
+            } else {
+                res.status(201).json({
+                    message: "User Not Found!!"
+                })
+            }
+        })
+        .catch(err => { console.log(err) })
 }
 
 //Add Order

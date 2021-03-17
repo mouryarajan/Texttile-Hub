@@ -1,4 +1,28 @@
+const admin = require("firebase-admin");
 const jwt = require('jsonwebtoken');
+const notification = (token, title, body) => {
+  const message = {
+    token: token,
+    notification: {
+      title: title,
+      body: body,
+    },
+    data: {},
+  };
+  admin
+    .messaging()
+    .send(message)
+    .then((response) => {
+      if (response) {
+        return true;
+      } else {
+        return false;
+      }
+    })
+    .catch(err => {
+      return err;
+    });
+}
 const isDefined = (value) => {
   if (typeof value !== "undefined") {
     return true;
@@ -35,9 +59,9 @@ const getAverage = arr => {
   if (!isEmptyObject(arr)) {
     const sum = arr.reduce((total, currentValue) => total + currentValue)
     return sum / arr.length;
-  }else{
+  } else {
     return 0;
   }
 }
 
-module.exports = { isDefined, isEmptyObject, decodeDataFromAccessToken, isValueExistInArray, getAverage };
+module.exports = { isDefined, isEmptyObject, decodeDataFromAccessToken, isValueExistInArray, getAverage, notification };
