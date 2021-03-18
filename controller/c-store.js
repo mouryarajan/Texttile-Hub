@@ -141,6 +141,17 @@ exports.editStore = async (req, res, next) => {
         data.storeImage = d.inputStoreImage;
         data.remark = null;
         data.paymentMode = finalPayment;
+        const userName = await user.findOne({_id:id});
+        const adminUser = await user.find({ role: "Admin" }).select('role otpToken');
+        let fcmToken = [];
+        if (adminUser.length>0) {
+            for (let i in adminUser) {
+                if(isDefined(adminUser[i].otpToken)){
+                    fcmToken.push(adminUser[i].otpToken)
+                }
+            }
+            multipleNotification(fcmToken,userName.name.firstName);
+        }
         data.save()
             .then(result => {
                 if (result) {
