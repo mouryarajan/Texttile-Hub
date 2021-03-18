@@ -1,5 +1,6 @@
 const admin = require("firebase-admin");
 const jwt = require('jsonwebtoken');
+const {NOTIFICATION_TYPE,NOTIFICATION_TITLE_FOR_ADMIN,NOTIFICATION_BODY_STORE_OWNER_APPROVED,NOTIFICATION_BODY_STORE_OWNER_DISAPPROVED,NOTIFICATION_BODY_FOR_ADMIN,NOTIFICATION_TITLE_STORE_OWNER} = require('./constant');
 const notification = (token, title, body) => {
   const message = {
     token: token,
@@ -7,7 +8,9 @@ const notification = (token, title, body) => {
       title: title,
       body: body,
     },
-    data: {},
+    data: {
+      notificationType:NOTIFICATION_TYPE.storeResponse
+    },
   };
   admin
     .messaging()
@@ -23,6 +26,49 @@ const notification = (token, title, body) => {
       return err;
     });
 }
+
+const multipleNotification = (tokenArray, userName = '') => {
+  const message = {
+    data: {
+      title: NOTIFICATION_TITLE_FOR_ADMIN,
+      body: userName+' '+NOTIFICATION_BODY_FOR_ADMIN,
+      notificationType:NOTIFICATION_TYPE.storeRequest.toString() ,
+    },
+
+    tokens: tokenArray, // Array
+    notification: {
+      title: NOTIFICATION_TITLE_FOR_ADMIN,
+      body: userName+' '+NOTIFICATION_BODY_FOR_ADMIN,
+    },
+    android: {
+      notification: {
+        channelId: "123", // String
+      },
+    },
+    apns: {
+      payload: {
+        aps: {
+          badge: 1,
+          sound: "default",
+          // Number
+          "mutable-content": 1,
+        },
+      },
+     
+    },
+  };
+  admin // admin
+    .messaging()
+    .sendMulticast(message)
+    .then(async (response) => {
+      return true;
+    })
+    .catch(err => {
+      // eslint-disable-next-line prefer-promise-reject-errors
+      return err;
+    });
+}
+
 const isDefined = (value) => {
   if (typeof value !== "undefined") {
     return true;
@@ -64,4 +110,4 @@ const getAverage = arr => {
   }
 }
 
-module.exports = { isDefined, isEmptyObject, decodeDataFromAccessToken, isValueExistInArray, getAverage, notification };
+module.exports = { isDefined, isEmptyObject, decodeDataFromAccessToken, isValueExistInArray, getAverage, notification ,multipleNotification};

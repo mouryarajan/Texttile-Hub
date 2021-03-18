@@ -2,7 +2,7 @@ const admin = require("firebase-admin");
 // eslint-disable-next-line import/no-unresolved
 
 exports.sendFirebaseNotification = (req, res, next) => { 
-    const token = 'fzt43Bz2T7GVyR65J6ERx-:APA91bFkkrF7OIvF8gvpbauT3IaUaApnNGgD9NYYtlAo6CgIciT_mpXuWUnyHB-aJOfwyPuwfLJYhmgeXfuFv6MWhfjpy77n53j9S7zqovk6W_ywfC9NRSKXfLdpbCyeokFLaUYpMM8t';
+    const token = 'dyX8nfOUTfK3BFd5L8Wh1K:APA91bGHBC-d9bhlLkY57XYOauhukbow0cADYg_AFOGunrJh6Fq94MWmFTWq5aw3MMfiGaBQLTbtPJ6DvrUOnvR6Z0G2d8sP5pwhT2LhPpnCGSTjp8V6VQFQ1zxcgk-iT41e3_oBLmC0';
     const message = {
         token: token,
         notification: {

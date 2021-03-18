@@ -1,7 +1,8 @@
 const store = require('../models/m-store');
 const user = require('../models/m-user');
 const product = require('../models/m-products');
-const { isDefined, isEmptyObject, decodeDataFromAccessToken, notification } = require('../handler/common');
+const { isDefined, isEmptyObject, decodeDataFromAccessToken, notification, multipleNotification } = require('../handler/common');
+
 
 exports.postStore = async (req, res, next) => {
     try {
@@ -68,15 +69,14 @@ exports.postStore = async (req, res, next) => {
         use.storeRequest = true;
         await use.save();
         const adminUser = await user.find({ role: "Admin" }).select('role otpToken');
-        if (adminUser) {
+        let fcmToken = [];
+        if (adminUser.length>0) {
             for (let i in adminUser) {
-                if (i.otpToken) {
-                    token = i.otpToken;
-                    title = "Store Request!";
-                    body = use.name.firstName + "has requested for store approval!";
-                    sta = notification(token, title, body);
+                if(isDefined(adminUser[i].otpToken)){
+                    fcmToken.push(adminUser[i].otpToken)
                 }
             }
+            multipleNotification(fcmToken,use.name.firstName);
         }
         res.status(200).json({
             status: true,
@@ -303,7 +303,7 @@ exports.approveStore = async (req, res, next) => {
                     token = response.otpToken;
                     title = "Store Request";
                     body = "Hey we are glad to inform you that you store request has been approved!";
-                    status = notification(token, title, body);
+                    notification(token, title, body);
                 }
             }).catch(err => { console.log(err) });
         } else {
@@ -315,7 +315,7 @@ exports.approveStore = async (req, res, next) => {
                     token = response.otpToken;
                     title = "Store Request";
                     body = "Hey we are sorry to inform you that your store request has been disapproved!";
-                    status = notification(token, title, body);
+                    notification(token, title, body);
                 }
             }).catch(err => { console.log(err) });
         }
