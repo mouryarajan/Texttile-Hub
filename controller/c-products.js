@@ -197,7 +197,7 @@ exports.postEditProducts = async (req, res, next) => {
     const pid = body.inputProductId;
     if (!pid) return res.status(201).json({ status: false, message: "Enter Product id" });
     products.findOne({ _id: pid })
-        .then(data => {
+        .then( async data => {
             if (data) {
                 if (body.inputProductImages) {
                     data.images = body.inputProductImages;
