@@ -207,7 +207,7 @@ exports.postEditProducts = async (req, res, next) => {
                     data.name = body.inputProductName;
                 }
                 if (body.inputBrandId) {
-                    const brd = await Brand.findOne({brandName:body.inputBrandId});
+                    const brd = await Brand.findOne({brandName:new RegExp(body.inputBrandId, 'i')});
                     if(brd._id){
                         data.brandName = brd._id;
                     }
@@ -216,7 +216,7 @@ exports.postEditProducts = async (req, res, next) => {
                     data.price = body.inputProductPrice;
                 }
                 if (body.inputType) {
-                    const typ = await Type.findOne({typeName:body.inputType});
+                    const typ = await Type.findOne({typeName:new RegExp(body.inputType, 'i')});
                     if(typ._id){
                         data.type = typ._id;
                     }
@@ -261,7 +261,7 @@ exports.postEditProducts = async (req, res, next) => {
                     data.quantity = body.inputQuantity;
                 }
                 if (body.inputFabric) {
-                    const fab = await Fabric.findOne({fabricName:body.inputFabric});
+                    const fab = await Fabric.findOne({fabricName:new RegExp(body.inputFabric, 'i')});
                     if(fab._id){
                         data.fabric = fab._id;
                     }
