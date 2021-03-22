@@ -154,6 +154,7 @@ exports.editStore = async (req, res, next) => {
         }
         data.save()
             .then(result => {
+                console.log(result);
                 if (result) {
                     res.status(200).json({
                         status: true
