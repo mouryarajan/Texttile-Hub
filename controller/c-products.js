@@ -3,6 +3,8 @@ const user = require('../models/m-user');
 const store = require('../models/m-store');
 const cat = require('../models/m-category');
 const tranding = require('../models/m-tranding');
+const Fabric = require('../models/m-fabric');
+const Type = require('../models/m-type');
 const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../handler/common');
 
 exports.postProducts = async (req, res, next) => {
@@ -209,8 +211,11 @@ exports.postEditProducts = async (req, res, next) => {
                 if (body.inputProductPrice) {
                     data.price = body.inputProductPrice;
                 }
-                if (body.inputProductTypeId) {
-                    data.type = body.inputProductTypeId;
+                if (body.inputType) {
+                    const typ = await Type.findOne({typeName:body.inputType});
+                    if(typ._id){
+                        data.type = typ._id;
+                    }
                 }
                 if (body.inputSquantity) {
                     data.s.quantity = body.inputSquantity;
@@ -251,11 +256,17 @@ exports.postEditProducts = async (req, res, next) => {
                 if (body.inputQuantity) {
                     data.quantity = body.inputQuantity;
                 }
-                if (body.inputFabricId) {
-                    data.fabric = body.inputFabricId;
+                if (body.inputFabric) {
+                    const fab = await Fabric.findOne({fabricName:body.inputFabric});
+                    if(fab._id){
+                        data.fabric = fab._id;
+                    }
                 }
                 if (body.inputDescription) {
                     data.description = body.inputDescription;
+                }
+                if (body.productColor) {
+                    data.primarycolor = body.productColor;
                 }
                 data.save()
                 res.status(200).json({
