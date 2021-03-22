@@ -5,6 +5,7 @@ const cat = require('../models/m-category');
 const tranding = require('../models/m-tranding');
 const Fabric = require('../models/m-fabric');
 const Type = require('../models/m-type');
+const Brand = require('../models/m-brand');
 const { isDefined, isEmptyObject, decodeDataFromAccessToken } = require('../handler/common');
 
 exports.postProducts = async (req, res, next) => {
@@ -206,7 +207,10 @@ exports.postEditProducts = async (req, res, next) => {
                     data.name = body.inputProductName;
                 }
                 if (body.inputBrandId) {
-                    data.brandName = body.inputBrandId;
+                    const brd = await Brand.findOne({brandName:body.inputBrandId});
+                    if(brd._id){
+                        data.brandName = brd._id;
+                    }
                 }
                 if (body.inputProductPrice) {
                     data.price = body.inputProductPrice;
