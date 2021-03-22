@@ -190,6 +190,86 @@ exports.postProducts = async (req, res, next) => {
     }
 }
 
+exports.postEditProducts = async (req, res, next) => {
+    const body = req.body;
+    const pid = body.inputProductId;
+    if (!pid) return res.status(201).json({ status: false, message: "Enter Product id" });
+    products.findOne({ _id: pid })
+        .then(data => {
+            if (data) {
+                if (body.inputProductImages) {
+                    data.images = body.inputProductImages;
+                }
+                if (body.inputProductName) {
+                    data.name = body.inputProductName;
+                }
+                if (body.inputBrandId) {
+                    data.brandName = body.inputBrandId;
+                }
+                if (body.inputProductPrice) {
+                    data.price = body.inputProductPrice;
+                }
+                if (body.inputProductTypeId) {
+                    data.type = body.inputProductTypeId;
+                }
+                if (body.inputSquantity) {
+                    data.s.quantity = body.inputSquantity;
+                }
+                if (body.inputSprice) {
+                    data.s.price = body.inputSprice;
+                }
+                if (body.inputMquantity) {
+                    data.m.quantity = body.inputMquantity;
+                }
+                if (body.inputMprice) {
+                    data.m.price = body.inputMprice;
+                }
+                if (body.inputLquantity) {
+                    data.l.quantity = body.inputLquantity;
+                }
+                if (body.inputLprice) {
+                    data.l.price = body.inputLprice;
+                }
+                if (body.inputXLquantity) {
+                    data.xl.quantity = body.inputXLquantity;
+                }
+                if (body.inputXLprice) {
+                    data.xl.price = body.inputXLprice;
+                }
+                if (body.inputXXLquantity) {
+                    data.xxl.quantity = body.inputXXLquantity;
+                }
+                if (body.inputXXLprice) {
+                    data.xxl.price = body.inputXXLprice;
+                }
+                if (body.inputXXXLquantity) {
+                    data.xxxl.quantity = body.inputXXXLquantity;
+                }
+                if (body.inputXXXLprice) {
+                    data.xxxl.price = body.inputXXXLprice;
+                }
+                if (body.inputQuantity) {
+                    data.quantity = body.inputQuantity;
+                }
+                if (body.inputFabricId) {
+                    data.fabric = body.inputFabricId;
+                }
+                if (body.inputDescription) {
+                    data.description = body.inputDescription;
+                }
+                data.save()
+                res.status(200).json({
+                    status: true
+                })
+            } else {
+                res.status(201).json({ Message: "Product Not Found!" });
+            }
+        }).catch(err => {
+            console.log(err);
+            res.status(201).json({ err });
+        })
+}
+
 exports.getProducts = async (req, res, next) => {
     let id;
     await decodeDataFromAccessToken(req.headers.token).then((data) => {
