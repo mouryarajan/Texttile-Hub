@@ -52,19 +52,34 @@ exports.postRegister = async (req, res, next) => {
     try {
         if (!forResetPasswordFlag) {
             const data = await user.findOne({ phoneNumber: phno });
-            if (data) return res.status(201).json({ status: false, message: "User Already Exist With This Phone Number!" });
+            if (data) {
+                res.status(201).json({
+                    status: false,
+                    message: "User Already Exist With This Phone Number!"
+                });
+            } else {
+                const otp = Number(Math.floor(100000 + Math.random() * 900000));
+                arr = {
+                    otp
+                }
+                res.status(200).json({
+                    status: true,
+                    data: arr
+                })
+            }
+        } else {
+            const data = await user.findOne({ phoneNumber: phno });
+            if(data) {
+                res.status(200).json({
+                    status: true
+                })
+            }else{
+                res.status(201).json({
+                    status: false,
+                    message: "User Not Found!"
+                })
+            }
         }
-        const otp = Number(Math.floor(100000 + Math.random() * 900000));
-        arr = {
-            otp
-        }
-        // let sms = "Your Ecommerce Otp is" + otp.toString() + "please don't share it with others" 
-        // let resp = await fast2sms.sendMessage({authorization: uL52IUqO6JQ1cjToHykehX3ENSdlpsZn7WYitD8xr40gFmAfKRK0tXQMjrvAbeCpWnhV9EyclPZ4zxR7, message:sms, numbers: [phno]});
-        // console.log(resp);
-        res.status(200).json({
-            status: true,
-            data: arr
-        })
     } catch (err) {
         res.status(201).json({ err });
     }
