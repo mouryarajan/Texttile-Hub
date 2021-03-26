@@ -35,11 +35,12 @@ app.use('/api',homeRoutes);
 app.use('/api',orderRoutes);
 app.use('/api',notificationRoutes);
 
+app.get('/',(req,res)=>res.send("welcome to M-textile Backend App!"));
 //Connection 
 mongoose
     .connect(process.env.DB_CONNECT, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(result => {
-        app.listen(process.env.PORT || 5000,() => console.log(`Shopping app is listening`))
+        app.listen(process.env.PORT || 3100 ,() => console.log(`Shopping app is listening`))
     })
     .catch(err => {
         console.log(err);
