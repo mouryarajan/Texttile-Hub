@@ -2,6 +2,26 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const cors = require("cors");
+
+const app = express();
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(cors());
+// parse requests of content-type - application/json
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true,limit: '50mb' }));
+
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Origin,X-Requested-With,Content-Type,Accept"
+    );
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+  });
+
 
 
 //Config Environment File
@@ -14,7 +34,6 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-const app = express();
 
 //importing routes
 const userRoutes = require('./routes/r-user');
