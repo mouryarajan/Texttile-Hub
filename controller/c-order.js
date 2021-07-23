@@ -181,8 +181,8 @@ exports.postOrder = async (req, res, next) => {
             const body = { amount: amount, currency: currency, receipt: receipt };
 
             let url = 'https://api.razorpay.com/v1/orders';
-            let username = 'rzp_live_t67U0BoWeFiPpO';
-            let password = '7lIb1BrxQvhZ6rJEFoZfEYMQ';
+            let username = '';
+            let password = '';
 
             let headers = new fetch.Headers();
             headers.append('Content-Type', 'text/json');
